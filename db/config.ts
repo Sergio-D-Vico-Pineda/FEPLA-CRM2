@@ -222,6 +222,8 @@ const Registro = defineTable({
   }
 });
 
+console.log('Config');
+
 export default defineDb({
   tables: {
     Instituto,
