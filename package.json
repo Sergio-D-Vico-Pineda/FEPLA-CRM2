@@ -12,6 +12,7 @@
     "dbs": "drizzle-kit studio"
   },
   "dependencies": {
+    "@astrojs/node": "^9.0.0",
     "@astrojs/tailwind": "^5.1.4",
     "@libsql/client": "^0.14.0",
     "astro": "^5.1.1",
