@@ -2765,8 +2765,8 @@
     },
     {
       "type": "text",
-      "version": 1756,
-      "versionNonce": 671059386,
+      "version": 1757,
+      "versionNonce": 274281639,
       "isDeleted": false,
       "id": "0Iw1gS2Qga2rzwGi7lrN4",
       "fillStyle": "solid",
@@ -2775,7 +2775,7 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": 343.54069504908614,
+      "x": 345.2073617157531,
       "y": 1065.758825759553,
       "strokeColor": "#846358",
       "backgroundColor": "transparent",
@@ -2788,7 +2788,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1735381739711,
+      "updated": 1735475139815,
       "link": null,
       "locked": false,
       "fontSize": 36.27329619211109,
@@ -3435,8 +3435,8 @@
     },
     {
       "type": "rectangle",
-      "version": 2924,
-      "versionNonce": 1651699450,
+      "version": 2949,
+      "versionNonce": 1874051102,
       "isDeleted": false,
       "id": "-PObDQlnKFQVoDi1BQ74D",
       "fillStyle": "solid",
@@ -3450,7 +3450,7 @@
       "strokeColor": "#f08c00",
       "backgroundColor": "transparent",
       "width": 382.6243301205024,
-      "height": 352.7822640560364,
+      "height": 326.11559738936944,
       "seed": 1841931305,
       "groupIds": [
         "eZyyl0ELGVpCimApDfaPU"
@@ -3473,7 +3473,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1735381739711,
+      "updated": 1735915016002,
       "link": null,
       "locked": false,
       "index": "b2n"
@@ -3527,8 +3527,8 @@
     },
     {
       "type": "text",
-      "version": 2540,
-      "versionNonce": 585750842,
+      "version": 2544,
+      "versionNonce": 1420035913,
       "isDeleted": false,
       "id": "rNkfb7AzQiAKe7x4hzSzI",
       "fillStyle": "solid",
@@ -3537,7 +3537,7 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -280.3841364717521,
+      "x": -270.3841364717521,
       "y": 1813.597592114104,
       "strokeColor": "#f08c00",
       "backgroundColor": "transparent",
@@ -3555,7 +3555,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1735381739711,
+      "updated": 1735474980741,
       "link": null,
       "locked": false,
       "fontSize": 37.795759730150806,
@@ -3572,8 +3572,8 @@
     },
     {
       "type": "text",
-      "version": 3245,
-      "versionNonce": 731012262,
+      "version": 3247,
+      "versionNonce": 80557854,
       "isDeleted": false,
       "id": "qFRUWLG4XH5tUhYSUSih1",
       "fillStyle": "solid",
@@ -3587,7 +3587,7 @@
       "strokeColor": "#f08c00",
       "backgroundColor": "transparent",
       "width": 353.947265625,
-      "height": 275.0806134604855,
+      "height": 250.07328496407774,
       "seed": 24627401,
       "groupIds": [
         "eZyyl0ELGVpCimApDfaPU"
@@ -3612,16 +3612,16 @@
           "type": "arrow"
         }
       ],
-      "updated": 1735381739766,
+      "updated": 1735915011493,
       "link": null,
       "locked": false,
       "fontSize": 20.839440413673145,
       "fontFamily": 3,
-      "text": "id_profesor INT PK\nnombre* VARCHAR\napellidos? VARCHAR\ntelefono? VARCHAR\nemail? VARCHAR UNIQUE\nnif? VARCHAR\nnip? VARCHAR\ncomentarios? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------",
+      "text": "id_profesor INT PK\nnombre* VARCHAR\napellidos? VARCHAR\ntelefono? VARCHAR\nnif? VARCHAR\nnip? VARCHAR\ncomentarios? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "id_profesor INT PK\nnombre* VARCHAR\napellidos? VARCHAR\ntelefono? VARCHAR\nemail? VARCHAR UNIQUE\nnif? VARCHAR\nnip? VARCHAR\ncomentarios? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------",
+      "originalText": "id_profesor INT PK\nnombre* VARCHAR\napellidos? VARCHAR\ntelefono? VARCHAR\nnif? VARCHAR\nnip? VARCHAR\ncomentarios? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------",
       "lineHeight": 1.2,
       "baseline": 186,
       "index": "b2q",
@@ -3939,8 +3939,8 @@
     },
     {
       "type": "text",
-      "version": 2803,
-      "versionNonce": 1174086138,
+      "version": 2804,
+      "versionNonce": 1801892999,
       "isDeleted": false,
       "id": "s0Ongm3E-ChJtxaONycu_",
       "fillStyle": "solid",
@@ -3962,16 +3962,16 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1735381783477,
+      "updated": 1735475113957,
       "link": null,
       "locked": false,
       "fontSize": 20,
       "fontFamily": 3,
-      "text": "id_usuario INT PK\nusuario* VARCHAR\nemail* VARCHAR\ncontrasena* VARCHAR\nrol* VARCHAR (Prof, Admin)\nactivo* BOOLEAN\n-------------\nid_profesor FK",
+      "text": "id_usuario INT PK\nusuario* VARCHAR\nemail* VARCHAR\ncontrasena* VARCHAR\nrol* VARCHAR (Prof, Admin)\nactivo* BOOLEAN\n-------------\nid_profesor* FK",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "id_usuario INT PK\nusuario* VARCHAR\nemail* VARCHAR\ncontrasena* VARCHAR\nrol* VARCHAR (Prof, Admin)\nactivo* BOOLEAN\n-------------\nid_profesor FK",
+      "originalText": "id_usuario INT PK\nusuario* VARCHAR\nemail* VARCHAR\ncontrasena* VARCHAR\nrol* VARCHAR (Prof, Admin)\nactivo* BOOLEAN\n-------------\nid_profesor* FK",
       "lineHeight": 1.2,
       "baseline": 186,
       "index": "b33",
@@ -3980,10 +3980,10 @@
     {
       "id": "34BslAt8Ut2xiKXdD0ihn",
       "type": "arrow",
-      "x": -153.81967114860527,
-      "y": 2161.993468905424,
-      "width": 114.74898228746264,
-      "height": 111.6433436254838,
+      "x": -168.4881467134826,
+      "y": 2136.986140409016,
+      "width": 129.41745785233996,
+      "height": 136.6506721218916,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -3999,11 +3999,11 @@
         "type": 2
       },
       "seed": 2021123145,
-      "version": 1727,
-      "versionNonce": 1091018470,
+      "version": 1730,
+      "versionNonce": 646744478,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1735381785836,
+      "updated": 1735915013036,
       "link": null,
       "locked": false,
       "points": [
@@ -4012,8 +4012,8 @@
           0
         ],
         [
-          114.74898228746264,
-          111.6433436254838
+          129.41745785233996,
+          136.6506721218916
         ]
       ],
       "lastCommittedPoint": null,
@@ -4036,10 +4036,10 @@
     {
       "id": "FtbJ9ADj7pMQpHozBC0JA",
       "type": "arrow",
-      "x": 13.50866501206292,
-      "y": 2003.4619508065791,
-      "width": 121.08463813737666,
-      "height": 39.60451664110519,
+      "x": 13.508665012062906,
+      "y": 2004.1760748877402,
+      "width": 121.08463813737667,
+      "height": 40.31864072226631,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -4055,11 +4055,11 @@
         "type": 2
       },
       "seed": 822340263,
-      "version": 1554,
-      "versionNonce": 1146127462,
+      "version": 1557,
+      "versionNonce": 2035606878,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1735381794823,
+      "updated": 1735915013036,
       "link": null,
       "locked": false,
       "points": [
@@ -4068,8 +4068,8 @@
           0
         ],
         [
-          121.08463813737666,
-          -39.60451664110519
+          121.08463813737667,
+          -40.31864072226631
         ]
       ],
       "lastCommittedPoint": null,
@@ -4688,8 +4688,8 @@
     },
     {
       "type": "text",
-      "version": 1968,
-      "versionNonce": 1108837242,
+      "version": 1993,
+      "versionNonce": 427596777,
       "isDeleted": false,
       "id": "rEUNwr8rXqH18n9eH41z2",
       "fillStyle": "solid",
@@ -4698,8 +4698,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1800.454526069701,
-      "y": 1586.4265440629015,
+      "x": -1785.454526069701,
+      "y": 1588.9265440629015,
       "strokeColor": "#099268",
       "backgroundColor": "transparent",
       "width": 170.763671875,
@@ -4711,7 +4711,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1735381739712,
+      "updated": 1735474995341,
       "link": null,
       "locked": false,
       "fontSize": 36.27329619211109,
@@ -5254,8 +5254,8 @@
     },
     {
       "type": "text",
-      "version": 2509,
-      "versionNonce": 1799678970,
+      "version": 2521,
+      "versionNonce": 1122638345,
       "isDeleted": false,
       "id": "HWSbShavrWq7xYcYjdglu",
       "fillStyle": "solid",
@@ -5277,16 +5277,16 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1735381739712,
+      "updated": 1735475094930,
       "link": null,
       "locked": false,
       "fontSize": 20,
       "fontFamily": 3,
-      "text": "id_contacto_empresa INT PK\npuesto? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------\nid_contacto\nid_empresa",
+      "text": "id_contacto_empresa INT PK\npuesto? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------\nid_contacto* FK\nid_empresa* FK",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "id_contacto_empresa INT PK\npuesto? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------\nid_contacto\nid_empresa",
+      "originalText": "id_contacto_empresa INT PK\npuesto? VARCHAR\nfecha_creacion* DATETIME\nfecha_actualizacion? DATETIME\n-------------\nid_contacto* FK\nid_empresa* FK",
       "lineHeight": 1.2,
       "baseline": 186,
       "index": "b3e",
@@ -5418,8 +5418,8 @@
     },
     {
       "type": "text",
-      "version": 2694,
-      "versionNonce": 832483686,
+      "version": 2698,
+      "versionNonce": 529952775,
       "isDeleted": false,
       "id": "DnzzL5xnvwo6Ei4wGpdyg",
       "fillStyle": "solid",
@@ -5441,16 +5441,16 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1735381787347,
+      "updated": 1735475109565,
       "link": null,
       "locked": false,
       "fontSize": 20,
       "fontFamily": 3,
-      "text": "id_registro INT PK\nentidad* VARCHAR\nid_entidad* INT\ndescripcion VARCHAR NOT NULL\nfecha_accion* DATETIME\n-------------\nid_profesor",
+      "text": "id_registro INT PK\nentidad* VARCHAR\nid_entidad* INT\ndescripcion VARCHAR NOT NULL\nfecha_accion* DATETIME\n-------------\nid_profesor* FK",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "id_registro INT PK\nentidad* VARCHAR\nid_entidad* INT\ndescripcion VARCHAR NOT NULL\nfecha_accion* DATETIME\n-------------\nid_profesor",
+      "originalText": "id_registro INT PK\nentidad* VARCHAR\nid_entidad* INT\ndescripcion VARCHAR NOT NULL\nfecha_accion* DATETIME\n-------------\nid_profesor* FK",
       "lineHeight": 1.2,
       "baseline": 186,
       "index": "b3k",
@@ -5459,10 +5459,10 @@
     {
       "id": "l3MKOwltyDtvAwtLJurt6",
       "type": "arrow",
-      "x": -220.23417844031695,
-      "y": 2162.7395627062497,
-      "width": 158.80362259726047,
-      "height": 126.94073092633698,
+      "x": -203.20885580531586,
+      "y": 2137.732234209842,
+      "width": 175.82894523226156,
+      "height": 151.9480594227448,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -5478,11 +5478,11 @@
         "type": 2
       },
       "seed": 1555404282,
-      "version": 1781,
-      "versionNonce": 265224870,
+      "version": 1784,
+      "versionNonce": 1040581854,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1735381789352,
+      "updated": 1735915013036,
       "link": null,
       "locked": false,
       "points": [
@@ -5491,8 +5491,8 @@
           0
         ],
         [
-          -158.80362259726047,
-          126.94073092633698
+          -175.82894523226156,
+          151.9480594227448
         ]
       ],
       "lastCommittedPoint": null,
@@ -5516,9 +5516,9 @@
       "id": "xFkM2EkGks3-VuBq8D2jK",
       "type": "arrow",
       "x": -377.76675612351914,
-      "y": 1959.638539283683,
+      "y": 1951.514455887963,
       "width": 137.23849774186942,
-      "height": 99.53479351114083,
+      "height": 91.4107101154209,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -5534,11 +5534,11 @@
         "type": 2
       },
       "seed": 1781252602,
-      "version": 1705,
-      "versionNonce": 1066150118,
+      "version": 1708,
+      "versionNonce": 116242718,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1735381739766,
+      "updated": 1735915013036,
       "link": null,
       "locked": false,
       "points": [
@@ -5548,7 +5548,7 @@
         ],
         [
           -137.23849774186942,
-          -99.53479351114083
+          -91.4107101154209
         ]
       ],
       "lastCommittedPoint": null,
