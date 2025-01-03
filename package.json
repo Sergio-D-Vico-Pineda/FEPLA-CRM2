@@ -2,24 +2,26 @@
   "name": "fepla-crm2",
   "type": "module",
   "version": "0.0.1",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "dbg": "drizzle-kit generate",
-    "dbm": "drizzle-kit migrate",
-    "dbs": "drizzle-kit studio"
+    "reset": "node prisma/reset.js"
   },
   "dependencies": {
     "@astrojs/node": "^9.0.0",
     "@astrojs/tailwind": "^5.1.4",
     "@libsql/client": "^0.14.0",
-    "astro": "^5.1.1",
-    "drizzle-orm": "^0.38.3",
+    "@prisma/adapter-libsql": "^6.1.0",
+    "@prisma/client": "6.1.0",
+    "astro": "^5.1.2",
     "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.30.1"
+    "prisma": "^6.1.0"
   }
 }
