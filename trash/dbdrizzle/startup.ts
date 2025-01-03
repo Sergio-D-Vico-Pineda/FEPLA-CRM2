@@ -1,4 +1,4 @@
-import { db } from '.';
+/* import { db } from '.';
 
 export async function checkDatabaseConnection() {
     try {
@@ -10,3 +10,4 @@ export async function checkDatabaseConnection() {
         process.exit(1); // Exit the process if the connection fails
     }
 }
+ */

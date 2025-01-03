@@ -1,4 +1,4 @@
-import { defineDb, defineTable, column } from 'astro:db';
+/* import { defineDb, defineTable, column } from 'astro:db';
 
 const Instituto = defineTable({
   columns: {
@@ -222,8 +222,6 @@ const Registro = defineTable({
   }
 });
 
-console.log('Config');
-
 export default defineDb({
   tables: {
     Instituto,
@@ -241,4 +239,4 @@ export default defineDb({
     Interaccion,
     Registro
   }
-});
+}); */
