@@ -1,8 +1,118 @@
 ---
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
+import Footer from "@comp/Footer.astro";
+import { Image } from "astro:assets";
+import img from "../assets/logo2.png";
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Inicio de sesión - FEPLA-CRM" kind={1}>
+	<div class="flex justify-center">
+		<Image
+			src={img}
+			alt="Logo FEPLA-CRM"
+			class="w-[125px]"
+			loading="eager"
+		/>
+	</div>
+	<main class="grid place-items-center">
+		<form
+			id="formlogin"
+			class="text-center grid place-items-center gap-y-5 py-8 px-10 bg-gray-300 rounded-lg shadow-md w-fit"
+		>
+			<label class="text-lg">
+				Correo electrónico o usuario <br />
+				<input
+					name="emailusuario"
+					type="text"
+					placeholder="vj.santonjaivorra@edu.gva.es"
+					class="w-[240px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+				/>
+			</label>
+			<label class="text-lg">
+				Contraseña <br />
+				<input
+					name="password"
+					type="password"
+					placeholder="Contraseña"
+					class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+				/>
+			</label>
+			<span id="loginfail" class="hidden text-red-500 text-sm font-bold">
+				Inicio de sesión incorrecto
+			</span>
+			<button
+				type="submit"
+				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+				>Iniciar sesión</button
+			>
+			<a href="/" id="enlace">¿Olvidaste tu contraseña?</a>
+		</form>
+	</main>
+	<Footer />
 </Layout>
+
+<script is:inline type="module">
+	import { url } from "./utils.js";
+	const form = document.querySelector("form");
+	const loginfail = document.querySelector("#loginfail");
+
+	async function sendData(e) {
+		e.preventDefault();
+		const data = {
+			emailusuario: form.emailusuario.value,
+			password: form.password.value,
+		};
+		const response = await fetch(url + "/api/login", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		});
+
+		if (loginfail) {
+			loginfail.classList.add("hidden");
+		}
+
+		if (response.ok) {
+			const json = await response.json();
+			let texto = "";
+
+			Object.entries(json).forEach(([key, value]) => {
+				texto += key + ": " + value + "\n";
+			});
+
+			alert(texto);
+			
+			if (json.rol == "Prof") {
+				window.location.href = "/inicio";
+				localStorage.setItem(
+					"user",
+					json.usuario == "prof" ? "lupastance" : json.usuario,
+				);
+				localStorage.setItem(
+					"profesor_id",
+					json.id_profesor == 0 ? 1 : json.id_profesor,
+				);
+				return;
+			}
+			window.location.href = "/admin";
+		} else {
+			loginfail.classList.remove("hidden");
+		}
+	}
+
+	form.addEventListener("submit", sendData);
+	/* form.addEventListener("submit", (e) => {
+		e.preventDefault();
+		loginfail.classList.add("hidden");
+		if (form.emailusuario.value == "admin") {
+			window.location.href = "/admin";
+		} else if (form.emailusuario.value == "prof") {
+			window.location.href = "/inicio";
+			localStorage.setItem("user", "lupastance");
+		} else {
+			loginfail.classList.remove("hidden");
+		}
+	}); */
+</script>
