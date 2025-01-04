@@ -1,0 +1,57 @@
+---
+interface Props {
+    admin?: boolean;
+}
+
+const { admin } = Astro.props;
+---
+
+<header class="w-full flex justify-between bg-[#33495d] p-5 pb-2 text-white">
+    <h1 class="text-3xl font-bold">
+        {admin ? <a href="/">Fepla CRM</a> : <a href="/inicio">Fepla CRM</a>}
+    </h1>
+    <div>
+        <button
+            id="logout"
+            class="bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 transition-colors"
+            type="button">Cerrar sesión</button
+        >
+        {
+            admin ? (
+                <button
+                    class="bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 transition-colors"
+                    type="button"
+                >
+                    Admin
+                </button>
+            ) : (
+                <button
+                    id="perfil"
+                    class="bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 transition-colors"
+                    type="button"
+                >
+                    Perfil
+                </button>
+            )
+        }
+    </div>
+</header>
+
+<script>
+    const logout = document.querySelector("#logout");
+    const perfil = document.querySelector("#perfil");
+
+    logout.addEventListener("click", () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("profesor_id");
+        window.location.href = "/";
+    });
+
+    let user = localStorage.getItem("user");
+
+    if (perfil) {
+        perfil.addEventListener("click", () => {
+            window.location.href = `/perfil/${user}`;
+        });
+    }
+</script>
