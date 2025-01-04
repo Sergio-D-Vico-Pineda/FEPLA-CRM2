@@ -61,6 +61,7 @@ async function main() {
 
         profesores = await prisma.profesor.createMany({
             data: [
+                { id_profesor: 0, nombre: 'Admin' },
                 { id_profesor: 1, nombre: 'Sergio', apellidos: 'Vico', telefono: '123456789', nif: '123456789', nip: '123456789', comentarios: 'Admin' },
                 { id_profesor: 2, nombre: 'Vicente', apellidos: 'Santonja', telefono: '987654321', nif: '987654321', nip: '987654321', comentarios: 'Comentarios 2' },
                 { id_profesor: 3, nombre: 'Luis', apellidos: 'Alemañ', telefono: '555555555', nif: '555555555', nip: '555555555', comentarios: 'Comentarios 3' },
