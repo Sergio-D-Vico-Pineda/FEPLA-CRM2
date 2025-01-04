@@ -1,16 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import { PrismaLibSQL } from '@prisma/adapter-libsql';
-import { createClient } from '@libsql/client';
-
-let { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = process.env;
-
-const db = createClient({
-    url: TURSO_DATABASE_URL,
-    authToken: TURSO_AUTH_TOKEN
-})
-
-const adapter = new PrismaLibSQL(db);
-const prisma = new PrismaClient({ adapter })
+import prisma from "./conex.js";
 
 async function main() {
     let instituto, cursos, grupos, profesores, prof_inst, usuarios, alumnos, empresas, contactos, cont_emp;
@@ -26,7 +14,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Instituto ya creado.");
         } else {
-            console.log(error);
+            console.log("Error Instituto: " + error);
         }
     }
 
@@ -44,7 +32,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Cursos ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Cursos: " + error);
         }
     }
 
@@ -65,7 +53,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Grupos ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Grupos: " + error);
         }
     }
 
@@ -83,7 +71,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Profesores ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Profesores: " + error);
         }
     }
     try {
@@ -100,7 +88,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Profesores_Institutos ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Profesores_Institutos: " + error);
         }
     }
     try {
@@ -117,7 +105,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Usuarios ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Usuarios: " + error);
         }
     }
     try {
@@ -133,7 +121,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Alumnos ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Alumnos: " + error);
         }
     }
 
@@ -150,7 +138,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Empresas ya creadas.");
         } else {
-            console.log(error);
+            console.log("Error Empresas: " + error);
         }
     }
     try {
@@ -166,7 +154,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Contactos ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Contactos: " + error);
         }
     }
 
@@ -183,7 +171,7 @@ async function main() {
         if (error.code == "SQLITE_CONSTRAINT") {
             console.log("Contactos_Empresas ya creados.");
         } else {
-            console.log(error);
+            console.log("Error Contactos_Empresas: " + error);
         }
     }
 
