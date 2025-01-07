@@ -6,7 +6,6 @@ async function GET() {
 
 async function POST({ request }) {
     const data = await request.json();
-    console.log(data);
     const user = await prisma.usuario.findFirst({
         select: {
             usuario: true,
