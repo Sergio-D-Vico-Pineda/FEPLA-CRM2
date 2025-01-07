@@ -1,0 +1,45 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+
+---
+
+<Layout title="Página de administración" kind={1}>
+    <Header admin={true} />
+    <main class="flex justify-center items-center flex-row gap-20">
+        <div
+            class="p-5 border-black border-solid border rounded-lg shadow-lg w-fit bg-slate-300"
+        >
+            <h1 class="text-3xl font-semibold">Página de administración</h1>
+            <hr class="border-black border-solid border-2 m-4" />
+            <div class="flex flex-col gap-3 justify-center items-center">
+                <a
+                    href="/admin/nuevoprof"
+                    class="rounded-md shadow-md p-2 w-fit text-white bg-blue-500 hover:bg-blue-700 transition-colors"
+                >
+                    Nuevo Profesor
+                </a>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="12345678A"
+                        class="w-40 p-2 border border-black rounded-md"
+                    />
+                    <button
+                        class="rounded-md shadow-md p-2 w-fit text-white bg-blue-500 hover:bg-blue-700 transition-colors"
+                    >
+                        Buscar Profesor
+                    </button>
+                </div>
+                <a
+                    href="/admin/listaprof"
+                    class="rounded-md shadow-md p-2 w-fit text-white bg-blue-500 hover:bg-blue-700 transition-colors"
+                >
+                    Lista de profesores
+                </a>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>
