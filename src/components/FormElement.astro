@@ -1,0 +1,63 @@
+---
+interface Props {
+    texto: string;
+    placehold?: string;
+    type?: string; // default: text
+    isrequired?: boolean; // default: false
+    value?: string;
+    classes?: string;
+}
+
+const {
+    type = "text",
+    texto,
+    placehold,
+    isrequired = false,
+    value,
+    classes = "",
+} = Astro.props;
+
+let textCapital = texto[0].toUpperCase() + texto.slice(1);
+---
+
+<label
+    class=`flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md ${classes}`
+    ><span
+        >{textCapital}
+        {
+            isrequired ? (
+                <b class="text-red-600" title="Requerido">
+                    *
+                </b>
+            ) : (
+                ""
+            )
+        }
+    </span>
+
+    {
+        !isrequired && (
+            <input
+                class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                type={type as astroHTML.JSX.HTMLInputTypeAttribute}
+                name={texto}
+                id={texto}
+                placeholder={placehold}
+                value={value}
+            />
+        )
+    }
+    {
+        isrequired && (
+            <input
+                class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                type={type as astroHTML.JSX.HTMLInputTypeAttribute}
+                name={texto}
+                id={texto}
+                placeholder={placehold}
+                value={value}
+                required
+            />
+        )
+    }
+</label>
