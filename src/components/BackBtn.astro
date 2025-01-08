@@ -2,9 +2,10 @@
 interface Props {
     title?: string;
     url?: string;
+    classes?: string;
 }
 
-const { title, url } = Astro.props;
+const { title, url, classes } = Astro.props;
 ---
 
 <button
@@ -13,7 +14,7 @@ const { title, url } = Astro.props;
     title={title || "Volver"}
     id="btnback"
     type="button"
-    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+    class=`bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors ${classes}`
 >
     Volver
 </button>
