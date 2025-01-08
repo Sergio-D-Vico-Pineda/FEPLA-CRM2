@@ -69,7 +69,7 @@ export async function PATCH({ request }) {
         ), { status: 200 });
 
     } catch (error) {
-        return new Response(error, { status: 404 });
+        return new Response(JSON.stringify(error), { status: 404 });
     }
 }
 
