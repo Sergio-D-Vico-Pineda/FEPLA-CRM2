@@ -4,63 +4,101 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
 /* Profesor: id_profesor, nombre, apellidos, telefono, nif, nip, comentarios, fecha_creacion*, fecha_actualizacion */
 /* Usuario: id_usuario, usuario*, email*, contrasena*, rol*, activo*, id_profesor*/
+
+const { id } = Astro.params;
+
+const profesor = await prisma.profesor.findUnique({
+    include: {
+        usuario: true,
+    },
+    where: {
+        id_profesor: Number(id),
+    },
+});
+
+if (!profesor) {
+    return new Response(null, {
+        status: 404,
+    });
+}
 ---
 
-<Layout title="Nuevo Profesor" kind={1}>
+<Layout title="Editar Profesor" kind={1}>
     <Header admin={true} />
     <main class="grid place-content-center">
         <form
             class="bg-gray-300 rounded-lg shadow-md py-10 px-8 flex flex-col min-w-fit w-[500px]"
-            id="formnew"
+            id={profesor.id_profesor.toString()}
         >
             <fieldset
                 class="grid justify-center grid-cols-2 grid-rows gap-2 py-5 px-4"
             >
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
-                    >Añade un nuevo profesor</legend
+                    >Modificar datos de un profesor</legend
                 >
                 <FormElement
                     texto="nombre"
-                    placehold="David"
+                    placehold={profesor.nombre}
                     isrequired={true}
+                    value={profesor.nombre}
                 />
                 <FormElement
                     texto="email"
-                    placehold="d.perezpastor@edu.gva.es"
+                    placehold={profesor.usuario?.email}
                     isrequired={true}
+                    value={profesor.usuario?.email}
                 />
                 <FormElement
                     texto="usuario"
-                    placehold="dperpas"
+                    placehold={profesor.usuario?.usuario}
                     isrequired={true}
+                    value={profesor.usuario?.usuario}
                 />
                 <FormElement
                     texto="contraseña"
-                    placehold="********"
+                    placehold={profesor.usuario?.contrasena}
                     type="password"
                     isrequired={true}
+                    value={profesor.usuario?.contrasena}
                 />
-                <details class="col-span-2 w-full">
+                <details class="col-span-2 w-full" open>
                     <summary class="w-full text-center text-xl font-semibold"
                         >Información adicional</summary
                     >
                     <div class="grid grid-cols-2 grid-rows gap-2 pt-2.5">
                         <FormElement
                             texto="apellidos"
-                            placehold="Pérez Pastor"
-                            type="textarea"
+                            placehold={profesor.apellidos ??
+                                ("Sin apellidos" as string)}
+                            value={profesor.apellidos as string}
                         />
-                        <FormElement texto="telefono" placehold="123456789" />
-                        <FormElement texto="nif" placehold="12345678A" />
-                        <FormElement texto="nip" placehold="12345678" />
+                        <FormElement
+                            texto="telefono"
+                            placehold={profesor.telefono ??
+                                ("Sin telefono" as string)}
+                            value={profesor.telefono as string}
+                        />
+                        <FormElement
+                            texto="nif"
+                            placehold={profesor.nif ?? ("Sin NIF" as string)}
+                            value={profesor.nif as string}
+                        />
+                        <FormElement
+                            texto="nip"
+                            placehold={profesor.nip ?? ("Sin NIP" as string)}
+                            value={profesor.nip as string}
+                        />
                         <FormElement
                             classes="col-span-2 w-full"
                             texto="comentarios"
-                            placehold="..."
+                            placehold={profesor.comentarios ??
+                                ("Sin comentarios" as string)}
+                            value={profesor.comentarios as string}
                             type="textarea"
                         />
                     </div>
@@ -71,7 +109,7 @@ import BackBtn from "@comp/BackBtn.astro";
                     type="submit"
                     id="btnsubmit"
                     class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                    >Añadir nuevo profesor</button
+                    >Modificar datos</button
                 >
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
@@ -81,13 +119,14 @@ import BackBtn from "@comp/BackBtn.astro";
 </Layout>
 
 <script is:inline type="module">
-    import { apiurl } from "../utils.js";
+    import { apiurl } from "../../utils.js";
     const form = document.querySelector("form");
 
     async function sendData(e) {
         e.preventDefault();
 
         const data = {
+            id_profesor: parseInt(form.id),
             nombre: form.nombre.value,
             email: form.email.value,
             usuario: form.usuario.value,
@@ -100,7 +139,7 @@ import BackBtn from "@comp/BackBtn.astro";
         };
 
         const response = await fetch(apiurl + "/admin", {
-            method: "POST",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
