@@ -96,9 +96,10 @@ async function main() {
 
         usuarios = await prisma.usuario.createMany({
             data: [
-                { id_usuario: 1, usuario: 'admin', email: 'admin@fepla.es', contrasena: 'admin', rol: 'Admin', activo: true, id_profesor: 1 },
+                { id_usuario: 1, usuario: 'admin', email: 'admin@fepla.es', contrasena: 'admin', rol: 'Admin', activo: true, id_profesor: 0 },
                 { id_usuario: 2, usuario: 'vjsan', email: 'vjsan@fepla.es', contrasena: 'prof', rol: 'Prof', activo: true, id_profesor: 2 },
                 { id_usuario: 3, usuario: 'lupastance', email: 'lale@fepla.es', contrasena: 'prof', rol: 'Prof', activo: true, id_profesor: 3 },
+                { id_usuario: 4, usuario: 'prof', email: 'prof@fepla.es', contrasena: 'prof', rol: 'Prof', activo: true, id_profesor: 1 },
             ],
         })
         console.log("Usuarios creado exitosamente.")
