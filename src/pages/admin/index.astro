@@ -1,5 +1,5 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 ---
@@ -23,7 +23,7 @@ import Footer from "@comp/Footer.astro";
                     <input
                         id="buscador"
                         type="text"
-                        placeholder="12345678A"
+                        placeholder="vjsan"
                         class="w-40 p-2 border border-black rounded-md"
                     />
                     <button
@@ -65,11 +65,16 @@ import Footer from "@comp/Footer.astro";
 
         if (resp.ok) {
             const json = await resp.json();
-            window.location.href = `/admin/profesor/${json.id_profesor}`;
+            window.location.href = `/profesor/${json.id_profesor}`;
         } else {
-            alert("Profesor no encontrado");
+            alert("Profesor no encontrado.");
         }
     }
 
     $btnbuscar.addEventListener("click", sendData);
+    $buscador.addEventListener("keyup", (e) => {
+        if (e.key == "Enter") {
+            $btnbuscar.click();
+        }
+    });
 </script>

@@ -1,5 +1,5 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from "@lay/Layout.astro";
 import Footer from "@comp/Footer.astro";
 import { Image } from "astro:assets";
 import img from "../assets/logo2.png";
@@ -24,7 +24,7 @@ import img from "../assets/logo2.png";
 				<input
 					name="emailusuario"
 					type="text"
-					placeholder="vj.santonjaivorra@edu.gva.es"
+					placeholder="vjsan@fepla.es"
 					class="w-[240px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
 				/>
 			</label>
@@ -33,7 +33,7 @@ import img from "../assets/logo2.png";
 				<input
 					name="password"
 					type="password"
-					placeholder="Contraseña"
+					placeholder="*********"
 					class="w-full text-sm px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 				/>
 			</label>
@@ -79,11 +79,11 @@ import img from "../assets/logo2.png";
 			let texto = "";
 
 			Object.entries(json).forEach(([key, value]) => {
-				texto += key + ": " + value + "\n";
+				if (key != "contrasena") texto += key + ": " + value + "\n";
 			});
 
 			alert(texto);
-			
+
 			if (json.rol == "Prof") {
 				window.location.href = "/inicio";
 				localStorage.setItem(
