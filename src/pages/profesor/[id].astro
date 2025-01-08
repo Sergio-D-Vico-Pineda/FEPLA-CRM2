@@ -1,0 +1,123 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
+
+const { id } = Astro.params;
+
+const profesor = await prisma.profesor.findUnique({
+    include: {
+        usuario: true,
+    },
+    where: {
+        id_profesor: Number(id),
+    },
+});
+
+if (!profesor) {
+    return new Response(null, {
+        status: 404,
+    });
+}
+---
+
+<Layout title="Información del profesor" kind={1}>
+    <Header />
+    <main class="grid place-content-center">
+        <div
+            class="p-4 bg-slate-300 rounded-lg shadow-lg w-fit border-2 border-black"
+        >
+            {
+                profesor.usuario?.activo ? (
+                    <h2
+                        class="text-3xl font-semibold mb-4 text-center text-green-500"
+                        title="Profesor activo"
+                    >
+                        Ficha del profesor
+                    </h2>
+                ) : (
+                    <h2
+                        class="text-3xl font-semibold mb-4 text-center text-red-500"
+                        title="Profesor inactivo"
+                    >
+                        Ficha del profesor
+                    </h2>
+                )
+            }
+
+            <hr class="border-black border-solid border-2 mx-4" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">Nombre</h2>
+                    <p class="text-gray-700">{profesor.nombre}</p>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">Apellidos</h2>
+                    {
+                        profesor.apellidos ? (
+                            <p class="text-gray-700">{profesor.apellidos}</p>
+                        ) : (
+                            <p class="text-gray-700 italic">Sin apellidos</p>
+                        )
+                    }
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">Usuario</h2>
+                    <p id="perfil" class="text-gray-700">
+                        {profesor.usuario?.usuario}
+                    </p>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">Teléfono</h2>
+                    {
+                        profesor.telefono ? (
+                            <p class="text-gray-700">+34 {profesor.telefono}</p>
+                        ) : (
+                            <p class="text-gray-700 italic">Sin telefono</p>
+                        )
+                    }
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">Email</h2>
+                    <p class="text-gray-700">{profesor.usuario?.email}</p>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">NIF</h2>
+                    {
+                        profesor.nif ? (
+                            <p class="text-gray-700">{profesor.nif}</p>
+                        ) : (
+                            <p class="text-gray-700 italic">Sin NIF</p>
+                        )
+                    }
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">NIP</h2>
+                    {
+                        profesor.nip ? (
+                            <p class="text-gray-700">{profesor.nip}</p>
+                        ) : (
+                            <p class="text-gray-700 italic">Sin NIP</p>
+                        )
+                    }
+                </div>
+                {
+                    profesor.comentarios && (
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">
+                                Comentarios
+                            </h2>
+                            <p class="text-gray-700">{profesor.comentarios}</p>
+                        </div>
+                    )
+                }
+            </div>
+            <div class="w-full flex justify-center">
+                <BackBtn />
+            </div>
+        </div>
+    </main>
+</Layout>
+<Footer />

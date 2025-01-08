@@ -80,12 +80,13 @@ import BackBtn from "@comp/BackBtn.astro";
     <Footer />
 </Layout>
 
-<script>
-    const form = document.querySelector("#formnew") as HTMLFormElement;
-    const url = `http://${window.location.hostname}:${window.location.port}/api/admin/newprof`;
+<script is:inline type="module">
+    import { apiurl } from "../utils.js";
+    const form = document.querySelector("form");
 
-    async function sendData(e: Event) {
+    async function sendData(e) {
         e.preventDefault();
+
         const data = {
             nombre: form.nombre.value,
             email: form.email.value,
@@ -98,7 +99,7 @@ import BackBtn from "@comp/BackBtn.astro";
             comentarios: form.comentarios.value,
         };
 
-        const response = await fetch(url, {
+        const response = await fetch(apiurl + "/admin", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
