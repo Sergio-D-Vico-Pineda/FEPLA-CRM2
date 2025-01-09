@@ -1,7 +1,7 @@
 import prisma from "@db/index.js";
 
 async function GET() {
-    return new Response("Example API", { status: 200 });
+    return new Response("Admin API", { status: 200 });
 }
 
 async function POST({ request }) {
@@ -26,15 +26,26 @@ async function POST({ request }) {
             }
         })
 
+        const log = await prisma.registro.create({
+            data: {
+                descripcion: "creación de profesor",
+                entidad: "Profesor",
+                id_entidad: newProf.id_profesor,
+                id_profesor: data.id_active_user
+            }
+        })
+
         newProf.message = "Profesor creado exitosamente.";
 
         return new Response(JSON.stringify(
             newProf
         ), { status: 200 });
     } catch (error) {
-        return new Response(error, { status: 404 });
+        console.log(error)
+        return new Response(JSON.stringify({
+            message: "Profesor no creado."
+        }), { status: 404 });
     }
-
 }
 
 export async function PATCH({ request }) {

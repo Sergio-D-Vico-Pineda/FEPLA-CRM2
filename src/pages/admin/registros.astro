@@ -1,0 +1,77 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
+
+const rows = await prisma.registro.findMany({
+    include: {
+        profesor: true,
+    },
+});
+---
+
+<Layout title="Registros">
+    <Header admin={true} />
+    <div class="flex justify-between w-full px-5 py-2 h-fit">
+        <h2 class="text-3xl">Registros</h2>
+        <div class="flex gap-4">
+            <BackBtn />
+        </div>
+    </div>
+    <main class="grid place-items-center">
+        <div
+            class="max-h-[68vh] overflow-y-auto shadow-md rounded-lg px-8 py-4"
+        >
+            {
+                rows.length > 0 ? (
+                    <table class="min-w-full bg-white overflow-y-auto">
+                        <thead class="bg-gray-100">
+                            <tr class="border-b-2 border-black border-solid">
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Descripción
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Entidad
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Fecha
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Usuario (id)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {rows.map((registro) => (
+                                <tr class="hover:bg-gray-100">
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {registro.descripcion}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {registro.entidad}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-500">
+                                        {new Date(registro.fecha_accion)
+                                            .toLocaleString("es-ES")
+                                            .replace(",", "")}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-blue-500">
+                                        {registro.profesor?.nombre} (
+                                        {registro.id_profesor})
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <h3 class="py-10 text-center text-red-500 text-3xl">
+                        No hay registros por el momento
+                    </h3>
+                )
+            }
+        </div>
+    </main>
+    <Footer />
+</Layout>
