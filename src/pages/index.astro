@@ -16,7 +16,6 @@ import img from "../assets/logo2.png";
 	</div>
 	<main class="grid place-items-center">
 		<form
-			id="formlogin"
 			class="text-center grid place-items-center gap-y-5 py-8 px-10 bg-gray-300 rounded-lg shadow-md w-fit"
 		>
 			<label class="text-lg">
@@ -83,17 +82,14 @@ import img from "../assets/logo2.png";
 			});
 
 			alert(texto);
-
+			localStorage.setItem("id_active_user", json.id_profesor);
 			if (json.rol == "Prof") {
 				window.location.href = "/inicio";
 				localStorage.setItem(
 					"user",
 					json.usuario == "prof" ? "lupastance" : json.usuario,
 				);
-				localStorage.setItem(
-					"profesor_id",
-					json.id_profesor == 0 ? 1 : json.id_profesor,
-				);
+				localStorage.setItem("profesor_id", json.id_profesor);
 				return;
 			}
 			window.location.href = "/admin";
@@ -103,16 +99,4 @@ import img from "../assets/logo2.png";
 	}
 
 	form.addEventListener("submit", sendData);
-	/* form.addEventListener("submit", (e) => {
-		e.preventDefault();
-		loginfail.classList.add("hidden");
-		if (form.emailusuario.value == "admin") {
-			window.location.href = "/admin";
-		} else if (form.emailusuario.value == "prof") {
-			window.location.href = "/inicio";
-			localStorage.setItem("user", "lupastance");
-		} else {
-			loginfail.classList.remove("hidden");
-		}
-	}); */
 </script>
