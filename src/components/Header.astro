@@ -41,11 +41,14 @@ const { admin } = Astro.props;
     const logout = document.querySelector("#logout");
     const perfil = document.querySelector("#perfil");
 
-    logout.addEventListener("click", () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("profesor_id");
-        window.location.href = "/";
-    });
+    if (logout) {
+        logout.addEventListener("click", () => {
+            localStorage.removeItem("user");
+            localStorage.removeItem("profesor_id");
+            localStorage.removeItem("id_active_user");
+            window.location.href = "/";
+        });
+    }
 
     let user = localStorage.getItem("user");
 
