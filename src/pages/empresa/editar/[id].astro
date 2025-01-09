@@ -1,24 +1,25 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
-import Contacts from "@comp/Contacts.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
-    sql: `SELECT * FROM empresa WHERE empresa_id = $id;`,
-    args: {
-        id: id,
+const empresa = await prisma.empresa.findUnique({
+    where: {
+        id_empresa: Number(id),
     },
 });
 
-const empresa = rows[0];
-/* empresa_id, nombre, nombre_oficial, direccion, cif, sitio_web, sector, tecnologias, comentarios, fecha_creacion, fecha_actualizacion, contacto_id */
+if (!empresa) {
+    console.log("No hay registro con ese valor");
+    return Astro.redirect("/404");
+}
+
+/* id_empresa, nombre*, nombre_empresarial, direccion, cif, sitio_web, sector, tecnologias, comentarios, activo*, fecha_creacion*, fecha_actualizacion  */
 ---
 
 <Layout title="Modificación de la empresa" kind={1}>
@@ -34,8 +35,8 @@ const empresa = rows[0];
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
                 >
                     Modificación de una empresa
-                    <span id="empresa_id" class="hidden"
-                        >{empresa.empresa_id}</span
+                    <span id="id_empresa" class="hidden"
+                        >{empresa.id_empresa}</span
                     >
                 </legend>
                 <FormElement
@@ -46,8 +47,8 @@ const empresa = rows[0];
                 />
                 <FormElement
                     texto="nombre_oficial"
-                    placehold={empresa.nombre_oficial as string}
-                    value={empresa.nombre_oficial as string}
+                    placehold={empresa.nombre_empresarial as string}
+                    value={empresa.nombre_empresarial as string}
                 />
                 <FormElement
                     texto="direccion"
@@ -91,16 +92,14 @@ const empresa = rows[0];
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
         </form>
-        <!-- grid grid-cols-2 grid-rows-5 -->
-        {empresa.contacto_id ? <Contacts /> : ""}
     </main>
     <Footer />
 </Layout>
 
-<script>
-    const form = document.querySelector("#formedit") as HTMLFormElement;
-    const emp_id = document.querySelector("#empresa_id");
-    const url = `http://${window.location.hostname}:${window.location.port}/api/empresa/modify`;
+<script is:inline type="module">
+    import { apiurl } from "../../utils.js";
+    const form = document.querySelector("form");
+    const id_emp = document.querySelector("#id_empresa");
 
     form.addEventListener("submit", async (e) => {
         // Peticion para modificar la empresa
@@ -108,7 +107,7 @@ const empresa = rows[0];
         e.preventDefault();
 
         const data = {
-            empresa_id: emp_id.textContent,
+            id_empresa: parseInt(id_emp.textContent) ,
             nombre: form.nombre.value,
             nombre_oficial: form.nombre_oficial.value,
             direccion: form.direccion.value,
@@ -119,13 +118,13 @@ const empresa = rows[0];
             comentarios: form.comentarios.value,
         };
 
-        const response = await fetch(url, {
-            method: "POST",
+        const response = await fetch(apiurl + "/empresa", {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-        })
+        });
 
         alert((await response.json()).message);
 

@@ -1,29 +1,25 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
-import Contacts from "@comp/Contacts.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
+import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
-    sql: `SELECT * FROM empresa WHERE empresa_id = $id;`,
-    args: {
-        id: id,
+const empresa = await prisma.empresa.findUnique({
+    where: {
+        id_empresa: Number(id),
     },
 });
-
-const empresa = rows[0];
 
 if (!empresa) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
-/* empresa_id, nombre, nombre_oficial, direccion, cif, sitio_web, sector, tecnologias, comentarios, fecha_creacion, fecha_actualizacion, activo, contacto_id */
+
+/* id_empresa, nombre*, nombre_empresarial, direccion, cif, sitio_web, sector, tecnologias, comentarios, activo*, fecha_creacion*, fecha_actualizacion  */
 ---
 
 <Layout title="Información de la empresa" kind={1}>
@@ -47,15 +43,15 @@ if (!empresa) {
             </div>
             <!-- <div>
                 <h2 class="text-xl font-semibold mb-2">ID de la Empresa</h2>
-                <p class="text-gray-700">{empresa.empresa_id}</p>
+                <p class="text-gray-700">{empresa.id_empresa}</p>
             </div> -->
             <div>
                 <h2 class="text-xl font-semibold mb-2">Nombre</h2>
                 <p class="text-gray-700">{empresa.nombre}</p>
             </div>
             <div>
-                <h2 class="text-xl font-semibold mb-2">Nombre Oficial</h2>
-                <p class="text-gray-700">{empresa.nombre_oficial}</p>
+                <h2 class="text-xl font-semibold mb-2">Nombre Empresarial</h2>
+                <p class="text-gray-700">{empresa.nombre_empresarial}</p>
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">Dirección</h2>
@@ -91,7 +87,7 @@ if (!empresa) {
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
-                <p class="text-gray-700">{empresa.fecha_creacion}</p>
+                <p class="text-gray-700">{new Date(empresa.fecha_creacion).toLocaleString("es-ES").replace(",", "")}</p>
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">
@@ -108,7 +104,7 @@ if (!empresa) {
                             Crear contacto (🛠)
                         </a>
                         <a
-                            href=`/empresa/editar/${empresa.empresa_id}`
+                            href=`/empresa/editar/${empresa.id_empresa}`
                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                         >
                             Editar
@@ -132,25 +128,23 @@ if (!empresa) {
                 }
                 <BackBtn />
             </div>
-            <span id="empresa_id" class="hidden">{empresa.empresa_id}</span>
+            <span id="id_empresa" class="hidden">{empresa.id_empresa}</span>
         </div>
-        <!-- grid grid-cols-2 grid-rows-5 -->
-        <Contacts />
         <Popup
             title="¿Está seguro de desactivar la empresa?"
-            url=`/empresa/desactivar/${empresa.empresa_id}`
+            url=`/empresa/desactivar/${empresa.id_empresa}`
         />
     </main>
     <Footer />
 </Layout>
 
-<script>
+<script is:inline type="module">
+    import { apiurl } from "../../utils.js";
     let btnDesactivar = document.getElementById("btnDesactivar");
     let btnActivar = document.getElementById("btnActivar");
     let popup = document.getElementById("popup");
     let btnAceptar = document.getElementById("btnconfirm");
-    let emp_id = document.getElementById("empresa_id");
-    let url = `http://${window.location.hostname}:${window.location.port}/api/empresa/switch`;
+    let id_emp = document.getElementById("id_empresa");
 
     if (btnDesactivar) {
         btnDesactivar.addEventListener("click", () => {
@@ -158,17 +152,18 @@ if (!empresa) {
         });
     }
 
+    let data = {
+        id_empresa: parseInt(id_emp.textContent)
+    }
+
     if (btnAceptar) {
         btnAceptar.addEventListener("click", async () => {
             popup.style.display = "none";
 
-            let data = {
-                empresa_id: emp_id.textContent,
-                activo: 0,
-            }
+            data.activo = false
 
-            const response = await fetch(url, {
-            method: "POST",
+            const response = await fetch(apiurl + "/empresa", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -182,18 +177,16 @@ if (!empresa) {
     }
     if (btnActivar) {
         btnActivar.addEventListener("click", async () => {
-            let data = {
-                empresa_id: emp_id.textContent,
-                activo: 1,
-            }
+            
+            data.activo = true;
 
-            const response = await fetch(url, {
-            method: "POST",
+            const response = await fetch(apiurl + "/empresa", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
+            }, 
+            body: JSON.stringify(data) }
+        );
         alert((await response.json()).message);
         if (response.ok) {
             window.location.reload();

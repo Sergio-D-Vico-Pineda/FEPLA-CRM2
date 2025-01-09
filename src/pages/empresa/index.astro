@@ -2,13 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
-/* import { rows } from "@comp/Empresas.js"; */
-
-import { tursodb } from "@r/astro.config.mjs";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
-const { rows } = await tursodb.execute("SELECT * FROM empresa;");
-/* const rows2 = rows.filter((row) => row.activo == 1); */
+const rows = await prisma.empresa.findMany();
+
+/* id_empresa, nombre*, nombre_empresarial, direccion, cif, sitio_web, sector, tecnologias, comentarios, activo*, fecha_creacion*, fecha_actualizacion  */
 ---
 
 <Layout title="Lista de empresas">
@@ -75,7 +74,7 @@ const { rows } = await tursodb.execute("SELECT * FROM empresa;");
                         empresa.activo ? (
                             <tr class="hover:bg-gray-100" data-active="true">
                                 <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre_oficial}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre_empresarial}</td>
                                 <td class="px-4 py-3 text-sm text-gray-500">{empresa.direccion}</td>
                                 <td class="px-4 py-3 text-sm text-blue-500 hover:underline">
                                     <a
@@ -89,12 +88,12 @@ const { rows } = await tursodb.execute("SELECT * FROM empresa;");
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
                                         <a
-                                            href=`/empresa/editar/${empresa.empresa_id}`
+                                            href=`/empresa/editar/${empresa.id_empresa}`
                                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Editar
                                         </a>
                                         <a
-                                        href=`/empresa/${empresa.empresa_id}`
+                                        href=`/empresa/${empresa.id_empresa}`
                                         class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
                                         </a>
@@ -104,7 +103,7 @@ const { rows } = await tursodb.execute("SELECT * FROM empresa;");
                         ) : (
                             <tr class="hover:bg-gray-100 hidden" data-active="false">
                                 <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre_oficial}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre_empresarial}</td>
                                 <td class="px-4 py-3 text-sm text-gray-500">{empresa.direccion}</td>
                                 <td class="px-4 py-3 text-sm text-blue-500 hover:underline">
                                     <a
@@ -118,12 +117,12 @@ const { rows } = await tursodb.execute("SELECT * FROM empresa;");
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
                                         <a
-                                            href=`/empresa/editar/${empresa.empresa_id}`
+                                            href=`/empresa/editar/${empresa.id_empresa}`
                                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Editar
                                         </a>
                                         <a
-                                        href=`/empresa/${empresa.empresa_id}`
+                                        href=`/empresa/${empresa.id_empresa}`
                                         class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
                                         </a>
@@ -146,10 +145,14 @@ const { rows } = await tursodb.execute("SELECT * FROM empresa;");
     const rows = document.querySelectorAll("tr[data-active=false]");
     const allrows = document.querySelectorAll("tr[data-active]");
     const activerows = document.querySelectorAll("tr[data-active=true]");
+    const $btnnew = document.getElementById("btnnew");
 
-    document.getElementById("btnnew").addEventListener("click", () => {
-        window.location.href = "/empresa/nuevaempresa";
-    });
+
+    if ($btnnew) {
+        $btnnew.addEventListener("click", () => {
+            window.location.href = "/empresa/nuevaempresa";
+        });
+    }
     
     activeCb.addEventListener("change", () => {
         activerows.forEach(row => {
@@ -163,7 +166,8 @@ const { rows } = await tursodb.execute("SELECT * FROM empresa;");
     btnBusqueda.addEventListener("click", () => {
         const textoBusqueda = inputBusqueda.value.toLowerCase();
         allrows.forEach(row => {
-            let textoCelda = row.querySelector("td").textContent.toLowerCase();
+            const td = row.querySelector("td") as HTMLTableCellElement;
+            let textoCelda = td.textContent?.toLowerCase() as string;
             if (textoCelda.includes(textoBusqueda)) {
                 row.classList.remove("hidden");
             } else {
