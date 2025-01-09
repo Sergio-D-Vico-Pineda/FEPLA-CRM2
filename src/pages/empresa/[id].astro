@@ -1,0 +1,203 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import { tursodb } from "@r/astro.config.mjs";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import Contacts from "@comp/Contacts.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import Popup from "@comp/Popup.astro";
+
+const { id } = Astro.params;
+
+const { rows } = await tursodb.execute({
+    sql: `SELECT * FROM empresa WHERE empresa_id = $id;`,
+    args: {
+        id: id,
+    },
+});
+
+const empresa = rows[0];
+
+if (!empresa) {
+    console.log("No hay registro con ese valor");
+    return Astro.redirect("/404");
+}
+/* empresa_id, nombre, nombre_oficial, direccion, cif, sitio_web, sector, tecnologias, comentarios, fecha_creacion, fecha_actualizacion, activo, contacto_id */
+---
+
+<Layout title="Información de la empresa" kind={1}>
+    <Header />
+    <main class="flex justify-center items-center grid-flow-col gap-10">
+        <div
+            class="grid grid-cols-2 grid-rows-5 gap-2 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit"
+        >
+            <div class="col-span-2 text-center">
+                {
+                    empresa.activo ? (
+                        <h2 class="text-2xl font-semibold mb-2 text-green-500">
+                            Información
+                        </h2>
+                    ) : (
+                        <h2 class="text-2xl font-semibold mb-2 text-red-500">
+                            Información
+                        </h2>
+                    )
+                }
+            </div>
+            <!-- <div>
+                <h2 class="text-xl font-semibold mb-2">ID de la Empresa</h2>
+                <p class="text-gray-700">{empresa.empresa_id}</p>
+            </div> -->
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Nombre</h2>
+                <p class="text-gray-700">{empresa.nombre}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Nombre Oficial</h2>
+                <p class="text-gray-700">{empresa.nombre_oficial}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Dirección</h2>
+                <p class="text-gray-700">{empresa.direccion}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">CIF</h2>
+                <p class="text-gray-700">{empresa.cif}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Sitio Web</h2>
+                <p class="text-blue-500 hover:underline">
+                    <a
+                        href={`https://${empresa.sitio_web}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {empresa.sitio_web}
+                    </a>
+                </p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Sector</h2>
+                <p class="text-gray-700">{empresa.sector}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Tecnologías</h2>
+                <p class="text-gray-700">{empresa.tecnologias}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
+                <p class="text-gray-700">{empresa.comentarios}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
+                <p class="text-gray-700">{empresa.fecha_creacion}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">
+                    Fecha de Actualización
+                </h2>
+                <p class="text-gray-700">{empresa.fecha_actualizacion}</p>
+            </div>
+            <div class="flex justify-center space-x-2 col-span-2 mt-6">
+                {
+                    empresa.activo ? (
+                        <a
+                            class="opacity-50 bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300 cursor-not-allowed"
+                        >
+                            Crear contacto (🛠)
+                        </a>
+                        <a
+                            href=`/empresa/editar/${empresa.empresa_id}`
+                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                        >
+                            Editar
+                        </a>
+                        <button
+                            id="btnDesactivar"
+                            type="button"
+                            class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                        >
+                            Desactivar
+                        </button>
+                    ) : (
+                    <button
+                            id="btnActivar"
+                            type="button"
+                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                        >
+                            Activar
+                        </button>
+                    )
+                }
+                <BackBtn />
+            </div>
+            <span id="empresa_id" class="hidden">{empresa.empresa_id}</span>
+        </div>
+        <!-- grid grid-cols-2 grid-rows-5 -->
+        <Contacts />
+        <Popup
+            title="¿Está seguro de desactivar la empresa?"
+            url=`/empresa/desactivar/${empresa.empresa_id}`
+        />
+    </main>
+    <Footer />
+</Layout>
+
+<script>
+    let btnDesactivar = document.getElementById("btnDesactivar");
+    let btnActivar = document.getElementById("btnActivar");
+    let popup = document.getElementById("popup");
+    let btnAceptar = document.getElementById("btnconfirm");
+    let emp_id = document.getElementById("empresa_id");
+    let url = `http://${window.location.hostname}:${window.location.port}/api/empresa/switch`;
+
+    if (btnDesactivar) {
+        btnDesactivar.addEventListener("click", () => {
+            popup.style.display = "grid";
+        });
+    }
+
+    if (btnAceptar) {
+        btnAceptar.addEventListener("click", async () => {
+            popup.style.display = "none";
+
+            let data = {
+                empresa_id: emp_id.textContent,
+                activo: 0,
+            }
+
+            const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        alert((await response.json()).message);
+        if (response.ok) {
+            window.location.reload();
+        }
+        });
+    }
+    if (btnActivar) {
+        btnActivar.addEventListener("click", async () => {
+            let data = {
+                empresa_id: emp_id.textContent,
+                activo: 1,
+            }
+
+            const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        alert((await response.json()).message);
+        if (response.ok) {
+            window.location.reload();
+        }
+        });
+    }
+</script>
