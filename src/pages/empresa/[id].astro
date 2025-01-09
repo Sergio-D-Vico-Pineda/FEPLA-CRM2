@@ -97,7 +97,7 @@ if (!empresa) {
                 <h2 class="text-xl font-semibold mb-2">
                     Fecha de Actualización
                 </h2>
-                <p class="text-gray-700">{empresa.fecha_actualizacion}</p>
+                <p class="text-gray-700">{new Date(empresa.fecha_actualizacion as Date).toLocaleString("es-ES").replace(",", "")}</p>
             </div>
             <div class="flex justify-center space-x-2 col-span-2 mt-6">
                 {
