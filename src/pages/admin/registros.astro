@@ -33,7 +33,7 @@ const rows = await prisma.registro.findMany({
                                     Descripción
                                 </th>
                                 <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
-                                    Entidad
+                                    Entidad (id)
                                 </th>
                                 <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
                                     Fecha
@@ -50,7 +50,7 @@ const rows = await prisma.registro.findMany({
                                         {registro.descripcion}
                                     </td>
                                     <td class="px-4 py-3 text-sm text-gray-900">
-                                        {registro.entidad}
+                                        {registro.entidad} ({registro.id_entidad})
                                     </td>
                                     <td class="px-4 py-3 text-sm text-gray-500">
                                         {new Date(registro.fecha_accion)
@@ -58,8 +58,7 @@ const rows = await prisma.registro.findMany({
                                             .replace(",", "")}
                                     </td>
                                     <td class="px-4 py-3 text-sm text-blue-500">
-                                        {registro.profesor?.nombre} (
-                                        {registro.id_profesor})
+                                        {registro.profesor?.nombre} ({registro.id_profesor})
                                     </td>
                                 </tr>
                             ))}
