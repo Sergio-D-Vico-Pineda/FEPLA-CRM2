@@ -42,7 +42,7 @@ async function POST({ request }) {
     }
 }
 
-export async function PATCH({ request }) {
+async function PATCH({ request }) {
     const data = await request.json();
 
     try {
@@ -78,4 +78,42 @@ export async function PATCH({ request }) {
     }
 }
 
-export { GET, POST, PATCH };
+async function PUT({ request }) {
+    const data = await request.json();
+
+    if (data.id_profesor == null || data.id_profesor == 0) {
+        return new Response(JSON.stringify({
+            message: "Profesor no actualizado."
+        }), { status: 404 });
+    }
+
+    try {
+        const newProf = await prisma.usuario.update({
+            where: {
+                id_profesor: data.id_profesor
+            },
+            data: {
+                activo: data.activo
+            }
+        })
+
+        return new Response(JSON.stringify(
+            {
+                message: data.activo ? "Profesor activado." : "Profesor desactivado."
+            }),
+            {
+                status: 200,
+                headers:
+                {
+                    "Content-Type": "application/json",
+                },
+            });
+    } catch (error) {
+        console.log(error)
+        return new Response(JSON.stringify({
+            message: "Profesor no actualizado."
+        }), { status: 404 });
+    }
+}
+
+export { GET, POST, PATCH, PUT };
