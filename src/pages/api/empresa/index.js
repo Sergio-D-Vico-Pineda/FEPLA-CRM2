@@ -1,4 +1,5 @@
 import prisma from "@db/index.js";
+import createRegistro from "../utils.js";
 
 async function GET() {
     return new Response("Empresa API", { status: 200 });
@@ -21,15 +22,7 @@ async function POST({ request }) {
             }
         })
 
-        const log = await prisma.registro.create({
-            data: {
-                descripcion: "creación de empresa",
-                entidad: "Empresa",
-                id_entidad: newEmpr.id_empresa,
-                id_profesor: data.id_active_user
-            }
-        })
-
+        const log = await createRegistro(prisma, data, "Empresa", "creación de empresa");
         console.log(log);
         newEmpr.message = "Empresa creada exitosamente.";
 
@@ -40,7 +33,7 @@ async function POST({ request }) {
     } catch (error) {
         console.log(error)
         return new Response(JSON.stringify({
-            message: "Empresa no creado."
+            message: "Empresa no creada."
         }), { status: 404 });
     }
 }
@@ -71,6 +64,8 @@ async function PATCH({ request }) {
                 comentarios: data.comentarios,
             }
         })
+
+        const log = await createRegistro(prisma, { id_entidad: data.id_empresa, id_profesor: data.id_active_user }, "Empresa", "actualización de empresa");
 
         return new Response(JSON.stringify(
             {

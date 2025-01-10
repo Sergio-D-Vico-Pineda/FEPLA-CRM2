@@ -1,4 +1,5 @@
 import prisma from "@db/index.js";
+import createRegistro from "../utils";
 
 async function GET() {
     return new Response("Admin API", { status: 200 });
@@ -26,14 +27,7 @@ async function POST({ request }) {
             }
         })
 
-        const log = await prisma.registro.create({
-            data: {
-                descripcion: "creación de profesor",
-                entidad: "Profesor",
-                id_entidad: newProf.id_profesor,
-                id_profesor: data.id_active_user
-            }
-        })
+        const log = await createRegistro(prisma, { id_entidad: newProf.id_profesor, id_profesor: data.id_active_user }, "Profesor", "creación de profesor");
 
         newProf.message = "Profesor creado exitosamente.";
 
