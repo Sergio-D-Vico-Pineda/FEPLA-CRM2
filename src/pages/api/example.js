@@ -16,4 +16,15 @@ async function POST({ request }) {
     return new Response(JSON.stringify(user), { status: 200 });
 }
 
-export { GET, POST };
+async function PATCH({ request }) {
+    const data = await request.json();
+
+    return new Response(JSON.stringify(data), { status: 200 });
+}
+
+async function PUT({ request }) {
+    const data = await request.json();
+    return new Response(JSON.stringify(data), { status: 200 });
+}
+
+export { GET, POST, PATCH, PUT };
