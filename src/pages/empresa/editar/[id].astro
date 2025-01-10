@@ -97,9 +97,8 @@ if (!empresa) {
 </Layout>
 
 <script is:inline type="module">
-    import { apiurl } from "../../utils.js";
+    import { apiurl, data } from "/utils.js";
     const form = document.querySelector("form");
-    const id_emp = document.querySelector("#id_empresa");
 
     form.addEventListener("submit", async (e) => {
         // Peticion para modificar la empresa

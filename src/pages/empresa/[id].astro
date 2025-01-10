@@ -139,12 +139,13 @@ if (!empresa) {
 </Layout>
 
 <script is:inline type="module">
-    import { apiurl } from "../../utils.js";
-    let btnDesactivar = document.getElementById("btnDesactivar");
-    let btnActivar = document.getElementById("btnActivar");
-    let popup = document.getElementById("popup");
-    let btnAceptar = document.getElementById("btnconfirm");
-    let id_emp = document.getElementById("id_empresa");
+
+    import { apiurl, data } from "/utils.js";
+    let btnDesactivar = document.querySelector("#btnDesactivar");
+    let btnActivar = document.querySelector("#btnActivar");
+    let popup = document.querySelector("#popup");
+    let btnAceptar = document.querySelector("#btnconfirm");
+    let id_emp = document.querySelector("#id_empresa");
 
     if (btnDesactivar) {
         btnDesactivar.addEventListener("click", () => {
