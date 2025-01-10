@@ -105,17 +105,21 @@ if (!empresa) {
         // Posibilidad de verificar si ha habido algun cambio
         e.preventDefault();
 
-        const data = {
-            id_empresa: parseInt(id_emp.textContent) ,
-            nombre: form.nombre.value,
-            nombre_oficial: form.nombre_oficial.value,
-            direccion: form.direccion.value,
-            cif: form.cif.value,
-            sitio_web: form.sitio_web.value,
-            sector: form.sector.value,
-            tecnologias: form.tecnologias.value,
-            comentarios: form.comentarios.value,
-        };
+        data.id_empresa = parseInt(form.id);
+        data.nombre = form.nombre.value;
+        data.nombre_oficial = form.nombre_oficial.value;
+        data.direccion = form.direccion.value;
+        data.cif = form.cif.value;
+        data.sitio_web = form.sitio_web.value;
+        data.sector = form.sector.value;
+        data.tecnologias = form.tecnologias.value;
+        data.comentarios = form.comentarios.value;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
+
+        console.log(data);
 
         const response = await fetch(apiurl + "/empresa", {
             method: "PATCH",

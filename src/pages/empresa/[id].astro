@@ -153,17 +153,11 @@ if (!empresa) {
         });
     }
 
-    let data = {
-        id_empresa: parseInt(id_emp.textContent)
-    }
+    data.id_empresa = parseInt(id_emp.textContent);
 
-    if (btnAceptar) {
-        btnAceptar.addEventListener("click", async () => {
-            popup.style.display = "none";
-
-            data.activo = false
-
-            const response = await fetch(apiurl + "/empresa", {
+    const cambiarEstado = async (estado) => {
+        data.activo = estado;
+        const response = await fetch(apiurl + "/alumno", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -174,24 +168,21 @@ if (!empresa) {
         if (response.ok) {
             window.location.reload();
         }
+    };
+
+    if (btnDesactivar) {
+        btnDesactivar.addEventListener("click", () => {
+            popup.style.display = "grid";
+        });
+        btnAceptar.addEventListener("click", () => {
+            popup.style.display = "none";
+            cambiarEstado(false);
         });
     }
-    if (btnActivar) {
-        btnActivar.addEventListener("click", async () => {
-            
-            data.activo = true;
 
-            const response = await fetch(apiurl + "/empresa", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }, 
-            body: JSON.stringify(data) }
-        );
-        alert((await response.json()).message);
-        if (response.ok) {
-            window.location.reload();
-        }
+    if (btnActivar) {
+        btnActivar.addEventListener("click", () => {
+            cambiarEstado(true);
         });
     }
 </script>

@@ -87,18 +87,19 @@ import BackBtn from "@comp/BackBtn.astro";
     async function sendData(e) {
         e.preventDefault();
 
-        const data = {
-            id_active_user: parseInt(localStorage.getItem("id_active_user")),
-            nombre: form.nombre.value,
-            email: form.email.value,
-            usuario: form.usuario.value,
-            contrasena: form.contraseña.value,
-            apellidos: form.apellidos.value,
-            telefono: form.telefono.value,
-            nif: form.nif.value,
-            nip: form.nip.value,
-            comentarios: form.comentarios.value,
-        };
+        data.nombre = form.nombre.value;
+        data.email = form.email.value;
+        data.usuario = form.usuario.value;
+        data.contrasena = form.contraseña.value;
+        data.apellidos = form.apellidos.value;
+        data.telefono = form.telefono.value;
+        data.nif = form.nif.value;
+        data.nip = form.nip.value;
+        data.comentarios = form.comentarios.value;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
 
         const response = await fetch(apiurl + "/admin", {
             method: "POST",

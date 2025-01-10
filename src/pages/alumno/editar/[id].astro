@@ -188,28 +188,30 @@ const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instit
     import { apiurl, data } from "/utils.js";
     const form = document.querySelector("form");
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         // Peticion para modificar el alumno
         // Posibilidad de verificar si ha habido algun cambio
         e.preventDefault();
 
-        const data = {
-            alumno_id: alu_id.textContent,
-            nombre: form.nombre.value,
-            apellidos: form.apellidos.value,
-            telefono: form.telefono.value,
-            fecha_nacimiento: form.fecha_nacimiento.value,
-            email: form.email.value,
-            nif: form.nif.value,
-            nia: form.nia.value,
-            nuss: form.nuss.value,
-            comentarios: form.comentarios.value,
-            grupo_id: form.grupo_id.value,
-            instituto_id: form.instituto_id.value,
-        };
+        data.id_alumno = parseInt(form.id);
+        data.nombre = form.nombre.value;
+        data.apellidos = form.apellidos.value;
+        data.telefono = form.telefono.value;
+        data.fecha_nacimiento = form.fecha_nacimiento.value;
+        data.email = form.email.value;
+        data.nif = form.nif.value;
+        data.nia = form.nia.value;
+        data.nuss = form.nuss.value;
+        data.comentarios = form.comentarios.value;
+        data.grupo_id = form.grupo_id.value;
+        data.instituto_id = form.instituto_id.value;
 
-        fetch(url, {
-            method: "POST",
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
+
+        const response = await fetch(apiurl + "/alumno", {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },

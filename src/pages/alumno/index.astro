@@ -139,31 +139,25 @@ const { rows } = await tursodb.execute("SELECT * FROM alumno;");
     const allrows = document.querySelectorAll("tr[data-active]");
     const activerows = document.querySelectorAll("tr[data-active=true]");
 
+    if (btnnew) {
     btnnew.addEventListener("click", () => {
         window.location.href = "/alumno/nuevoalumno";
     });
+    }
     
     if (activeCb) {
         activeCb.addEventListener("change", () => {
-            activerows.forEach(row => {
-                row.classList.toggle("hidden");
-            })
-            rows.forEach(row => {
-                row.classList.toggle("hidden");
-            });
+            getActiveRows().forEach(row => row.classList.toggle("hidden"));
+            getInactiveRows().forEach(row => row.classList.toggle("hidden"));
         });
     }
 
     if (btnBusqueda) {
         btnBusqueda.addEventListener("click", () => {
             const textoBusqueda = inputBusqueda.value.toLowerCase();
-            allrows.forEach(row => {
-                let textoCelda = row.querySelector("td").textContent.toLowerCase();
-                if (textoCelda.includes(textoBusqueda)) {
-                    row.classList.remove("hidden");
-                } else {
-                    row.classList.add("hidden");
-                }
+            getRows().forEach(row => {
+                const textoCelda = row.querySelector("td").textContent.toLowerCase();
+                row.classList.toggle("hidden", !textoCelda.includes(textoBusqueda));
             });
         });
     }
@@ -175,5 +169,4 @@ const { rows } = await tursodb.execute("SELECT * FROM alumno;");
             }
         });
     }
-
 </script>
