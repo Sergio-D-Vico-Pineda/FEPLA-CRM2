@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import prisma from "@db/index.js";
+import Popup from "@comp/Popup.astro";
 
 const { id } = Astro.params;
 
@@ -26,6 +27,7 @@ if (!profesor) {
 <Layout title="Información del profesor" kind={1}>
     <Header />
     <main class="grid place-content-center">
+        <span class="hidden" id="id_profesor">{profesor.id_profesor}</span>
         <div
             class="p-4 bg-slate-300 rounded-lg shadow-lg w-fit border-2 border-black"
         >
@@ -140,10 +142,82 @@ if (!profesor) {
                     )
                 }
             </div>
-            <div class="w-full flex justify-center">
+            <div class="w-full flex justify-center gap-8">
+                {
+                    profesor.id_profesor != 0 &&
+                        (profesor.usuario?.activo ? (
+                            <button
+                                id="btnDesactivar"
+                                type="button"
+                                class="bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-1 transition-colors duration-300"
+                            >
+                                Desactivar
+                            </button>
+                        ) : (
+                            <button
+                                id="btnActivar"
+                                type="button"
+                                class="bg-green-500 hover:bg-green-600 text-white rounded-lg px-3 py-1 transition-colors duration-300"
+                            >
+                                Activar
+                            </button>
+                        ))
+                }
                 <BackBtn />
             </div>
+            <Popup
+                title="¿Está seguro de desactivar el profesor?"
+                url=`/profesor/eliminar/${profesor.id_profesor}`
+            />
         </div>
     </main>
 </Layout>
 <Footer />
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    let btnDesactivar = document.querySelector("#btnDesactivar");
+    let btnActivar = document.querySelector("#btnActivar");
+    let popup = document.querySelector("#popup");
+    let btnAceptar = document.querySelector("#btnconfirm");
+    let id_prof = document.querySelector("#id_profesor");
+
+    if (btnDesactivar) {
+        btnDesactivar.addEventListener("click", () => {
+            popup.style.display = "grid";
+        });
+    }
+
+    data.id_profesor = parseInt(id_prof.textContent);
+
+    const cambiarEstado = async (estado) => {
+        data.activo = estado;
+        const response = await fetch(apiurl + "/admin", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        alert((await response.json()).message);
+        if (response.ok) {
+            window.location.reload();
+        }
+    };
+
+    if (btnDesactivar) {
+        btnDesactivar.addEventListener("click", () => {
+            popup.style.display = "grid";
+        });
+        btnAceptar.addEventListener("click", () => {
+            popup.style.display = "none";
+            cambiarEstado(false);
+        });
+    }
+
+    if (btnActivar) {
+        btnActivar.addEventListener("click", () => {
+            cambiarEstado(true);
+        });
+    }
+</script>
