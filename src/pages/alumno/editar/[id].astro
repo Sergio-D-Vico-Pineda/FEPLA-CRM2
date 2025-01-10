@@ -1,51 +1,40 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
-    sql: `SELECT * FROM alumno WHERE alumno_id = $id;`,
-    args: {
-        id: id,
+const alumno = await prisma.alumno.findUnique({
+    where: {
+        id_alumno: Number(id),
     },
-});
+    include: {
+        inscripciones: {
+            include: {
+                grupo: {
+                    include: {
+                        instituto: true
+                    }
+                }
+            }
+        },
+    }
+})
 
-const alumno = rows[0];
-
-if (!alumno.activo) {
-    return Astro.redirect(`/alumno/${alumno.alumno_id}`);
+if (!alumno) {
+    console.log("No hay registro con ese valor");
+    return Astro.redirect("/404");
 }
 
-const { rows: grows } = await tursodb.execute("SELECT * FROM grupo;");
-const { rows: irows } = await tursodb.execute("SELECT * FROM instituto;");
+if (!alumno.activo) {
+    return Astro.redirect(`/alumno/${alumno.id_alumno}`);
+}
 
-const grupo_alumno = grows.filter((row) => row.grupo_id == alumno.grupo_id)[0];
-const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instituto_id)[0];
-
-// const alumno = {
-//     alumno_id: id,
-//     nombre: `Alumno ${id}`,
-//     apellidos: `Apellidos ${id}`,
-//     telefono: `6666666${id}`,
-//     fecha_nacimiento: `2000-01-01`,
-//     email: `alumno${id}@alumno.com`,
-//     nif: `B12345678${id}`,
-//     nia: `B12345678${id}`,
-//     nuss: `B12345678${id}`,
-//     comentarios: `comentarios ${id}`,
-//     fecha_creacion: `2000-01-01`,
-//     fecha_actualizacion: `2000-01-01`,
-//     activo: true,
-//     instituto_id: 1,
-//     grupo_id: 1,
-// };
-/* alumno_id, nombre, apellidos, telefono, fecha_nacimiento, email, nif, nia, nuss, comentarios, fecha_creacion, fecha_actualizacion, activo, grupo_id, instituto_id */
+/* id_alumno, nombre*, apellidos, telefono, direccion, fecha_nacimiento, email*, nif, nia, nuss, comentarios, activo*, fecha_creacion*, fecha_actualizacion */
 ---
 
 <Layout title="Modificación del alumno" kind={1}>
@@ -53,15 +42,13 @@ const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instit
     <main class="flex justify-center items-center grid-flow-col gap-10">
         <form
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
-            id="formedit"
+            id={alumno.id_alumno.toString()}
         >
             <fieldset class="grid grid-cols-2 grid-rows gap-2 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
                 >
                     Modificación de un alumno
-                    <span id="alumno_id" class="hidden">{alumno.alumno_id}</span
-                    >
                 </legend>
                 <FormElement
                     texto="nombre"
@@ -217,11 +204,11 @@ const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instit
             },
             body: JSON.stringify(data),
         })
-            .then((response) => response.json())
-            .then((json) => {
-                console.log(json.message);
-                // window.location.href = `/alumno/${alu_id.textContent}`;
-                window.location.reload();
-            });
+        
+        if (response.ok) {
+            const json = await response.json();
+            alert(json.message);
+            window.location.reload();
+        }
     });
 </script>

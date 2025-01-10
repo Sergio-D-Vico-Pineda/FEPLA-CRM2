@@ -4,11 +4,17 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
-import { tursodb } from "@r/astro.config.mjs";
+const grupos = await prisma.grupo.findMany({
+    include: {
+        instituto: true,
+    },
+});
+const institutos = await prisma.instituto.findMany();
+const cursos = await prisma.curso.findMany();
 
-const { rows: grows } = await tursodb.execute("SELECT * FROM grupo;");
-const { rows: irows } = await tursodb.execute("SELECT * FROM instituto;");
+/* id_alumno, nombre*, apellidos, telefono, direccion, fecha_nacimiento, email*, nif, nia, nuss, comentarios, activo*, fecha_creacion*, fecha_actualizacion */
 ---
 
 <Layout title="Nuevo alumno" kind={1}>
@@ -32,15 +38,21 @@ const { rows: irows } = await tursodb.execute("SELECT * FROM instituto;");
                 <FormElement texto="telefono" placehold="123456789" />
                 <FormElement texto="fecha_nacimiento" type="date" />
                 <FormElement
+                    texto="direccion"
+                    placehold="Calle 1"
+                    classes="col-span-2"
+                />
+                <FormElement
                     texto="email"
                     placehold="servicpin2@alu.edu.gva.es"
                     type="email"
+                    isrequired={true}
                 />
                 <FormElement texto="nif" placehold="12345678A" />
                 <FormElement texto="nia" placehold="12345678" />
                 <FormElement texto="nuss" placehold="123456789123" />
                 <FormElement
-                    classes="col-span-2 w-full"
+                    classes="w-full"
                     texto="comentarios"
                     placehold="..."
                     type="textarea"
@@ -48,36 +60,58 @@ const { rows: irows } = await tursodb.execute("SELECT * FROM instituto;");
                 <div
                     class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
-                    Grupo *
+                    <label for="id_instituto"
+                        >Instituto <span class="text-red-600 font-bold">*</span
+                        ></label
+                    >
                     <input
                         class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
                         type="text"
-                        id="grupo_id"
-                        list="grupos"
+                        id="id_instituto"
+                        list="institutos"
                     />
                 </div>
                 <div
                     class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
-                    Instituto *
+                    <label for="id_grupo"
+                        >Grupo <span class="text-red-600 font-bold">*</span
+                        ></label
+                    >
                     <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
                         type="text"
-                        id="instituto_id"
-                        list="institutos"
+                        id="id_grupo"
+                        list="grupos"
+                        disabled
                     />
                 </div>
-                <datalist id="grupos">
+                <div
+                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                >
+                    <label for="id_curso"
+                        >Curso <span class="text-red-600 font-bold">*</span
+                        ></label
+                    >
+                    <input
+                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
+                        type="text"
+                        id="id_curso"
+                        list="cursos"
+                    />
+                </div>
+                <datalist id="institutos">
                     {
-                        grows.map((row) => (
-                            <option value=`${row.nombre} (${row.grupo_id})` />
+                        institutos.map(({ nombre, id_instituto }) => (
+                            <option value={`${nombre} (${id_instituto})`} />
                         ))
                     }
                 </datalist>
-                <datalist id="institutos">
+                <datalist id="grupos"></datalist>
+                <datalist id="cursos">
                     {
-                        irows.map((row) => (
-                            <option value=`${row.nombre} (${row.instituto_id})` />
+                        cursos.map(({ anio_academico, id_curso }) => (
+                            <option value={`${anio_academico} (${id_curso})`} />
                         ))
                     }
                 </datalist>
@@ -93,6 +127,7 @@ const { rows: irows } = await tursodb.execute("SELECT * FROM instituto;");
             </div>
         </form>
     </main>
+    <div id="grupos-data" data-grupos={JSON.stringify(grupos)}></div>
     <Footer />
 </Layout>
 
@@ -129,19 +164,57 @@ const { rows: irows } = await tursodb.execute("SELECT * FROM instituto;");
         });
 
         console.log(data);
-        const response = await fetch(url, {
+
+        const response = await fetch(apiurl + "/alumno", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
         });
-        alert((await response.json()).message);
+
         if (response.ok) {
-            /* window.location.href = "/alumno"; */
+            const json = await response.json();
+            alert(json.message);
             window.location.reload();
         }
     }
 
-    document.getElementById("btnsubmit").addEventListener("click", sendData);
+    form.addEventListener("submit", sendData);
+
+    const institutoInput = document.getElementById("id_instituto");
+    const grupoInput = document.getElementById("id_grupo");
+    const gruposDatalist = document.getElementById("grupos");
+
+    // Retrieve grupos data from the data attribute
+    const gruposData = JSON.parse(
+        document.getElementById("grupos-data").dataset.grupos,
+    );
+
+    institutoInput.addEventListener("input", () => {
+        console.log(institutoInput.value);
+        const selectedInstituto = institutoInput.value;
+        const selectedInstitutoId = selectedInstituto.match(/\(([^)]+)\)/)[1]; // Extracting id_instituto
+
+        // Clear existing options
+        gruposDatalist.innerHTML = "";
+        grupoInput.disabled = true; // Disable grupo input until an instituto is selected
+
+        // Filter groups based on the selected instituto
+        const filteredGroups = gruposData.filter(
+            (group) => group.id_instituto == selectedInstitutoId,
+        );
+
+        // Populate filtered groups
+        filteredGroups.forEach(({ nombre, id_grupo }) => {
+            const option = document.createElement("option");
+            option.value = `${nombre} (${id_grupo})`;
+            gruposDatalist.appendChild(option);
+        });
+
+        // Enable grupo input if there are available groups
+        if (filteredGroups.length > 0) {
+            grupoInput.disabled = false;
+        }
+    });
 </script>

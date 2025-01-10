@@ -2,12 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
-// import { rows } from "@comp/Alumnos.js";
-
-import { tursodb } from "@r/astro.config.mjs";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
-const { rows } = await tursodb.execute("SELECT * FROM alumno;");
+const rows = await prisma.alumno.findMany();
+
+/* id_alumno, nombre*, apellidos, telefono, direccion, fecha_nacimiento, email*, nif, nia, nuss, comentarios, activo*, fecha_creacion*, fecha_actualizacion */
 ---
 
 <Layout title="Lista de alumnos">
@@ -83,12 +83,12 @@ const { rows } = await tursodb.execute("SELECT * FROM alumno;");
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
                                         <a
-                                            href=`/alumno/editar/${alumno.alumno_id}`
+                                            href=`/alumno/editar/${alumno.id_alumno}`
                                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Editar
                                         </a>
                                         <a
-                                        href=`/alumno/${alumno.alumno_id}`
+                                        href=`/alumno/${alumno.id_alumno}`
                                         class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
                                         </a>
@@ -104,12 +104,12 @@ const { rows } = await tursodb.execute("SELECT * FROM alumno;");
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
                                         <a
-                                            href=`/alumno/editar/${alumno.alumno_id}`
+                                            href=`/alumno/editar/${alumno.id_alumno}`
                                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Editar
                                         </a>
                                         <a
-                                        href=`/alumno/${alumno.alumno_id}`
+                                        href=`/alumno/${alumno.id_alumno}`
                                         class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
                                         </a>
@@ -129,22 +129,21 @@ const { rows } = await tursodb.execute("SELECT * FROM alumno;");
     <Footer />
 </Layout>
 
-<script>
-    
-    const activeCb = document.querySelector("#activo-checkbox")as HTMLInputElement;
-    const inputBusqueda = document.querySelector("#busqueda") as HTMLInputElement;
-    const btnBusqueda = document.querySelector("#btnbuscar") as HTMLButtonElement;
-    const btnnew = document.getElementById("btnnew") as HTMLButtonElement;
-    const rows = document.querySelectorAll("tr[data-active=false]");
-    const allrows = document.querySelectorAll("tr[data-active]");
-    const activerows = document.querySelectorAll("tr[data-active=true]");
+<script is:inline type="module">
+    const activeCb = document.getElementById("activo-checkbox");
+    const inputBusqueda = document.getElementById("busqueda");
+    const btnBusqueda = document.getElementById("btnbuscar");
+    const btnnew = document.getElementById("btnnew");
+    const getRows = () => [...document.querySelectorAll("tr[data-active]")];
+    const getActiveRows = () => getRows().filter(row => row.dataset.active === "true");
+    const getInactiveRows = () => getRows().filter(row => row.dataset.active === "false");
 
     if (btnnew) {
-    btnnew.addEventListener("click", () => {
-        window.location.href = "/alumno/nuevoalumno";
-    });
+        btnnew.addEventListener("click", () => {
+            window.location.href = "/alumno/nuevoalumno";
+        });
     }
-    
+
     if (activeCb) {
         activeCb.addEventListener("change", () => {
             getActiveRows().forEach(row => row.classList.toggle("hidden"));
@@ -162,7 +161,7 @@ const { rows } = await tursodb.execute("SELECT * FROM alumno;");
         });
     }
 
-    if (inputBusqueda) {   
+    if (inputBusqueda) {
         inputBusqueda.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 btnBusqueda.click();

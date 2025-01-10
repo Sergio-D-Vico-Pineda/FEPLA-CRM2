@@ -1,49 +1,26 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
-import Contacts from "@comp/Contacts.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
-import Instituto from "@comp/Cards/Instituto.astro";
-import Grupo from "@comp/Cards/Grupo.astro";
+import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
-    sql: `SELECT * FROM alumno WHERE alumno_id = $id;`,
-    args: {
-        id: id,
+const alumno = await prisma.alumno.findUnique({
+    where: {
+        id_alumno: Number(id),
     },
-}); 
+})
 
-const alumno = rows[0];
 
 if (!alumno) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
 
-// const alumno = {
-//     alumno_id: id,
-//     nombre: `Alumno ${id}`,
-//     apellidos: `Apellidos ${id}`,
-//     telefono: `6666666${id}`,
-//     fecha_nacimiento: `2000-01-01`,
-//     email: `alumno${id}@alumno.com`,
-//     nif: `B12345678${id}`,
-//     nia: `B12345678${id}`,
-//     nuss: `B12345678${id}`,
-//     comentarios: `comentarios ${id}`,
-//     fecha_creacion: `2000-01-01`,
-//     fecha_actualizacion: `2000-01-01`,
-//     activo: true,
-//     grupo_id: 1,
-//     instituto_id: 0,
-// };
-/* alumno_id, nombre, apellidos, telefono, fecha_nacimiento, email, nif, nia, nuss, comentarios, fecha_creacion, fecha_actualizacion, activo, grupo_id, instituto_id */
+/* id_alumno, nombre*, apellidos, telefono, direccion, fecha_nacimiento, email*, nif, nia, nuss, comentarios, activo*, fecha_creacion*, fecha_actualizacion */
 ---
 
 <Layout title="Información de la alumno" kind={1}>
@@ -80,7 +57,13 @@ if (!alumno) {
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">Fecha de nacimiento</h2>
-                <p class="text-gray-700">{alumno.fecha_nacimiento}</p>
+                {
+                    alumno.fecha_nacimiento === null ? (
+                        <p class="text-gray-700 italic">Sin fecha de nacimiento</p>
+                    ) : (
+                        <p class="text-gray-700">{new Date(alumno.fecha_nacimiento as Date).toLocaleDateString("es-ES")}</p>
+                    )
+                }
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">Email</h2>
@@ -98,19 +81,24 @@ if (!alumno) {
                 <h2 class="text-xl font-semibold mb-2">NUSS</h2>
                 <p class="text-gray-700">{alumno.nif}</p>
             </div>
-            <div class="col-span-2">
-                <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-                <p class="text-gray-700">{alumno.comentarios}</p>
-            </div>
+            {
+                alumno.comentarios && (
+                    <div class="col-span-2 text-center">
+                        <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
+                        <p class="text-gray-700">{alumno.comentarios}</p>
+                    </div>
+                )
+            }
+            <hr class="col-span-2 border-black" />
             <div>
                 <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
-                <p class="text-gray-700">{alumno.fecha_creacion}</p>
+                <p class="text-gray-700">{new Date(alumno.fecha_creacion).toLocaleString("es-ES").replace(",", "")}</p>
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">
                     Fecha de Actualización
                 </h2>
-                <p class="text-gray-700">{alumno.fecha_actualizacion}</p>
+                <p class="text-gray-700">{new Date(alumno.fecha_actualizacion as Date).toLocaleString("es-ES").replace(",", "")}</p>
             </div>
             <div class="flex justify-center space-x-2 col-span-2 mt-6">
                 {
@@ -121,7 +109,7 @@ if (!alumno) {
                             Crear practicas (🛠)
                         </a>
                         <a
-                            href=`/alumno/editar/${alumno.alumno_id}`
+                            href=`/alumno/editar/${alumno.id_alumno}`
                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                         >
                             Editar
@@ -145,16 +133,16 @@ if (!alumno) {
                 }
                 <BackBtn />
             </div>
-            <span id="alumno_id" class="hidden">{alumno.alumno_id}</span>
+            <span id="id_alumno" class="hidden">{alumno.id_alumno}</span>
         </div>
         }
-        <div class="flex flex-col gap-2">
+        <!-- <div class="flex flex-col gap-2">
             <Instituto instituto_id={alumno.instituto_id} />
             <Grupo grupo_id={alumno.grupo_id} />
-        </div>
+        </div> -->
         <Popup
             title="¿Está seguro de desactivar el alumno?"
-            url=`/alumno/desactivar/${alumno.alumno_id}`
+            url=`/alumno/eliminar/${alumno.id_alumno}`
         />
     </main>
     <Footer />
