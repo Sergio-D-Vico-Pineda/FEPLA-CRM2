@@ -9,7 +9,7 @@ import prisma from "@db/index.js";
 const { id } = Astro.params;
 
 if (!Number(id)) {
-    console.log("Id no válido")
+    console.log("Id no válido");
     return Astro.redirect("/404");
 }
 
@@ -22,13 +22,14 @@ const alumno = await prisma.alumno.findUnique({
             include: {
                 grupo: {
                     include: {
-                        instituto: true
-                    }
-                }
-            }
+                        instituto: true,
+                    },
+                },
+                curso: true,
+            },
         },
-    }
-})
+    },
+});
 
 if (!alumno) {
     console.log("No hay registro con ese valor");
@@ -38,6 +39,19 @@ if (!alumno) {
 if (!alumno.activo) {
     return Astro.redirect(`/alumno/${alumno.id_alumno}`);
 }
+
+const grupos = await prisma.grupo.findMany({
+    include: {
+        instituto: true,
+    },
+});
+
+const institutos = await prisma.instituto.findMany({
+    where: {
+        id_instituto: alumno.inscripciones[0].grupo.id_instituto,
+    },
+});
+const cursos = await prisma.curso.findMany();
 
 /* id_alumno, nombre*, apellidos, telefono, direccion, fecha_nacimiento, email*, nif, nia, nuss, comentarios, activo*, fecha_creacion*, fecha_actualizacion */
 ---
@@ -74,8 +88,8 @@ if (!alumno.activo) {
                 <FormElement
                     texto="fecha_nacimiento"
                     type="date"
-                    placehold={alumno.fecha_nacimiento as string}
-                    value={alumno.fecha_nacimiento as string}
+                    placehold={alumno.fecha_nacimiento?.toString()}
+                    value={alumno.fecha_nacimiento?.toString()}
                 />
                 <FormElement
                     texto="email"
@@ -105,51 +119,79 @@ if (!alumno.activo) {
                     value={alumno.comentarios as string}
                     type="textarea"
                 />
+                <div
+                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                >
+                    <label for="id_grupo"
+                        >Grupo <span class="text-red-600 font-bold">*</span
+                        ></label
+                    >
+                    <input
+                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
+                        type="text"
+                        id="id_grupo"
+                        list="grupos"
+                        value=`${alumno.inscripciones[0].grupo.nombre} (${alumno.inscripciones[0].grupo.id_grupo})`
+                    />
+                </div>
 
                 <div
                     class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
-                    Grupo *
+                    <label for="id_curso"
+                        >Curso <span class="text-red-600 font-bold">*</span
+                        ></label
+                    >
                     <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
                         type="text"
-                        id="grupo_id"
-                        list="grupos"
-                        value=`${grupo_alumno.nombre} (${alumno.grupo_id})`
+                        id="id_curso"
+                        list="cursos"
+                        value=`${alumno.inscripciones[0].curso?.anio_academico} (${alumno.inscripciones[0].curso.id_curso})`
                     />
                 </div>
                 <div
                     class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
-                    Instituto *
+                    <label for="id_instituto"
+                        >Instituto <span class="text-red-600 font-bold">*</span
+                        ></label
+                    >
                     <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                        value=`${alumno.inscripciones[0].grupo.instituto.nombre} (${alumno.inscripciones[0].grupo.instituto.id_instituto})`
+                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
                         type="text"
-                        id="instituto_id"
-                        list="institutos"
-                        value=`${instituto_alumno.nombre} (${alumno.instituto_id})`
+                        id="id_instituto"
+                        disabled
+                        title="No se puede cambiar el instituto desde aqui."
                     />
                 </div>
+
                 <datalist id="grupos">
                     {
-                        grows.map((row) => (
-                            <option value=`${row.nombre} (${row.grupo_id})` />
+                        grupos.map(({ nombre, id_grupo }) => (
+                            <option value={`${nombre} (${id_grupo})`} />
                         ))
                     }
                 </datalist>
-                <datalist id="institutos">
+                <datalist id="cursos">
                     {
-                        irows.map((row) => (
-                            <option value=`${row.nombre} (${row.instituto_id})` />
+                        cursos.map(({ anio_academico, id_curso }) => (
+                            <option value={`${anio_academico} (${id_curso})`} />
                         ))
                     }
                 </datalist>
+                <hr class="border-black border-solid col-span-2" />
                 <div>
                     <h2 class="text-xl font-semibold mb-2">
                         Fecha de Creación
                     </h2>
                     <p class="text-gray-700">
-                        {alumno.fecha_creacion}
+                        {
+                            alumno.fecha_creacion
+                                .toLocaleString("es-ES")
+                                .replace(",", "")
+                        }
                     </p>
                 </div>
                 <div>
@@ -157,7 +199,11 @@ if (!alumno.activo) {
                         Fecha de Actualización
                     </h2>
                     <p class="text-gray-700">
-                        {alumno.fecha_actualizacion}
+                        {
+                            alumno.fecha_actualizacion
+                                ?.toLocaleString("es-ES")
+                                .replace(",", "")
+                        }
                     </p>
                 </div>
             </fieldset>
@@ -170,8 +216,14 @@ if (!alumno.activo) {
                 >
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
+            <input
+                class="hidden"
+                type="text"
+                name="id_inscripcion"
+                value={alumno.inscripciones[0].id_inscripcion}
+                readonly
+            />
         </form>
-        <!-- grid grid-cols-2 grid-rows-5 -->
     </main>
     <Footer />
 </Layout>
@@ -195,8 +247,9 @@ if (!alumno.activo) {
         data.nia = form.nia.value;
         data.nuss = form.nuss.value;
         data.comentarios = form.comentarios.value;
-        data.grupo_id = form.grupo_id.value;
-        data.instituto_id = form.instituto_id.value;
+        data.id_grupo = parseInt(form.id_grupo.value.match(/\(([^)]+)\)/)[1]);
+        data.id_curso = parseInt(form.id_curso.value.match(/\(([^)]+)\)/)[1]);
+        data.id_inscripcion = parseInt(form.id_inscripcion.value);
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;
@@ -208,11 +261,11 @@ if (!alumno.activo) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-        })
-        
+        });
+
+        const json = await response.json();
+        alert(json.message);
         if (response.ok) {
-            const json = await response.json();
-            alert(json.message);
             window.location.reload();
         }
     });
