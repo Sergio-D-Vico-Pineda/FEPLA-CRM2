@@ -8,6 +8,11 @@ import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
+if (!Number(id)) {
+    console.log("Id no válido")
+    return Astro.redirect("/404");
+}
+
 const empresa = await prisma.empresa.findUnique({
     where: {
         id_empresa: Number(id),

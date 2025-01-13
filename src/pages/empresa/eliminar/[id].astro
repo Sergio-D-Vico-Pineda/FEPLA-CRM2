@@ -9,7 +9,12 @@ import BackBtn from "@comp/BackBtn.astro";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
+if (!Number(id)) {
+    console.log("Id no válido");
+    return Astro.redirect("/404");
+}
+
+/* const { rows } = await tursodb.execute({
     sql: `SELECT * FROM empresa WHERE empresa_id = $id;`,
     args: {
         id: id,

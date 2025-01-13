@@ -9,14 +9,28 @@ import BackBtn from "@comp/BackBtn.astro";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
+if (!Number(id)) {
+    console.log("Id no válido");
+    return Astro.redirect("/404");
+}
+
+/* const { rows } = await tursodb.execute({
     sql: `SELECT * FROM alumno WHERE alumno_id = $id;`,
     args: {
         id: id,
     },
+}); */
+
+const alumno = await prisma.alumno.findUnique({
+    where: {
+        id_alumno: Number(id),
+    },
 });
 
-const alumno = rows[0];
+if (!alumno) {
+    console.log("No hay registros con ese valor")
+    return Astro.redirect("/404");
+}
 /* alumno_id, nombre, apellidos, telefono, fecha_nacimiento, email, nif, nia, nuss, comentarios, fecha_creacion, fecha_actualizacion, activo, grupo_id, instituto_id */
 ---
 

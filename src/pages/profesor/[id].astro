@@ -8,6 +8,13 @@ import Popup from "@comp/Popup.astro";
 
 const { id } = Astro.params;
 
+if (!Number(id)) {
+    console.log("Id no válido")
+    return new Response(null, {
+        status: 404,
+    });
+}
+
 const profesor = await prisma.profesor.findUnique({
     include: {
         usuario: true,
