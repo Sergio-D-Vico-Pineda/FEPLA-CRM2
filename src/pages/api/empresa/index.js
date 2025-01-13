@@ -22,7 +22,7 @@ async function POST({ request }) {
             }
         })
 
-        const log = await createRegistro(prisma, data, "Empresa", "creación de empresa");
+        const log = await createRegistro(prisma, { id_entidad: newEmpr.id_empresa, id_profesor: data.id_active_user }, "Empresa", "creación de empresa");
         console.log(log);
         newEmpr.message = "Empresa creada exitosamente.";
 

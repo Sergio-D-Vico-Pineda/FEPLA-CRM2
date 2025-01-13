@@ -162,7 +162,7 @@ if (!empresa) {
 
     const cambiarEstado = async (estado) => {
         data.activo = estado;
-        const response = await fetch(apiurl + "/alumno", {
+        const response = await fetch(apiurl + "/empresa", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
