@@ -46,11 +46,6 @@ const grupos = await prisma.grupo.findMany({
     },
 });
 
-const institutos = await prisma.instituto.findMany({
-    where: {
-        id_instituto: alumno.inscripciones[0].grupo.id_instituto,
-    },
-});
 const cursos = await prisma.curso.findMany();
 
 /* id_alumno, nombre*, apellidos, telefono, direccion, fecha_nacimiento, email*, nif, nia, nuss, comentarios, activo*, fecha_creacion*, fecha_actualizacion */
@@ -119,6 +114,7 @@ const cursos = await prisma.curso.findMany();
                     value={alumno.comentarios as string}
                     type="textarea"
                 />
+                { alumno.inscripciones[0] && (
                 <div
                     class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
@@ -166,6 +162,14 @@ const cursos = await prisma.curso.findMany();
                         title="No se puede cambiar el instituto desde aqui."
                     />
                 </div>
+                <input
+                class="hidden"
+                type="text"
+                name="id_inscripcion"
+                value={alumno.inscripciones[0].id_inscripcion}
+                readonly
+            />
+                )}
 
                 <datalist id="grupos">
                     {
@@ -216,13 +220,7 @@ const cursos = await prisma.curso.findMany();
                 >
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
-            <input
-                class="hidden"
-                type="text"
-                name="id_inscripcion"
-                value={alumno.inscripciones[0].id_inscripcion}
-                readonly
-            />
+            
         </form>
     </main>
     <Footer />
