@@ -5,16 +5,22 @@ import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import FormElementSelect from "@comp/FormElementSelect.astro";
 import BackBtn from "@comp/BackBtn.astro";
-import { tursodb } from "@r/astro.config.mjs";
+import prisma from "@db/index.js";
 
-const { rows: erows } = await tursodb.execute(
-    "SELECT * FROM empresa WHERE activo = 1",
-);
-const { rows: arows } = await tursodb.execute(
-    "SELECT * FROM alumno WHERE activo = 1",
-);
+const erows = await prisma.empresa.findMany({
+    where: {
+        activo: true,
+    },
+});
+const arows = await prisma.alumno.findMany({
+    where: {
+        activo: true,
+    },
+});
 
-/* pro_alu_emp_id, fecha_inicio, fecha_fin, estado, curso, tutor_emp, comentarios, instituto_id, grupo_id, fk profesor_id, alumno_id, empresa_id */
+const cursos = await prisma.curso.findMany();
+
+/* pro_alu_emp_id, fecha_inicio, fecha_fin, estado, curso, tutor_emp, comentarios, instituto_id, grupo_id, fk id_profesor, alumno_id, empresa_id */
 ---
 
 <Layout title="Nueva practica" kind={1}>
@@ -27,13 +33,24 @@ const { rows: arows } = await tursodb.execute(
             <fieldset class="grid grid-cols-2 grid-rows gap-2 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
-                    >Nueva practica</legend
+                    >Nueva práctica</legend
                 >
                 <FormElement texto="fecha_inicio" type="date" />
                 <FormElement texto="fecha_fin" type="date" />
                 <FormElementSelect />
-                <!-- <FormElement texto="curso" type="text" /> -->
-                <!-- ?? sacar de grupo -->
+                <div
+                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                >
+                    Tipo de práctica
+                    <select
+                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                        name="tipo_practica"
+                        id="tipo_practica"
+                    >
+                        <option value="Normal" selected>Normal</option>
+                        <option value="Extraordinaria">Extraordinaria</option>
+                    </select>
+                </div>
                 <FormElement texto="tutor_emp" type="text" />
                 <FormElement
                     texto="comentarios"
@@ -43,29 +60,55 @@ const { rows: arows } = await tursodb.execute(
                 <div
                     class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
-                    Empresa *
+                    <label for="id_empresa">
+                        Empresa
+                        <span class="text-red-600 font-bold">*</span>
+                    </label>
                     <input
                         class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
                         type="text"
-                        id="empresa_id"
+                        id="id_empresa"
                         list="empresas"
                     />
                 </div>
                 <div
                     class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
-                    Alumno *
+                    <label for="id_alumno">
+                        Alumno <span class="text-red-600 font-bold">*</span>
+                    </label>
                     <input
                         class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
                         type="text"
-                        id="alumno_id"
+                        id="id_alumno"
                         list="alumnos"
                     />
                 </div>
+                <div
+                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                >
+                    <label for="id_curso">
+                        Curso
+                        <span class="text-red-600 font-bold">*</span>
+                    </label>
+                    <input
+                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
+                        type="text"
+                        id="id_curso"
+                        list="cursos"
+                    />
+                </div>
+                <datalist id="cursos">
+                    {
+                        cursos.map(({ anio_academico, id_curso }) => (
+                            <option value={`${anio_academico} (${id_curso})`} />
+                        ))
+                    }
+                </datalist>
                 <datalist id="empresas">
                     {
                         erows.map((row) => (
-                            <option value={row.empresa_id as string}>
+                            <option value={row.id_empresa.toString()}>
                                 {row.nombre}
                             </option>
                         ))
@@ -74,7 +117,7 @@ const { rows: arows } = await tursodb.execute(
                 <datalist id="alumnos">
                     {
                         arows.map((row) => (
-                            <option value={row.alumno_id as string}>
+                            <option value={row.id_alumno.toString()}>
                                 {row.nombre}
                             </option>
                         ))
@@ -95,34 +138,36 @@ const { rows: arows } = await tursodb.execute(
     <Footer />
 </Layout>
 
-<script>
-    const form = document.querySelector("#formnew") as HTMLFormElement;
-    const url = `http://${window.location.hostname}:${window.location.port}/api/practica/new`;
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
 
-    async function sendData(e: Event) {
+    async function sendData(e) {
         e.preventDefault();
 
-        let profesor_id = localStorage.getItem("profesor_id");
+        let id_profesor = localStorage.getItem("id_profesor");
 
-        if (!profesor_id) {
+        if (!id_profesor) {
             alert("No has iniciado sesión");
             return;
         }
 
-        const data = {
-            fecha_inicio: form.fecha_inicio.value,
-            fecha_fin: form.fecha_fin.value,
-            estado: form.estado.value,
-            curso: form.curso.value,
-            tutor_emp: form.tutor_emp.value,
-            comentarios: form.comentarios.value,
-            empresa_id: form.empresa_id.value,
-            alumno_id: form.alumno_id.value,
-            profesor_id,
-        };
+        data.fecha_inicio = form.fecha_inicio.value;
+        data.fecha_fin = form.fecha_fin.value;
+        data.estado = form.estado.value;
+        data.curso = form.curso.value;
+        data.tutor_emp = form.tutor_emp.value;
+        data.comentarios = form.comentarios.value;
+        data.empresa_id = form.empresa_id.value;
+        data.alumno_id = form.alumno_id.value;
+        data.id_profesor = id_profesor;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
 
         // console.log(data);
-        const response = await fetch(url, {
+        const response = await fetch(apiurl + "/practica", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
