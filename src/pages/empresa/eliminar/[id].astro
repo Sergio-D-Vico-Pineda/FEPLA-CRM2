@@ -13,13 +13,6 @@ if (!Number(id)) {
     return Astro.redirect("/404");
 }
 
-/* const { rows } = await tursodb.execute({
-    sql: `SELECT * FROM empresa WHERE empresa_id = $id;`,
-    args: {
-        id: id,
-    },
-}); */
-
 const empresa = await prisma.empresa.findUnique({
     where: {
         id_empresa: Number(id),
@@ -30,7 +23,8 @@ if (!empresa) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
-/* empresa_id, nombre, nombre_oficial, direccion, cif, sitio_web, sector, tecnologias, comentarios, fecha_creacion, fecha_actualizacion, contacto_id */
+
+/* id_empresa, nombre*, nombre_empresarial, direccion, cif, sitio_web, sector, tecnologias, comentarios, activo*, fecha_creacion*, fecha_actualizacion  */
 ---
 
 <Layout title="Confirmar eliminación de la empresa" kind={1}>
@@ -44,10 +38,6 @@ if (!empresa) {
                     Confirmar eliminación de la empresa
                 </h2>
             </div>
-            <!-- <div>
-                <h2 class="text-xl font-semibold mb-2">ID de la Empresa</h2>
-                <p class="text-gray-700">{empresa.empresa_id}</p>
-            </div> -->
             <div>
                 <h2 class="text-xl font-semibold mb-2">Nombre</h2>
                 <p class="text-gray-700">{empresa.nombre}</p>
@@ -107,7 +97,6 @@ if (!empresa) {
                 <BackBtn />
             </div>
         </div>
-        <!-- {empresa.contacto_id && <Contacts />} -->
     </main>
     <Footer />
 </Layout>

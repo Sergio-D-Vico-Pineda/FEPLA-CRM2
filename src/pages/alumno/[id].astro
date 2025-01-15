@@ -141,10 +141,6 @@ if (!alumno) {
             <span id="id_alumno" class="hidden">{alumno.id_alumno}</span>
         </div>
         }
-        <!-- <div class="flex flex-col gap-2">
-            <Instituto instituto_id={alumno.instituto_id} />
-            <Grupo grupo_id={alumno.grupo_id} />
-        </div> -->
         <Popup
             title="¿Está seguro de desactivar el alumno?"
             url=`/alumno/eliminar/${alumno.id_alumno}`
