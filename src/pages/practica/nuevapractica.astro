@@ -5,25 +5,18 @@ import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import FormElementSelect from "@comp/FormElementSelect.astro";
 import BackBtn from "@comp/BackBtn.astro";
-import prisma from "@db/index.js";
+import Cursos from "@comp/Cursos.astro";
+import Empresas from "@comp/Empresas.astro";
+import Alumnos from "@comp/Alumnos.astro";
+import TipoPractica from "@comp/TipoPractica.astro";
 
-const erows = await prisma.empresa.findMany({
-    where: {
-        activo: true,
-    },
-});
-const arows = await prisma.alumno.findMany({
-    where: {
-        activo: true,
-    },
-});
+const now = new Date();
+const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
 
-const cursos = await prisma.curso.findMany();
-
-/* pro_alu_emp_id, fecha_inicio, fecha_fin, estado, curso, tutor_emp, comentarios, instituto_id, grupo_id, fk id_profesor, alumno_id, empresa_id */
+/* id_practica, fecha_inicio, fecha_fin, tipo_practica*, estado*, comentarios, fecha_creacion*, fecha_actualizacion, fk id_alumno, fk id_profesor, fk id_empresa, fk id_curso */
 ---
 
-<Layout title="Nueva practica" kind={1}>
+<Layout title="Nueva práctica" kind={1}>
     <Header />
     <main class="grid place-content-center">
         <form
@@ -35,101 +28,42 @@ const cursos = await prisma.curso.findMany();
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
                     >Nueva práctica</legend
                 >
-                <FormElement texto="fecha_inicio" type="date" />
-                <FormElement texto="fecha_fin" type="date" />
-                <FormElementSelect />
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    Tipo de práctica
-                    <select
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
-                        name="tipo_practica"
-                        id="tipo_practica"
-                    >
-                        <option value="Normal" selected>Normal</option>
-                        <option value="Extraordinaria">Extraordinaria</option>
-                    </select>
-                </div>
-                <FormElement texto="tutor_emp" type="text" />
+                <FormElement
+                    texto="fecha_inicio"
+                    type="date"
+                    value={now.toISOString().slice(0, 10)}
+                />
+                <FormElement
+                    texto="fecha_fin"
+                    type="date"
+                    value={newdate.toISOString().slice(0, 10)}
+                />
+                <FormElementSelect isrequired={true} />
+                <TipoPractica />
                 <FormElement
                     texto="comentarios"
                     placehold="..."
                     type="textarea"
                 />
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    <label for="id_empresa">
-                        Empresa
-                        <span class="text-red-600 font-bold">*</span>
-                    </label>
-                    <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
-                        type="text"
-                        id="id_empresa"
-                        list="empresas"
-                    />
-                </div>
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    <label for="id_alumno">
-                        Alumno <span class="text-red-600 font-bold">*</span>
-                    </label>
-                    <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
-                        type="text"
-                        id="id_alumno"
-                        list="alumnos"
-                    />
-                </div>
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    <label for="id_curso">
-                        Curso
-                        <span class="text-red-600 font-bold">*</span>
-                    </label>
-                    <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
-                        type="text"
-                        id="id_curso"
-                        list="cursos"
-                    />
-                </div>
-                <datalist id="cursos">
-                    {
-                        cursos.map(({ anio_academico, id_curso }) => (
-                            <option value={`${anio_academico} (${id_curso})`} />
-                        ))
-                    }
-                </datalist>
-                <datalist id="empresas">
-                    {
-                        erows.map((row) => (
-                            <option value={row.id_empresa.toString()}>
-                                {row.nombre}
-                            </option>
-                        ))
-                    }
-                </datalist>
-                <datalist id="alumnos">
-                    {
-                        arows.map((row) => (
-                            <option value={row.id_alumno.toString()}>
-                                {row.nombre}
-                            </option>
-                        ))
-                    }
-                </datalist>
+
+                <Alumnos
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
+
+                <Cursos
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
+
+                <Empresas
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
             </fieldset>
             <div class="text-center">
                 <button
                     type="submit"
                     id="btnsubmit"
                     class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                    >Crear nueva practica</button
+                    >Crear nueva práctica</button
                 >
                 <BackBtn />
             </div>
@@ -141,32 +75,49 @@ const cursos = await prisma.curso.findMany();
 <script is:inline type="module">
     import { apiurl, data } from "/utils.js";
     const form = document.querySelector("form");
+    const alumnos = document.querySelector("#alumnos");
+    const cursos = document.querySelector("#cursos");
+    const empresas = document.querySelector("#empresas");
 
     async function sendData(e) {
         e.preventDefault();
 
-        let id_profesor = localStorage.getItem("id_profesor");
+        let id_profesor = parseInt(localStorage.getItem("id_profesor"));
 
         if (!id_profesor) {
             alert("No has iniciado sesión");
             return;
         }
 
+        if (!form.checkValidity()) {
+            alert("Faltan campos por rellenar");
+            return;
+        }
+
         data.fecha_inicio = form.fecha_inicio.value;
         data.fecha_fin = form.fecha_fin.value;
+        data.tipo_practica = form.tipo_practica.value;
         data.estado = form.estado.value;
-        data.curso = form.curso.value;
-        data.tutor_emp = form.tutor_emp.value;
         data.comentarios = form.comentarios.value;
-        data.empresa_id = form.empresa_id.value;
-        data.alumno_id = form.alumno_id.value;
+        data.id_curso = parseInt(
+            cursos.querySelector(`option[value="${form.id_curso.value}"]`)
+                .textContent,
+        );
+        data.id_empresa = parseInt(
+            empresas.querySelector(`option[value="${form.id_empresa.value}"]`)
+                .textContent,
+        );
+        data.id_alumno = parseInt(
+            alumnos.querySelector(`option[value="${form.id_alumno.value}"]`)
+                .textContent,
+        );
         data.id_profesor = id_profesor;
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;
         });
 
-        // console.log(data);
+        console.log(data);
         const response = await fetch(apiurl + "/practica", {
             method: "POST",
             headers: {
@@ -174,9 +125,9 @@ const cursos = await prisma.curso.findMany();
             },
             body: JSON.stringify(data),
         });
+
         alert((await response.json()).message);
         if (response.ok) {
-            /* window.location.href = "/practica"; */
             window.location.reload();
         }
     }

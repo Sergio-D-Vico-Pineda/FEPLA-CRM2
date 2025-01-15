@@ -1,104 +1,111 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import FormElementSelect from "@comp/FormElementSelect.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
+import Cursos from "@comp/Cursos.astro";
+import Empresas from "@comp/Empresas.astro";
+import TipoPractica from "@comp/TipoPractica.astro";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
-    sql: `SELECT * FROM pro_alu_emp WHERE pro_alu_emp_id = $id;`,
-    args: {
-        id: id,
+if (!Number(id)) {
+    console.log("Id no válido");
+    return Astro.redirect("/404");
+}
+
+const practica = await prisma.practica.findUnique({
+    where: {
+        id_practica: Number(id),
+    },
+    include: {
+        alumno: true,
+        empresa: true,
+        curso: true,
+        profesor: true,
     },
 });
-
-const practica = rows[0];
 
 if (!practica) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
 
-/* pro_alu_emp_id, fecha_inicio, fecha_fin, estado, curso, tutor_emp, comentarios, instituto_id, grupo_id, profesor_id, alumno_id */
+/* id_practica, fecha_inicio, fecha_fin, tipo_practica*, estado*, comentarios, fecha_creacion*, fecha_actualizacion, fk id_alumno, fk id_profesor, fk id_empresa, fk id_curso */
 ---
 
-<Layout title="Modificación de la practica" kind={1}>
+<Layout title="Modificación de la práctica" kind={1}>
     <Header />
     <main class="flex justify-center items-center grid-flow-col gap-10">
-        <!-- class="flex flex-col gap-4 m-5" -->
         <form
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
-            id="formedit"
+            id={practica.id_practica.toString()}
         >
             <fieldset class="grid grid-cols-2 grid-rows gap-2 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
                 >
-                    Modificación de la practica
-                    <span id="pro_alu_emp_id" class="hidden"
-                        >{practica.pro_alu_emp_id}</span
-                    >
+                    Modificación de la práctica
                 </legend>
-                <FormElementSelect checked={practica.estado as string} />
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Alumno</h2>
+                    <p class="text-gray-700">
+                        <a
+                            href={`/alumno/${practica.id_alumno}`}
+                            class="text-blue-700 hover:text-blue-500 hover:underline"
+                        >
+                            {practica.alumno.nombre}
+                            {practica.alumno.apellidos}
+                        </a>
+                    </p>
+                </div>
+                <Empresas
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                    checked={practica.empresa.nombre}
+                />
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Profesor</h2>
+                    <p class="text-gray-700">
+                        {practica.profesor.nombre}
+                        {practica.profesor.apellidos}
+                    </p>
+                </div>
+                <Cursos
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                    checked={practica.curso.anio_academico}
+                />
+                <FormElementSelect checked={practica.estado} isrequired />
+                <TipoPractica checked={practica.tipo_practica} />
                 <FormElement
-                    texto="curso"
-                    placehold={practica.curso as string}
-                    value={practica.curso as string}
+                    texto="fecha_inicio"
+                    value={practica.fecha_inicio?.toISOString().slice(0, 10)}
+                    type="date"
                 />
                 <FormElement
-                    texto="tutor_emp"
-                    placehold={practica.tutor_emp as string}
-                    value={practica.tutor_emp as string}
+                    texto="fecha_fin"
+                    value={practica.fecha_fin?.toISOString().slice(0, 10)}
+                    type="date"
                 />
                 <FormElement
                     texto="comentarios"
                     placehold={practica.comentarios as string}
                     value={practica.comentarios as string}
+                    classes="col-span-2 w-full"
                 />
-                <FormElement
-                    texto="instituto_id"
-                    placehold={practica.instituto_id as string}
-                    value={practica.instituto_id as string}
-                />
-                <FormElement
-                    texto="grupo_id"
-                    placehold={practica.grupo_id as string}
-                    value={practica.grupo_id as string}
-                />
-                <FormElement
-                    texto="alumno_id"
-                    placehold={practica.alumno_id as string}
-                    value={practica.alumno_id as string}
-                />
-                <FormElement
-                    texto="empresa_id"
-                    placehold={practica.empresa_id as string}
-                    value={practica.empresa_id as string}
-                />
-                <FormElement
-                    texto="fecha_inicio"
-                    placehold={practica.fecha_inicio as string}
-                    value={practica.fecha_inicio as string}
-                    type="date"
-                />
-                <FormElement
-                    texto="fecha_fin"
-                    placehold={practica.fecha_fin as string}
-                    value={practica.fecha_fin as string}
-                    type="date"
-                />
-
-                <!-- <div>
+                <hr class="border-black border-solid col-span-2" />
+                <div>
                     <h2 class="text-xl font-semibold mb-2">
                         Fecha de Creación
                     </h2>
                     <p class="text-gray-700">
-                        {practica.fecha_creacion}
+                        {
+                            new Date(practica.fecha_creacion)
+                                .toLocaleDateString("es-ES")
+                                .replace(",", "")
+                        }
                     </p>
                 </div>
                 <div>
@@ -106,16 +113,20 @@ if (!practica) {
                         Fecha de Actualización
                     </h2>
                     <p class="text-gray-700">
-                        {practica.fecha_actualizacion}
+                        {
+                            new Date(practica.fecha_actualizacion as Date)
+                                .toLocaleDateString("es-ES")
+                                .replace(",", "")
+                        }
                     </p>
-                </div> -->
+                </div>
             </fieldset>
             <div class="text-center">
                 <button
                     type="submit"
                     id="btnsubmit"
                     class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors mx-auto"
-                    >Modificar practica</button
+                    >Modificar práctica</button
                 >
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
@@ -124,33 +135,54 @@ if (!practica) {
     <Footer />
 </Layout>
 
-<script>
-    const form = document.querySelector("#formedit") as HTMLFormElement;
-    const pae_id = document.querySelector("#pro_alu_emp_id");
-    const url = `http://${window.location.hostname}:${window.location.port}/api/practica/modify`;
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
+    const cursos = document.querySelector("#cursos");
+    const empresas = document.querySelector("#empresas");
 
     form.addEventListener("submit", async (e) => {
         // Peticion para modificar el practica
         // Posibilidad de verificar si ha habido algun cambio
         e.preventDefault();
 
-        let profesor_id = localStorage.getItem("profesor_id");
+        let id_profesor = localStorage.getItem("id_profesor");
 
-        const data = {
-            pro_alu_emp_id: pae_id.textContent,
+        if (!id_profesor) {
+            alert("No has iniciado sesión");
+            return;
+        }
+
+        if (!form.checkValidity()) {
+            alert("Faltan campos por rellenar");
+            return;
+        }
+
+        data = {
+            ...data,
+            id_practica: parseInt(form.id),
             fecha_inicio: form.fecha_inicio.value,
             fecha_fin: form.fecha_fin.value,
             estado: form.estado.value,
-            curso: form.curso.value,
-            tutor_emp: form.tutor_emp.value,
             comentarios: form.comentarios.value,
-            empresa_id: form.empresa_id.value,
-            alumno_id: form.alumno_id.value,
-            profesor_id,
+            id_curso: parseInt(
+                cursos.querySelector(`option[value="${form.id_curso.value}"]`)
+                    .textContent,
+            ),
+            id_empresa: parseInt(
+                empresas.querySelector(
+                    `option[value="${form.id_empresa.value}"]`,
+                ).textContent,
+            ),
+            id_profesor,
         };
 
-        await fetch(url, {
-            method: "POST",
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
+
+        await fetch(apiurl + "/practica", {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -159,7 +191,6 @@ if (!practica) {
             .then((response) => response.json())
             .then((json) => {
                 alert(json.message);
-                // window.location.href = `/practica/${alu_id.textContent}`;
                 window.location.reload();
             });
     });
