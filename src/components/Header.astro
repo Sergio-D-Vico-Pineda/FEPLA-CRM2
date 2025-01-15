@@ -44,7 +44,7 @@ const { admin } = Astro.props;
     if (logout) {
         logout.addEventListener("click", () => {
             localStorage.removeItem("user");
-            localStorage.removeItem("profesor_id");
+            localStorage.removeItem("id_profesor");
             localStorage.removeItem("id_active_user");
             window.location.href = "/";
         });
