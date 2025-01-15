@@ -1,0 +1,59 @@
+---
+interface Props {
+    classes?: string;
+    isrequired?: boolean;
+    active?: boolean;
+    checked?: string;
+}
+
+const {
+    classes = "",
+    isrequired = false,
+    active = true,
+    checked,
+} = Astro.props;
+import prisma from "@db/index.js";
+
+const alumnos = await prisma.alumno.findMany({
+    where: {
+        activo: active,
+    },
+});
+---
+
+<div class={classes}>
+    <label for="id_alumno">
+        Alumno
+        <span class="text-red-600 font-bold">*</span>
+    </label>
+    {
+        isrequired ? (
+            <input
+                class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                type="text"
+                id="id_alumno"
+                list="alumnos"
+                value={checked}
+                required
+            />
+        ) : (
+            <input
+                class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+                type="text"
+                id="id_alumno"
+                list="alumnos"
+                value={checked}
+            />
+        )
+    }
+</div>
+
+<datalist id="alumnos">
+    {
+        alumnos.map(({ nombre, id_alumno }) => (
+            <option value={nombre} selected={nombre === checked}>
+                {id_alumno}
+            </option>
+        ))
+    }
+</datalist>
