@@ -1,0 +1,31 @@
+---
+interface Props {
+    checked?: string;
+}
+
+const { checked = "Normal" } = Astro.props;
+
+const options = ["Normal", "Extraordinaria"];
+---
+
+<div
+    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+>
+    <label for="tipo_practica">
+        Tipo de práctica
+        <span class="text-red-600 font-bold">*</span>
+    </label>
+    <select
+        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
+        name="tipo_practica"
+        id="tipo_practica"
+    >
+        {
+            options.map((option) => (
+                <option value={option} selected={option === checked}>
+                    {option}
+                </option>
+            ))
+        }
+    </select>
+</div>
