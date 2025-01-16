@@ -12,13 +12,19 @@ if (!Number(id)) {
     return Astro.redirect("/404");
 }
 
-const empresa = await prisma.empresa.findUnique({
+const practica = await prisma.practica.findUnique({
     where: {
-        id_empresa: Number(id),
+        id_practica: Number(id),
+    },
+    include: {
+        alumno: true,
+        empresa: true,
+        profesor: true,
+        curso: true,
     },
 });
 
-if (!empresa) {
+if (!practica) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
@@ -26,7 +32,7 @@ if (!empresa) {
 /* id_practica, fecha_inicio, fecha_fin, tipo_practica*, estado*, comentarios, fecha_creacion*, fecha_actualizacion, fk id_alumno, fk id_profesor, fk id_empresa, fk id_curso */
 ---
 
-<Layout title="Confirmar eliminación de la empresa" kind={1}>
+<Layout title="Confirmar eliminación de la práctica" kind={1}>
     <Header />
     <main class="flex justify-center items-center grid-flow-col gap-10">
         <div
@@ -34,64 +40,108 @@ if (!empresa) {
         >
             <div class="col-span-2 text-center">
                 <h2 class="text-2xl font-semibold">
-                    Confirmar eliminación de la empresa
+                    Confirmar eliminación de la práctica
                 </h2>
             </div>
             <div>
-                <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                <p class="text-gray-700">{empresa.nombre}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Nombre Oficial</h2>
-                <p class="text-gray-700">{empresa.nombre_empresarial}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Dirección</h2>
-                <p class="text-gray-700">{empresa.direccion}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">CIF</h2>
-                <p class="text-gray-700">{empresa.cif}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Sitio Web</h2>
-                <p class="text-blue-500 hover:underline">
+                <h2 class="text-xl font-semibold mb-2">Alumno</h2>
+                <p class="text-gray-700">
                     <a
-                        href={`https://${empresa.sitio_web}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={`/alumno/${practica.id_alumno}`}
+                        class="text-blue-700 hover:text-blue-500 hover:underline"
                     >
-                        {empresa.sitio_web}
+                        {practica.alumno.nombre}
+                        {practica.alumno.apellidos}
                     </a>
                 </p>
             </div>
             <div>
-                <h2 class="text-xl font-semibold mb-2">Sector</h2>
-                <p class="text-gray-700">{empresa.sector}</p>
+                <h2 class="text-xl font-semibold mb-2">Empresa</h2>
+                <p class="text-gray-700">
+                    <a
+                        href={`/empresa/${practica.id_empresa}`}
+                        class="text-blue-700 hover:text-blue-500 hover:underline"
+                        title={practica.empresa.nombre_empresarial}
+                    >
+                        {practica.empresa.nombre}
+                    </a>
+                </p>
             </div>
             <div>
-                <h2 class="text-xl font-semibold mb-2">Tecnologías</h2>
-                <p class="text-gray-700">{empresa.tecnologias}</p>
+                <h2 class="text-xl font-semibold mb-2">Profesor</h2>
+                <p class="text-gray-700">
+                    {practica.profesor.nombre}
+                    {practica.profesor.apellidos}
+                </p>
             </div>
             <div>
-                <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-                <p class="text-gray-700">{empresa.comentarios}</p>
+                <h2 class="text-xl font-semibold mb-2">Curso</h2>
+                <p class="text-gray-700">{practica.curso.anio_academico}</p>
             </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Estado</h2>
+                <p class="text-gray-700">{practica.estado}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Tipo de práctica</h2>
+                <p class="text-gray-700">{practica.tipo_practica}</p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Fecha de Inicio</h2>
+                <p class="text-gray-700">
+                    {
+                        new Date(
+                            practica.fecha_inicio as Date,
+                        ).toLocaleDateString("es-ES")
+                    }
+                </p>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Fecha de Fin</h2>
+                <p class="text-gray-700">
+                    {
+                        new Date(practica.fecha_fin as Date).toLocaleDateString(
+                            "es-ES",
+                        )
+                    }
+                </p>
+            </div>
+            {
+                practica.comentarios && (
+                    <div class="col-span-2">
+                        <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
+                        <p class="text-gray-700">{practica.comentarios}</p>
+                    </div>
+                )
+            }
+            <hr class="border-black border-solid col-span-2" />
             <div>
                 <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
-                <p class="text-gray-700">{empresa.fecha_creacion}</p>
+                <p class="text-gray-700">
+                    {
+                        new Date(practica.fecha_creacion)
+                            .toLocaleString("es-ES")
+                            .replace(",", "")
+                    }
+                </p>
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">
                     Fecha de Actualización
                 </h2>
-                <p class="text-gray-700">{empresa.fecha_actualizacion}</p>
+                <p class="text-gray-700">
+                    {
+                        new Date(practica.fecha_actualizacion as Date)
+                            .toLocaleString("es-ES")
+                            .replace(",", "")
+                    }
+                </p>
             </div>
             <div class="flex justify-center space-x-2 col-span-2 mt-6">
                 <a
                     class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors duration-300"
                 >
-                    Confirmar eliminación de la empresa
+                    Confirmar eliminación de la práctica
                 </a>
                 <BackBtn />
             </div>
