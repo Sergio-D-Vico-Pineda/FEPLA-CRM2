@@ -2,25 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
-// import { rows } from "@comp/institutos.js";
-
-import { tursodb } from "@r/astro.config.mjs";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
-const { rows } = await tursodb.execute("SELECT * FROM instituto;");
-/* let rows = [
-    {
-        instituto_id: 1,
-        nombre: "Instituto 1",
-        descripcion: "Descripción 1",
-        direccion: "Calle 1",
-        sitio_web: "www.instituto1.com",
-        telefono: "123456789",
-        comentarios: "Comentarios 1",
-        fecha_creacion: "2023-01-01",
-        fecha_actualizacion: "2023-01-01",
-    }
-] */
+const rows = await prisma.instituto.findMany();
+
+/* id_instituto, nombre*, descripcion, direccion, sitio_web, telefono, comentarios, fecha_creacion, fecha_actualizacion */
 ---
 
 <Layout title="Lista de institutos">
@@ -91,14 +78,18 @@ const { rows } = await tursodb.execute("SELECT * FROM instituto;");
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
                                         <a
-                                            href=`/instituto/editar/${instituto.instituto_id}`
+                                            href=`/instituto/editar/${instituto.id_instituto}`
                                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Editar
+                                                Editar
                                         </a>
                                         <a
-                                        href=`/instituto/${instituto.instituto_id}`
-                                        class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Detalles
+                                            href=`/instituto/${instituto.id_instituto}`
+                                            class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
+                                                Detalles
+                                        </a>
+                                        <a href=`/grupo/nuevogrupo/${instituto.id_instituto}`
+                                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300">
+                                                Nuevo grupo
                                         </a>
                                     </div>
                                 </td>
