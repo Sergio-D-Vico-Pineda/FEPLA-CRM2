@@ -31,10 +31,10 @@ const rows = await prisma.empresa.findMany();
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
                 >Buscar</button
             >
-            <button
-                id="btnnew"
+            <a
+                href="/empresa/nuevaempresa"
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                >Nueva empresa</button
+                >Nueva empresa</a
             >
             <BackBtn />
         </div>
@@ -138,21 +138,14 @@ const rows = await prisma.empresa.findMany();
     </main>
     <Footer />
 </Layout>
-<script>
-    const activeCb = document.querySelector("#activo-checkbox") as HTMLInputElement;
-    const inputBusqueda = document.querySelector("#busqueda") as HTMLInputElement;
-    const btnBusqueda = document.querySelector("#btnbuscar") as HTMLButtonElement;
+
+<script is:inline type="module">
+    const activeCb = document.querySelector("#activo-checkbox");
+    const inputBusqueda = document.querySelector("#busqueda");
+    const btnBusqueda = document.querySelector("#btnbuscar");
     const rows = document.querySelectorAll("tr[data-active=false]");
     const allrows = document.querySelectorAll("tr[data-active]");
     const activerows = document.querySelectorAll("tr[data-active=true]");
-    const $btnnew = document.getElementById("btnnew");
-
-
-    if ($btnnew) {
-        $btnnew.addEventListener("click", () => {
-            window.location.href = "/empresa/nuevaempresa";
-        });
-    }
     
     activeCb.addEventListener("change", () => {
         activerows.forEach(row => {
@@ -166,8 +159,8 @@ const rows = await prisma.empresa.findMany();
     btnBusqueda.addEventListener("click", () => {
         const textoBusqueda = inputBusqueda.value.toLowerCase();
         allrows.forEach(row => {
-            const td = row.querySelector("td") as HTMLTableCellElement;
-            let textoCelda = td.textContent?.toLowerCase() as string;
+            const td = row.querySelector("td");
+            let textoCelda = td.textContent.toLowerCase();
             if (textoCelda.includes(textoBusqueda)) {
                 row.classList.remove("hidden");
             } else {
