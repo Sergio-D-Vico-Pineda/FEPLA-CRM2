@@ -21,6 +21,9 @@
       ],
       "@lay/*": [
         "./src/layouts/*"
+      ],
+      "@utils": [
+        "./src/pages/api/utils.js"
       ]
     }
   }

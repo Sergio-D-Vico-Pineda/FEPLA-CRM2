@@ -1,5 +1,5 @@
 import prisma from "@db/index.js";
-import createRegistro from "../utils";
+import createRegistro from "@utils";
 
 async function GET() {
     return new Response("Instituto API", { status: 200 });
