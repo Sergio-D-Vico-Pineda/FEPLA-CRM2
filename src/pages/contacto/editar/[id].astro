@@ -1,51 +1,28 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
-const { rows } = await tursodb.execute({
-    sql: `SELECT * FROM alumno WHERE alumno_id = $id;`,
-    args: {
-        id: id,
+if (!Number(id)) {
+    console.log("Id no válido");
+    return Astro.redirect("/404");
+}
+
+const contacto = await prisma.contacto.findUnique({
+    where: {
+        id_contacto: Number(id),
     },
 });
 
-const alumno = rows[0];
-
-if (!alumno.activo) {
-    return Astro.redirect(`/alumno/${alumno.alumno_id}`);
+if (!contacto) {
+    console.log("No hay registro con ese valor");
+    return Astro.redirect("/404");
 }
-
-const { rows: grows } = await tursodb.execute("SELECT * FROM grupo;");
-const { rows: irows } = await tursodb.execute("SELECT * FROM instituto;");
-
-const grupo_alumno = grows.filter((row) => row.grupo_id == alumno.grupo_id)[0];
-const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instituto_id)[0];
-
-// const alumno = {
-//     alumno_id: id,
-//     nombre: `Alumno ${id}`,
-//     apellidos: `Apellidos ${id}`,
-//     telefono: `6666666${id}`,
-//     fecha_nacimiento: `2000-01-01`,
-//     email: `alumno${id}@alumno.com`,
-//     nif: `B12345678${id}`,
-//     nia: `B12345678${id}`,
-//     nuss: `B12345678${id}`,
-//     comentarios: `comentarios ${id}`,
-//     fecha_creacion: `2000-01-01`,
-//     fecha_actualizacion: `2000-01-01`,
-//     activo: true,
-//     instituto_id: 1,
-//     grupo_id: 1,
-// };
-/* alumno_id, nombre, apellidos, telefono, fecha_nacimiento, email, nif, nia, nuss, comentarios, fecha_creacion, fecha_actualizacion, activo, grupo_id, instituto_id */
 ---
 
 <Layout title="Modificación del alumno" kind={1}>
@@ -53,111 +30,56 @@ const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instit
     <main class="flex justify-center items-center grid-flow-col gap-10">
         <form
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
-            id="formedit"
+            id={contacto.id_contacto.toString()}
         >
             <fieldset class="grid grid-cols-2 grid-rows gap-2 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
                 >
                     Modificación de un alumno
-                    <span id="alumno_id" class="hidden">{alumno.alumno_id}</span
+                    <span id="id_contacto" class="hidden"
+                        >{contacto.id_contacto}</span
                     >
                 </legend>
                 <FormElement
                     texto="nombre"
-                    placehold={alumno.nombre as string}
-                    value={alumno.nombre as string}
+                    placehold={contacto.nombre as string}
+                    value={contacto.nombre as string}
                     isrequired={true}
                 />
                 <FormElement
                     texto="apellidos"
-                    placehold={alumno.apellidos as string}
-                    value={alumno.apellidos as string}
+                    placehold={contacto.apellidos as string}
+                    value={contacto.apellidos as string}
                 />
                 <FormElement
                     texto="telefono"
-                    placehold={alumno.telefono as string}
-                    value={alumno.telefono as string}
-                />
-                <FormElement
-                    texto="fecha_nacimiento"
-                    type="date"
-                    placehold={alumno.fecha_nacimiento as string}
-                    value={alumno.fecha_nacimiento as string}
+                    placehold={contacto.telefono as string}
+                    value={contacto.telefono as string}
                 />
                 <FormElement
                     texto="email"
                     type="email"
-                    placehold={alumno.email as string}
-                    value={alumno.email as string}
-                />
-                <FormElement
-                    texto="nif"
-                    placehold={alumno.nif as string}
-                    value={alumno.nif as string}
-                />
-                <FormElement
-                    texto="nia"
-                    placehold={alumno.nia as string}
-                    value={alumno.nia as string}
-                />
-                <FormElement
-                    texto="nuss"
-                    placehold={alumno.nuss as string}
-                    value={alumno.nuss as string}
+                    placehold={contacto.email as string}
+                    value={contacto.email as string}
                 />
                 <FormElement
                     classes="col-span-2 w-full"
                     texto="comentarios"
                     placehold="..."
-                    value={alumno.comentarios as string}
+                    value={contacto.comentarios as string}
                     type="textarea"
                 />
-
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    Grupo *
-                    <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
-                        type="text"
-                        id="grupo_id"
-                        list="grupos"
-                        value=`${grupo_alumno.nombre} (${alumno.grupo_id})`
-                    />
-                </div>
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    Instituto *
-                    <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
-                        type="text"
-                        id="instituto_id"
-                        list="institutos"
-                        value=`${instituto_alumno.nombre} (${alumno.instituto_id})`
-                    />
-                </div>
-                <datalist id="grupos">
-                    {
-                        grows.map((row) => (
-                            <option value=`${row.nombre} (${row.grupo_id})` />
-                        ))
-                    }
-                </datalist>
-                <datalist id="institutos">
-                    {
-                        irows.map((row) => (
-                            <option value=`${row.nombre} (${row.instituto_id})` />
-                        ))
-                    }
-                </datalist>
                 <div>
                     <h2 class="text-xl font-semibold mb-2">
                         Fecha de Creación
                     </h2>
                     <p class="text-gray-700">
-                        {alumno.fecha_creacion}
+                        {
+                            new Date(contacto.fecha_creacion).toLocaleString(
+                                "es-ES",
+                            )
+                        }
                     </p>
                 </div>
                 <div>
@@ -165,7 +87,11 @@ const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instit
                         Fecha de Actualización
                     </h2>
                     <p class="text-gray-700">
-                        {alumno.fecha_actualizacion}
+                        {
+                            new Date(
+                                contacto.fecha_actualizacion as Date,
+                            ).toLocaleString("es-ES")
+                        }
                     </p>
                 </div>
             </fieldset>
@@ -179,43 +105,43 @@ const instituto_alumno = irows.filter((row) => row.instituto_id == alumno.instit
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
         </form>
-        <!-- grid grid-cols-2 grid-rows-5 -->
     </main>
     <Footer />
 </Layout>
 
-<script>
-    const form = document.querySelector("#formedit") as HTMLFormElement;
-    const alu_id = document.querySelector("#alumno_id");
-    const url = `http://${window.location.hostname}:${window.location.port}/api/alumno/modify`;
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
 
     form.addEventListener("submit", async (e) => {
         // Peticion para modificar el alumno
         // Posibilidad de verificar si ha habido algun cambio
         e.preventDefault();
 
-        const data = {
-            alumno_id: alu_id.textContent,
-            nombre: form.nombre.value,
-            apellidos: form.apellidos.value,
-            telefono: form.telefono.value,
-            fecha_nacimiento: form.fecha_nacimiento.value,
-            email: form.email.value,
-            nif: form.nif.value,
-            nia: form.nia.value,
-            nuss: form.nuss.value,
-            comentarios: form.comentarios.value,
-            grupo_id: form.grupo_id.value,
-            instituto_id: form.instituto_id.value,
-        };
+        data.id_contacto = parseInt(form.id);
+        data.nombre = form.nombre.value;
+        data.apellidos = form.apellidos.value;
+        data.telefono = form.telefono.value;
+        data.fecha_nacimiento = form.fecha_nacimiento.value;
+        data.email = form.email.value;
+        data.nif = form.nif.value;
+        data.nia = form.nia.value;
+        data.nuss = form.nuss.value;
+        data.comentarios = form.comentarios.value;
+        data.grupo_id = form.grupo_id.value;
+        data.instituto_id = form.instituto_id.value;
 
-        const response = await fetch(url, {
-            method: "POST",
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
+
+        const response = await fetch(apiurl + "/contacto", {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-        })
+        });
 
         alert((await response.json()).message);
 

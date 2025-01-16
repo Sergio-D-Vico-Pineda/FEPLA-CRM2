@@ -2,32 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
 
-// import { rows } from "@comp/contactos.js";
-const { rows } = await tursodb.execute("SELECT * FROM contacto;");
+const rows = await prisma.contacto.findMany();
 
-/* const rows = Array.from(
-{
-    length: 9
-}, (_, i = 0) =>
-{
-    return {
-        contacto_id: i + 1,
-        nombre: `Alumno ${i + 1}`,
-        apellidos: `Apellidos ${i + 1}`,
-        telefono: `6666666${i + 1}`,
-        email: `alumno${i + 1}@alumno.com`,
-        puesto: `Puesto ${i + 1}`,
-        comentarios: `comentarios ${i + 1}`,
-        fecha_creacion: `2000-01-01`,
-        fecha_actualizacion: `2000-01-01`,
-    };
-}); */
-
-/* contacto_id, nombre, apellidos, telefono, email, puesto, comentarios, fecha_creacion*, fecha_actualizacion */
+/* id_contacto, nombre*, apellidos, telefono, email*, comentarios, fecha_creacion*, fecha_actualizacion */
 ---
 
 <Layout title="Lista de contactos">
@@ -36,23 +16,23 @@ const { rows } = await tursodb.execute("SELECT * FROM contacto;");
         <h2 class="text-3xl">Listado de contactos</h2>
         <div class="flex gap-4">
             { rows.length > 0 && (
-            <input
-                id="busqueda"
-                class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg p-1.5"
-                type="text"
-                placeholder="Nombre del contacto"
-            />
-            <button
-                id="btnbuscar"
-                type="button"
-                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                >Buscar</button
-            >
+                <input
+                    id="busqueda"
+                    class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg p-1.5"
+                    type="text"
+                    placeholder="Nombre del contacto"
+                />
+                <button
+                    id="btnbuscar"
+                    type="button"
+                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Buscar</button
+                >
             )}
-            <button
-                id="btnnew"
+            <a
+                href="/contacto/nuevocontacto"
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                >Nuevo contacto</button
+                >Nuevo contacto</a
             >
             <BackBtn />
         </div>
@@ -98,12 +78,12 @@ const { rows } = await tursodb.execute("SELECT * FROM contacto;");
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
                                         <a
-                                            href=`/contacto/editar/${contacto.contacto_id}`
+                                            href=`/contacto/editar/${contacto.id_contacto}`
                                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Editar
                                         </a>
                                         <a
-                                        href=`/contacto/${contacto.contacto_id}`
+                                        href=`/contacto/${contacto.id_contacto}`
                                         class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
                                         </a>
@@ -122,16 +102,10 @@ const { rows } = await tursodb.execute("SELECT * FROM contacto;");
     <Footer />
 </Layout>
 
-<script>
-    const inputBusqueda = document.querySelector("#busqueda") as HTMLInputElement;
-    const btnBusqueda = document.querySelector("#btnbuscar") as HTMLButtonElement;
-    const btnnew = document.getElementById("btnnew") as HTMLButtonElement;
+<script is:inline type="module">
+    const inputBusqueda = document.querySelector("#busqueda");
+    const btnBusqueda = document.querySelector("#btnbuscar");
     const allrows = document.querySelectorAll("tr[data-active]");
-
-    btnnew.addEventListener("click", () => {
-        window.location.href = "/contacto/nuevocontacto";
-    });
-    
 
     if (btnBusqueda) {
         btnBusqueda.addEventListener("click", () => {
