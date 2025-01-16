@@ -9,6 +9,9 @@ const rows = await prisma.registro.findMany({
     include: {
         profesor: true,
     },
+    orderBy: {
+        fecha_accion: "desc",
+    }
 });
 ---
 
