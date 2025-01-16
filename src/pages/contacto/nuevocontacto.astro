@@ -13,7 +13,6 @@ import BackBtn from "@comp/BackBtn.astro";
     <main class="grid place-content-center">
         <form
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
-            id="formnew"
         >
             <fieldset class="grid grid-cols-2 grid-rows gap-2 py-5 px-4">
                 <legend
@@ -32,7 +31,6 @@ import BackBtn from "@comp/BackBtn.astro";
                     placehold="albgarcia@alu.edu.gva.es"
                     type="email"
                 />
-                <FormElement texto="puesto" placehold="RRHH" />
                 <FormElement
                     classes="col-span-2 w-full"
                     texto="comentarios"
@@ -68,14 +66,15 @@ import BackBtn from "@comp/BackBtn.astro";
             return;
         }
 
-        const data = {
-            nombre: name,
-            apellidos: form.apellidos.value,
-            telefono: form.telefono.value,
-            email: form.email.value,
-            puesto: form.puesto.value,
-            comentarios: form.comentarios.value,
-        };
+        data.nombre = name;
+        data.apellidos = form.apellidos.value;
+        data.telefono = form.telefono.value;
+        data.email = form.email.value;
+        data.comentarios = form.comentarios.value;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
 
         const response = await fetch(apiurl + "/contacto", {
             method: "POST",
