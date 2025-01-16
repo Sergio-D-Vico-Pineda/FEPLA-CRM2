@@ -56,35 +56,39 @@ import BackBtn from "@comp/BackBtn.astro";
     <Footer />
 </Layout>
 
-<script>
-    const form = document.querySelector("#formnew") as HTMLFormElement;
-    const url = `http://${window.location.hostname}:${window.location.port}/api/instituto/new`;
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
 
-    async function sendData(e: Event) {
+    async function sendData(e) {
         e.preventDefault();
-        const data = {
-            nombre: form.nombre.value,
-            descripcion: form.descripcion.value,
-            direccion: form.direccion.value,
-            sitio_web: form.sitio_web.value,
-            telefono: form.telefono.value,
-            comentarios: form.comentarios.value,
-        };
+
+        data.nombre = form.nombre.value;
+        data.descripcion = form.descripcion.value;
+        data.direccion = form.direccion.value;
+        data.sitio_web = form.sitio_web.value;
+        data.telefono = form.telefono.value;
+        data.comentarios = form.comentarios.value;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
 
         console.log(data);
-        const response = await fetch(url, {
+        const response = await fetch(apiurl + "/instituto", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
         });
+
         alert((await response.json()).message);
+
         if (response.ok) {
-            /* window.location.href = "/instituto"; */
             window.location.reload();
         }
     }
 
-    document.getElementById("btnsubmit").addEventListener("click", sendData);
+    form.addEventListener("submit", sendData);
 </script>

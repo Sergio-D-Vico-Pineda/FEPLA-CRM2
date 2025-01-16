@@ -1,50 +1,36 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-
-import { tursodb } from "@r/astro.config.mjs";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import Side from "@comp/Side.astro";
+import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
-let instituto = null;
-try {
-    const { rows } = await tursodb.execute({
-        sql: `SELECT * FROM instituto WHERE instituto_id = $id;`,
-        args: {
-            id: id,
-        },
-    }); 
-   /*  let rows = [
-    {
-        instituto_id: 1,
-        nombre: "Instituto 1",
-        descripcion: "Descripción 1",
-        telefono: "123456789",
-        direccion: "Calle 1",
-        sitio_web: "www.instituto1.com",
-        comentarios: "Comentarios 1",
-        fecha_creacion: "2023-01-01",
-        fecha_actualizacion: "2023-01-01",
-    }
-] */
-
-    instituto = rows[0];
-} catch (error) {
-    console.log(error);
-    instituto = null;
+if (!Number(id)) {
+    console.log("Id no válido")
+    return Astro.redirect("/404");
 }
+
+const instituto = await prisma.instituto.findUnique({
+    where: {
+        id_instituto: Number(id),
+    },
+    include: {
+        grupos: true
+    }
+});
 
 if (!instituto) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
 
-/* instituto_id, nombre, descripcion, direccion, sitio_web, telefono, comentarios, fecha_creacion, fecha_actualizacion */
+/* id_instituto, nombre*, descripcion, direccion, sitio_web, telefono, comentarios, fecha_creacion, fecha_actualizacion */
 ---
 
-<Layout title="Información de la instituto" kind={1}>
+<Layout title="Información del instituto" kind={1}>
     <Header />
     <main class="flex justify-center items-center grid-flow-col gap-10">
         { instituto &&
@@ -82,85 +68,27 @@ if (!instituto) {
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
-                <p class="text-gray-700">{instituto.fecha_creacion}</p>
+                <p class="text-gray-700">{new Date(instituto.fecha_creacion).toLocaleString("es-ES")}</p>
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-2">
                     Fecha de Actualización
                 </h2>
-                <p class="text-gray-700">{instituto.fecha_actualizacion}</p>
+                <p class="text-gray-700">{new Date(instituto.fecha_actualizacion as Date).toLocaleString("es-ES")}</p>
             </div>
             <div class="flex justify-center space-x-2 col-span-2 mt-6">
                 <a
-                    href=`/instituto/editar/${instituto.instituto_id}`
+                    href=`/instituto/editar/${instituto.id_instituto}`
                     class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                 >
                     Editar
                 </a>
                 <BackBtn />
             </div>
-            <span id="instituto_id" class="hidden">{instituto.instituto_id}</span>
+            <span id="id_instituto" class="hidden">{instituto.id_instituto}</span>
         </div>
         }
         <Side title="Grupos" object={instituto.grupos}/>
     </main>
     <Footer />
 </Layout>
-
-<script>
-    /* let btnDesactivar = document.getElementById("btnDesactivar");
-    let btnActivar = document.getElementById("btnActivar");
-    let popup = document.getElementById("popup");
-    let btnAceptar = document.getElementById("btnconfirm");
-    let pra_id = document.getElementById("instituto_id");
-    let url = `http://${window.location.hostname}:${window.location.port}/api/instituto/switch`;
-
-    if (btnDesactivar) {
-        btnDesactivar.addEventListener("click", () => {
-            popup.style.display = "grid";
-        });
-    }
-
-    if (btnAceptar) {
-        btnAceptar.addEventListener("click", async () => {
-            popup.style.display = "none";
-
-            let data = {
-                instituto_id: pra_id.textContent,
-                activo: 0,
-            }
-
-            const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-        alert((await response.json()).message);
-        if (response.ok) {
-            window.location.reload();
-        }
-        });
-    }
-    if (btnActivar) {
-        btnActivar.addEventListener("click", async () => {
-            let data = {
-                instituto_id: pra_id.textContent,
-                activo: 1,
-            }
-
-            const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-        alert((await response.json()).message);
-        if (response.ok) {
-            window.location.reload();
-        }
-        });
-    } */
-</script>
