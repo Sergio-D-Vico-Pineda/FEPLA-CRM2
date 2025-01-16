@@ -19,7 +19,8 @@ async function POST({ request }) {
                 { email: data.emailusuario },
                 { usuario: data.emailusuario },
             ],
-            contrasena: data.password
+            contrasena: data.password,
+            activo: true
         }
     });
     console.log(user);
