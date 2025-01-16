@@ -24,7 +24,7 @@ model Instituto {
 
 model Grupo {
   id_grupo            Int           @id @default(autoincrement())
-  nombre              String        @unique
+  nombre              String
   descripcion         String?
   comentarios         String?
   fecha_creacion      DateTime      @default(now())
@@ -32,6 +32,8 @@ model Grupo {
   instituto           Instituto     @relation(fields: [id_instituto], references: [id_instituto])
   id_instituto        Int
   inscripciones       Inscripcion[]
+
+  @@unique([id_instituto, nombre])
 }
 
 model Curso {
@@ -50,7 +52,7 @@ model Alumno {
   direccion           String?
   fecha_nacimiento    DateTime?
   email               String?       @unique
-  nif                 String?
+  nif                 String?       @unique
   nia                 String?
   nuss                String?
   comentarios         String?
@@ -78,7 +80,7 @@ model Profesor {
   nombre              String               @unique
   apellidos           String?
   telefono            String?
-  nif                 String?
+  nif                 String?              @unique
   nip                 String?
   comentarios         String?
   fecha_creacion      DateTime             @default(now())
@@ -121,7 +123,7 @@ model Empresa {
   nombre              String             @unique
   nombre_empresarial  String?
   direccion           String?
-  cif                 String?
+  cif                 String?            @unique
   sitio_web           String?
   sector              String?
   tecnologias         String?
