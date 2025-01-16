@@ -8,7 +8,7 @@ import Popup from "@comp/Popup.astro";
 
 const { id } = Astro.params;
 
-if (!Number(id)) {
+if (!Number(id)) { // si el id es 0 tampoco pasa de aquí
     console.log("Id no válido")
     return new Response(null, {
         status: 404,

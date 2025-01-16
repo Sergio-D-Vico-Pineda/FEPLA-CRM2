@@ -231,8 +231,6 @@ const cursos = await prisma.curso.findMany();
     const form = document.querySelector("form");
 
     form.addEventListener("submit", async (e) => {
-        // Peticion para modificar el alumno
-        // Posibilidad de verificar si ha habido algun cambio
         e.preventDefault();
 
         data.id_alumno = parseInt(form.id);

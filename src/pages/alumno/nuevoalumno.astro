@@ -186,7 +186,6 @@ const cursos = await prisma.curso.findMany();
     const grupoInput = document.getElementById("id_grupo");
     const gruposDatalist = document.getElementById("grupos");
 
-    // Retrieve grupos data from the data attribute
     const gruposData = JSON.parse(
         document.getElementById("grupos-data").dataset.grupos,
     );
@@ -194,25 +193,21 @@ const cursos = await prisma.curso.findMany();
     institutoInput.addEventListener("input", () => {
         console.log(institutoInput.value);
         const selectedInstituto = institutoInput.value;
-        const selectedInstitutoId = selectedInstituto.match(/\(([^)]+)\)/)[1]; // Extracting id_instituto
+        const selectedInstitutoId = selectedInstituto.match(/\(([^)]+)\)/)[1]; 
 
-        // Clear existing options
         gruposDatalist.innerHTML = "";
-        grupoInput.disabled = true; // Disable grupo input until an instituto is selected
+        grupoInput.disabled = true;
 
-        // Filter groups based on the selected instituto
         const filteredGroups = gruposData.filter(
             (group) => group.id_instituto == selectedInstitutoId,
         );
 
-        // Populate filtered groups
         filteredGroups.forEach(({ nombre, id_grupo }) => {
             const option = document.createElement("option");
             option.value = `${nombre} (${id_grupo})`;
             gruposDatalist.appendChild(option);
         });
 
-        // Enable grupo input if there are available groups
         if (filteredGroups.length > 0) {
             grupoInput.disabled = false;
         }
