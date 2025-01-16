@@ -26,10 +26,7 @@ async function POST({ request }) {
         console.log(log);
         newEmpr.message = "Empresa creada exitosamente.";
 
-        return new Response(JSON.stringify(
-            newEmpr
-        ), { status: 200 });
-
+        return new Response(JSON.stringify(newEmpr), { status: 200 });
     } catch (error) {
         console.log(error)
         return new Response(JSON.stringify({
@@ -40,11 +37,10 @@ async function POST({ request }) {
 
 async function PATCH({ request }) {
     const data = await request.json();
-    console.log(data)
 
     if (data.id_empresa == null) {
         return new Response(JSON.stringify({
-            message: "Empresa no actualizada."
+            message: "Empresa no actualizada. Sin ID"
         }), { status: 404 });
     }
     try {
@@ -67,22 +63,10 @@ async function PATCH({ request }) {
 
         const log = await createRegistro(prisma, { id_entidad: data.id_empresa, id_profesor: data.id_active_user }, "Empresa", "actualización de empresa");
 
-        return new Response(JSON.stringify(
-            {
-                message: "Empresa actualizada exitosamente."
-            }),
-            {
-                status: 200,
-                headers:
-                {
-                    "Content-Type": "application/json",
-                },
-            });
+        return new Response(JSON.stringify({ message: "Empresa actualizada exitosamente." }), { status: 200, headers: { "Content-Type": "application/json", }, });
     } catch (error) {
         console.log(error)
-        return new Response(JSON.stringify({
-            message: "Empresa no actualizada."
-        }), { status: 404 });
+        return new Response(JSON.stringify({ message: "Empresa no actualizada." }), { status: 404 });
     }
 
 }

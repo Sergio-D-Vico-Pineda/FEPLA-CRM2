@@ -34,9 +34,7 @@ async function POST({ request }) {
         console.log(log);
         newAlum.message = "Alumno creado exitosamente.";
 
-        return new Response(JSON.stringify(
-            newAlum
-        ), { status: 200 });
+        return new Response(JSON.stringify(newAlum), { status: 200 });
     } catch (error) {
         console.log(error)
         return new Response(JSON.stringify({
