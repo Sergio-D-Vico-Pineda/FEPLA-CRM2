@@ -12,11 +12,11 @@ async function POST({ request }) {
         const newProf = await prisma.profesor.create({
             data: {
                 nombre: data.nombre,
-                apellidos: data.apellidos == "" ? null : data.apellidos,
-                telefono: data.telefono == "" ? null : data.telefono,
-                nif: data.nif == "" ? null : data.nif,
-                nip: data.nip == "" ? null : data.nip,
-                comentarios: data.comentarios == "" ? null : data.comentarios,
+                apellidos: data.apellidos,
+                telefono: data.telefono,
+                nif: data.nif,
+                nip: data.nip,
+                comentarios: data.comentarios,
                 usuario: {
                     create: {
                         usuario: data.usuario,
@@ -44,17 +44,17 @@ async function PATCH({ request }) {
     const data = await request.json();
 
     try {
-        const newProf = await prisma.profesor.update({
+        const prof = await prisma.profesor.update({
             where: {
                 id_profesor: data.id_profesor
             },
             data: {
                 nombre: data.nombre,
-                apellidos: data.apellidos == "" ? null : data.apellidos,
-                telefono: data.telefono == "" ? null : data.telefono,
-                nif: data.nif == "" ? null : data.nif,
-                nip: data.nip == "" ? null : data.nip,
-                comentarios: data.comentarios == "" ? null : data.comentarios,
+                apellidos: data.apellidos,
+                telefono: data.telefono,
+                nif: data.nif,
+                nip: data.nip,
+                comentarios: data.comentarios,
                 usuario: {
                     update: {
                         usuario: data.usuario,
@@ -65,12 +65,7 @@ async function PATCH({ request }) {
             }
         })
 
-        newProf.message = "Profesor actualizado exitosamente.";
-
-        return new Response(JSON.stringify(
-            newProf
-        ), { status: 200 });
-
+        return new Response(JSON.stringify({ message: "Profesor actualizado exitosamente." }), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify(error), { status: 404 });
     }
