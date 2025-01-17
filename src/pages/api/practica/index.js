@@ -42,27 +42,33 @@ async function POST({ request }) {
 
 async function PATCH({ request }) {
     const data = await request.json();
-
+    console.log(data);
     try {
-        return new Response(JSON.stringify(user), { status: 200 });
+
+        const prac = await prisma.practica.update({
+            where: {
+                id_practica: data.id_practica
+            },
+            data: {
+                fecha_inicio: data.fecha_inicio == "" || null ? null : new Date(data.fecha_inicio),
+                fecha_fin: data.fecha_fin == "" || null ? null : new Date(data.fecha_fin),
+                tipo_practica: data.tipo_practica,
+                estado: data.estado,
+                comentarios: data.comentarios,
+                // id_alumno: data.id_alumno,
+                id_profesor: data.id_profesor,
+                id_empresa: data.id_empresa,
+                id_curso: data.id_curso,
+            }
+        })
+
+        const log = await createRegistro(prisma, { id_entidad: data.id_practica, id_profesor: data.id_active_user }, "Práctica", "actualización de práctica");
+
+        return new Response(JSON.stringify({ message: "Práctica actualizada exitosamente." }), { status: 200, headers: { "Content-Type": "application/json", }, });
     } catch (error) {
         console.log(error)
-        return new Response(JSON.stringify({
-            message: "User not found"
-        }), { status: 404 });
+        return new Response(JSON.stringify({ message: "Práctica no actualizada." }), { status: 404 });
     }
 }
 
-async function PUT({ request }) {
-    const data = await request.json();
-    try {
-        return new Response(JSON.stringify(user), { status: 200 });
-    } catch (error) {
-        console.log(error)
-        return new Response(JSON.stringify({
-            message: "User not found"
-        }), { status: 404 });
-    }
-}
-
-export { GET, POST, PATCH, PUT };
+export { GET, POST, PATCH };
