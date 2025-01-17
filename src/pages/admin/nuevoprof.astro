@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import Details from "@comp/Details.astro";
 
 /* Profesor: id_profesor, nombre, apellidos, telefono, nif, nip, comentarios, fecha_creacion*, fecha_actualizacion */
 /* Usuario: id_usuario, usuario*, email*, contrasena*, rol*, activo*, id_profesor*/
@@ -44,27 +45,22 @@ import BackBtn from "@comp/BackBtn.astro";
                     type="password"
                     isrequired={true}
                 />
-                <details class="col-span-2 w-full">
-                    <summary class="w-full text-center text-xl font-semibold"
-                        >Información adicional</summary
-                    >
-                    <div class="grid grid-cols-2 grid-rows gap-2 pt-2.5">
-                        <FormElement
-                            texto="apellidos"
-                            placehold="Pérez Pastor"
-                            type="textarea"
-                        />
-                        <FormElement texto="telefono" placehold="123456789" />
-                        <FormElement texto="nif" placehold="12345678A" />
-                        <FormElement texto="nip" placehold="12345678" />
-                        <FormElement
-                            classes="col-span-2 w-full"
-                            texto="comentarios"
-                            placehold="..."
-                            type="textarea"
-                        />
-                    </div>
-                </details>
+                <Details title="Información adicional" classes="col-span-2">
+                    <FormElement
+                        texto="apellidos"
+                        placehold="Pérez Pastor"
+                        type="textarea"
+                    />
+                    <FormElement texto="telefono" placehold="123456789" />
+                    <FormElement texto="nif" placehold="12345678A" />
+                    <FormElement texto="nip" placehold="12345678" />
+                    <FormElement
+                        classes="col-span-2 w-full"
+                        texto="comentarios"
+                        placehold="..."
+                        type="textarea"
+                    />
+                </Details>
             </fieldset>
             <div class="text-center">
                 <button
