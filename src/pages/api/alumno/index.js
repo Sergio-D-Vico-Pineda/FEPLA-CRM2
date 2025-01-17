@@ -63,7 +63,7 @@ async function PATCH({ request }) {
                 nombre: data.nombre,
                 apellidos: data.apellidos,
                 telefono: data.telefono,
-                fecha_nacimiento: data.fecha_nacimiento == "" ? null : new Date(data.fecha_nacimiento),
+                fecha_nacimiento: data.fecha_nacimiento == "" || null ? null : new Date(data.fecha_nacimiento),
                 direccion: data.direccion,
                 email: data.email,
                 nif: data.nif,
