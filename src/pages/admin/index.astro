@@ -19,20 +19,23 @@ import Footer from "@comp/Footer.astro";
                 >
                     Nuevo Profesor
                 </a>
-                <div>
+                <form>
                     <input
                         id="buscador"
+                        name="buscador"
                         type="text"
                         placeholder="vjsan"
                         class="w-40 p-2 border border-black rounded-md"
+                        required
                     />
                     <button
                         id="btnbuscar"
+                        type="submit"
                         class="rounded-md shadow-md p-2 w-fit text-white bg-blue-500 hover:bg-blue-700 transition-colors"
                     >
                         Buscar Profesor
                     </button>
-                </div>
+                </form>
                 <a
                     href="/admin/listaprof"
                     class="rounded-md shadow-md p-2 w-fit text-white bg-blue-500 hover:bg-blue-700 transition-colors"
@@ -47,19 +50,38 @@ import Footer from "@comp/Footer.astro";
                 </a>
             </div>
         </div>
+        <div
+            class="p-5 border-black border-solid border rounded-lg shadow-lg w-fit bg-slate-300"
+        >
+            <h2 class="text-3xl font-semibold text-center">Avisos</h2>
+            <hr class="border-black border-solid border-2 m-4" />
+            <ul class="text-gray-700 flex flex-col gap-1">
+                <li>Hay profesores sin NIP. (🚧)</li>
+            </ul>
+        </div>
     </main>
     <Footer />
 </Layout>
 
 <script is:inline type="module">
     import { apiurl } from "/utils.js";
-    const $btnbuscar = document.getElementById("btnbuscar");
-    const $buscador = document.getElementById("buscador");
+    const $form = document.querySelector("form");
+    const $btnbuscar = document.querySelector("#btnbuscar");
 
-    async function sendData() {
-        const data = {
-            svalue: $buscador.value,
-        };
+    $form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!$form.buscador.value) {
+            alert("El campo de búsqueda está vacío.");
+            return;
+        }
+
+        $btnbuscar.disabled = true;
+        $btnbuscar.classList.add("bg-gray-400");
+        $btnbuscar.classList.remove("bg-blue-500");
+        $btnbuscar.textContent = "Cargando...";
+
+        const data = { svalue: $form.buscador.value };
 
         const resp = await fetch(apiurl + `/admin/search`, {
             method: "POST",
@@ -74,13 +96,10 @@ import Footer from "@comp/Footer.astro";
             window.location.href = `/profesor/${json.id_profesor}`;
         } else {
             alert("Profesor no encontrado.");
-        }
-    }
-
-    $btnbuscar.addEventListener("click", sendData);
-    $buscador.addEventListener("keyup", (e) => {
-        if (e.key == "Enter") {
-            $btnbuscar.click();
+            $btnbuscar.disabled = false;
+            $btnbuscar.classList.remove("bg-gray-400");
+            $btnbuscar.classList.add("bg-blue-500");
+            $btnbuscar.textContent = "Buscar Profesor";
         }
     });
 </script>
