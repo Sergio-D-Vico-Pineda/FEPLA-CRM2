@@ -1,0 +1,170 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import FormElement from "@comp/FormElement.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import prisma from "@db/index.js";
+
+/* Profesor: id_profesor, nombre, apellidos, telefono, nif, nip, comentarios, fecha_creacion*, fecha_actualizacion */
+/* Usuario: id_usuario, usuario*, email*, contrasena*, rol*, activo*, id_profesor*/
+
+const { perfil } = Astro.params;
+
+const usuario = await prisma.usuario.findFirst({
+    include: {
+        profesor: true,
+    },
+    where: {
+        usuario: perfil,
+    },
+});
+
+if (!usuario) {
+    return new Response(null, {
+        status: 404,
+    });
+}
+---
+
+<span id="hperfil" class="hidden">{perfil}</span>
+<script is:inline type="module">
+    let user = localStorage.getItem("user"),
+        perfil = document.querySelector("#hperfil");
+    if (user != perfil.textContent) window.location.href = "/404";
+</script>
+<Layout title="Editar perfil" kind={1}>
+    <Header />
+    <main class="grid place-content-center">
+        <form
+            class="bg-gray-300 rounded-lg shadow-md py-10 px-8 flex flex-col w-fit"
+            id={usuario.id_profesor.toString()}
+        >
+            <fieldset class="flex gap-4 m-5 w-fit">
+                <legend
+                    class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
+                >
+                    Modificar tus datos 🚧
+                </legend>
+                <div
+                    class="grid justify-center grid-cols-5 gap-2 py-5 px-4 min-w-fit w-[250px]"
+                >
+                    <FormElement
+                        texto="nombre"
+                        placehold={usuario.profesor.nombre}
+                        isrequired={true}
+                        value={usuario.profesor.nombre}
+                    />
+                    <FormElement
+                        texto="email"
+                        placehold={usuario.email}
+                        isrequired={true}
+                        value={usuario.email}
+                    />
+                    <FormElement
+                        texto="usuario"
+                        placehold={usuario.usuario}
+                        isrequired={true}
+                        value={usuario.usuario}
+                    />
+                    <FormElement
+                        texto="contraseña"
+                        placehold={usuario.contrasena}
+                        type="password"
+                        isrequired={true}
+                        value={usuario.contrasena}
+                    />
+                    <FormElement
+                        texto="confirmar_contraseña"
+                        type="password"
+                        isrequired={true}
+                    />
+
+                    <FormElement
+                        texto="apellidos"
+                        placehold={usuario.profesor.apellidos ??
+                            ("Sin apellidos" as string)}
+                        value={usuario.profesor.apellidos as string}
+                    />
+                    <FormElement
+                        texto="telefono"
+                        placehold={usuario.profesor.telefono ??
+                            ("Sin telefono" as string)}
+                        value={usuario.profesor.telefono as string}
+                    />
+                    <FormElement
+                        texto="nif"
+                        placehold={usuario.profesor.nif ??
+                            ("Sin NIF" as string)}
+                        value={usuario.profesor.nif as string}
+                    />
+                    <FormElement
+                        texto="nip"
+                        placehold={usuario.profesor.nip ??
+                            ("Sin NIP" as string)}
+                        value={usuario.profesor.nip as string}
+                    />
+                    <FormElement
+                        classes="col-span-2 w-full"
+                        texto="comentarios"
+                        placehold={usuario.profesor.comentarios ??
+                            ("Sin comentarios" as string)}
+                        value={usuario.profesor.comentarios as string}
+                        type="textarea"
+                    />
+                </div>
+            </fieldset>
+            <div class="text-center">
+                <button
+                    disabled
+                    type="submit"
+                    id="btnsubmit"
+                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Modificar datos</button
+                >
+                <BackBtn title="Los cambios no se guardaran" />
+            </div>
+        </form>
+    </main>
+    <Footer />
+</Layout>
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
+
+    async function sendData(e) {
+        e.preventDefault();
+
+        data.id_profesor = parseInt(form.id);
+        data.nombre = form.nombre.value;
+        data.email = form.email.value;
+        data.usuario = form.usuario.value;
+        data.contrasena = form.contraseña.value;
+        data.apellidos = form.apellidos.value;
+        data.telefono = form.telefono.value;
+        data.nif = form.nif.value;
+        data.nip = form.nip.value;
+        data.comentarios = form.comentarios.value;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
+
+        const response = await fetch(apiurl + "/profesor", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            const json = await response.json();
+            alert(json.message);
+            window.location.reload();
+        }
+    }
+
+    form.addEventListener("submit", sendData);
+</script>
