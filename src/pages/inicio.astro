@@ -6,41 +6,41 @@ import Footer from "@comp/Footer.astro";
 
 <Layout title="Inicio de FEPLA-CRM" kind={1}>
     <Header />
-    <main class="flex justify-center items-center flex-row gap-20 h-full">
-        <div class="max-w-[250px] flex flex-col gap-2 p-10 h-full">
-            <p>Listados</p>
+    <main class="flex justify-center items-center flex-row gap-14 h-full">
+        <div class="max-w-[200px] flex flex-1 flex-col gap-2 p-10 h-full">
+            <h2 class="text-3xl font-semibold mb-2">Listados</h2>
             <a
                 href="/empresa"
-                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors w-28 text-center"
             >
                 Empresas
             </a>
             <a
                 href="/alumno"
-                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors w-28 text-center"
             >
                 Alumnos
             </a>
             <a
                 href="/practica"
-                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors w-28 text-center"
             >
                 Prácticas
             </a>
             <a
                 href="/contacto"
-                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors w-28 text-center"
             >
                 Contacto
             </a>
             <a
                 href="/instituto"
-                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors w-28 text-center"
             >
                 Institutos
             </a>
         </div>
-        <div class="flex-1 h-full p-10">
+        <div class="flex-grow h-full p-10">
             <h2 class="text-3xl font-semibold mb-2">Bienvenido</h2>
             <p class="text-gray-700">
                 En el CRM de FEPLA, puedes gestionar todos los alumnos,
@@ -67,9 +67,13 @@ import Footer from "@comp/Footer.astro";
             </p>
         </div>
         <div
-            class="max-w-[250px] flex flex-col gap-2 p-10 h-full overflow-hidden"
+            class="max-w-[550px] flex flex-col gap-2 p-10 h-full overflow-hidden flex-1"
         >
-            Futuro tutorial
+            <h2 class="text-3xl font-semibold mb-2">Avisos</h2>
+            <ul class="text-gray-700 flex flex-col gap-1">
+                <li>Hay alumnos sin email. (🚧)</li>
+                <li>Hay alumnos sin NIA. (🚧)</li>
+            </ul>
         </div>
     </main>
     <Footer />
