@@ -6,6 +6,7 @@ import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Empresas from "@comp/Empresas.astro";
 import prisma from "@db/index.js";
+import Details from "@comp/Details.astro";
 
 const { id } = Astro.params;
 
@@ -34,6 +35,7 @@ if (!empresa) {
     <main class="grid place-content-center">
         <form
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
+            id={empresa.id_empresa.toString()}
         >
             <fieldset class="grid grid-cols-2 grid-rows gap-2 py-5 px-4">
                 <legend
@@ -45,23 +47,27 @@ if (!empresa) {
                     placehold="Alberto"
                     isrequired={true}
                 />
-                <FormElement texto="apellidos" placehold="Garcia" />
                 <FormElement texto="telefono" placehold="123456789" />
+
                 <FormElement
                     texto="email"
                     placehold="albgarcia@alu.edu.gva.es"
                     type="email"
+                    classes="col-span-2"
                 />
-                <Empresas
-                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                />
-                <FormElement texto="puesto" placehold="RRHH" />
-                <FormElement
+                <Details
                     classes="col-span-2 w-full"
-                    texto="comentarios"
-                    placehold="..."
-                    type="textarea"
-                />
+                    title="Información adicional"
+                >
+                    <FormElement texto="apellidos" placehold="Garcia" />
+                    <FormElement texto="puesto" placehold="RRHH" />
+                    <FormElement
+                        classes="col-span-2 w-full"
+                        texto="comentarios"
+                        placehold="..."
+                        type="textarea"
+                    />
+                </Details>
             </fieldset>
             <div class="text-center">
                 <button
@@ -97,10 +103,7 @@ if (!empresa) {
         data.email = form.email.value;
         data.comentarios = form.comentarios.value;
         data.puesto = form.puesto.value;
-        data.id_empresa = parseInt(
-            empresas.querySelector(`option[value="${form.id_empresa.value}"]`)
-                .textContent,
-        );
+        data.id_empresa = parseInt(form.id);
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;

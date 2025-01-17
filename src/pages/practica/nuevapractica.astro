@@ -9,6 +9,7 @@ import Cursos from "@comp/Cursos.astro";
 import Empresas from "@comp/Empresas.astro";
 import Alumnos from "@comp/Alumnos.astro";
 import TipoPractica from "@comp/TipoPractica.astro";
+import Details from "@comp/Details.astro";
 
 const now = new Date();
 const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
@@ -28,35 +29,34 @@ const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
                     >Nueva práctica</legend
                 >
+                <Alumnos
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
+                <Empresas
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
+                <FormElementSelect isrequired={true} />
+                <TipoPractica />
+                <Cursos
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
                 <FormElement
                     texto="fecha_inicio"
                     type="date"
                     value={now.toISOString().slice(0, 10)}
                 />
-                <FormElement
-                    texto="fecha_fin"
-                    type="date"
-                    value={newdate.toISOString().slice(0, 10)}
-                />
-                <FormElementSelect isrequired={true} />
-                <TipoPractica />
-                <FormElement
-                    texto="comentarios"
-                    placehold="..."
-                    type="textarea"
-                />
-
-                <Alumnos
-                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                />
-
-                <Cursos
-                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                />
-
-                <Empresas
-                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                />
+                <Details title="Información adicional" classes="col-span-2">
+                    <FormElement
+                        texto="fecha_fin"
+                        type="date"
+                        value={newdate.toISOString().slice(0, 10)}
+                    />
+                    <FormElement
+                        texto="comentarios"
+                        placehold="..."
+                        type="textarea"
+                    />
+                </Details>
             </fieldset>
             <div class="text-center">
                 <button
