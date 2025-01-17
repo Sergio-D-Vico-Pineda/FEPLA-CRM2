@@ -5,6 +5,7 @@ import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import prisma from "@db/index.js";
+import Details from "@comp/Details.astro";
 
 /* Profesor: id_profesor, nombre, apellidos, telefono, nif, nip, comentarios, fecha_creacion*, fecha_actualizacion */
 /* Usuario: id_usuario, usuario*, email*, contrasena*, rol*, activo*, id_profesor*/
@@ -73,11 +74,7 @@ if (!profesor) {
                     isrequired={true}
                     value={profesor.usuario?.contrasena}
                 />
-                <details class="col-span-2 w-full" open>
-                    <summary class="w-full text-center text-xl font-semibold"
-                        >Información adicional</summary
-                    >
-                    <div class="grid grid-cols-2 grid-rows gap-2 pt-2.5">
+                <Details title="Información adicional" classes="col-span-2">
                         <FormElement
                             texto="apellidos"
                             placehold={profesor.apellidos ??
@@ -108,8 +105,7 @@ if (!profesor) {
                             value={profesor.comentarios as string}
                             type="textarea"
                         />
-                    </div>
-                </details>
+                </Details>
             </fieldset>
             <div class="text-center">
                 <button

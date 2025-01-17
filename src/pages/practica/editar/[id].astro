@@ -9,6 +9,7 @@ import prisma from "@db/index.js";
 import Cursos from "@comp/Cursos.astro";
 import Empresas from "@comp/Empresas.astro";
 import TipoPractica from "@comp/TipoPractica.astro";
+import Details from "@comp/Details.astro";
 
 const { id } = Astro.params;
 
@@ -82,11 +83,7 @@ if (!practica) {
                     placehold={practica.comentarios as string}
                     value={practica.comentarios as string}
                 />
-                <details class="col-span-2 w-full">
-                    <summary class="w-full text-center text-xl font-semibold"
-                        >Información importante</summary
-                    >
-                    <div class="grid grid-cols-2 grid-rows gap-2 pt-2.5">
+                <Details title="Información Importante" classes="col-span-2">
                         <Empresas
                             classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                             checked={practica.empresa.nombre}
@@ -105,13 +102,10 @@ if (!practica) {
                         />
                         <FormElement
                             texto="fecha_fin"
-                            value={practica.fecha_fin
-                                ?.toISOString()
-                                .slice(0, 10)}
+                        value={practica.fecha_fin?.toISOString().slice(0, 10)}
                             type="date"
                         />
-                    </div>
-                </details>
+                </Details>
                 <hr class="border-black border-solid col-span-2" />
                 <div>
                     <h2 class="text-xl font-semibold mb-2">
