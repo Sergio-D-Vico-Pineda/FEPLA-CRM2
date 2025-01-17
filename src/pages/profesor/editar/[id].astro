@@ -147,8 +147,6 @@ if (!profesor) {
             if (data[key] == "") data[key] = null;
         });
 
-        console.log(data);
-
         const response = await fetch(apiurl + "/admin", {
             method: "PATCH",
             headers: {
