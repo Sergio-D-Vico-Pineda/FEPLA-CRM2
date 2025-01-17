@@ -2,19 +2,10 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
+import BackBtn from "@comp/BackBtn.astro";
 import prisma from "@db/index.js";
 
 let { perfil } = Astro.params;
-
-// const { rows } = await tursodb.execute({
-//     sql: `SELECT u.usuario, u.activo, p.email, p.nombre, p.apellidos, p.telefono, p.nif, p.nip, p.comentarios
-//     FROM usuario as u, profesor as p
-// WHERE u.usuario_id = p.usuario_id
-//   AND u.usuario = $usuario;`,
-//     args: {
-//         usuario: perfil,
-//     },
-// });
 
 const user = await prisma.usuario.findFirst({
     where: {
@@ -115,6 +106,7 @@ if (!user) {
                 >
                     Editar Perfil
                 </a>
+                <BackBtn url="/inicio" />
             </div>
         </div>
     </main>

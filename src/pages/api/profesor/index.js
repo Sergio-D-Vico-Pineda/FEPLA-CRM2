@@ -12,7 +12,7 @@ async function PATCH({ request }) {
 
     try {
 
-        /* const prof = await prisma.profesor.update({
+        const prof = await prisma.profesor.update({
             where: {
                 id_profesor: data.id_profesor
             },
@@ -32,7 +32,7 @@ async function PATCH({ request }) {
             }
         })
 
-        const log = await createRegistro(prisma, { id_entidad: data.id_profesor, id_profesor: data.id_active_user }, "Profesor", "actualización de perfil de un profesor"); */
+        const log = await createRegistro(prisma, { id_entidad: data.id_profesor, id_profesor: data.id_active_user }, "Profesor", "actualización de perfil de un profesor");
 
         return new Response(JSON.stringify({ message: "Perfil actualizado exitosamente." }), { status: 200 });
     } catch (error) {
