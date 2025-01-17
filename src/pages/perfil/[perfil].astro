@@ -1,0 +1,134 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+let { perfil } = Astro.params;
+
+import { tursodb } from "@r/astro.config.mjs";
+
+const { rows } = await tursodb.execute({
+    sql: `SELECT u.usuario, u.activo, p.email, p.nombre, p.apellidos, p.telefono, p.nif, p.nip, p.comentarios
+    FROM usuario as u, profesor as p
+WHERE u.usuario_id = p.usuario_id
+  AND u.usuario = $usuario;`,
+    args: {
+        usuario: perfil,
+    },
+});
+
+const user = rows[0];
+---
+
+<span id="hperfil" class="hidden">{perfil}</span>
+<script>
+    let user = localStorage.getItem("user");
+    let perfil = document.querySelector("#hperfil");
+    let content = document.querySelector("#content");
+    if (user != perfil.textContent) {
+        content.remove();
+    }
+</script>
+<Layout title="Tu Perfil" kind={1}>
+    <Header />
+    <main>
+        <div id="content" class="container mx-auto px-4 py-8">
+            <div
+                class="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden"
+            >
+                <div class="px-6 py-4 bg-gray-800 text-white">
+                    <h1 class="text-2xl font-bold">Perfil de Usuario</h1>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">Usuario</h2>
+                            <p id="perfil" class="text-gray-700">{perfil}</p>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">Nombre</h2>
+                            <p class="text-gray-700">{user.nombre}</p>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">
+                                Apellidos
+                            </h2>
+                            {
+                                user.apellidos ? (
+                                    <p class="text-gray-700">
+                                        {user.apellidos}
+                                    </p>
+                                ) : (
+                                    <p class="text-gray-700 italic">
+                                        Sin apellidos
+                                    </p>
+                                )
+                            }
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">Teléfono</h2>
+                            {
+                                user.telefono ? (
+                                    <p class="text-gray-700">
+                                        +34 {user.telefono}
+                                    </p>
+                                ) : (
+                                    <p class="text-gray-700 italic">
+                                        Sin telefono
+                                    </p>
+                                )
+                            }
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">Email</h2>
+                            <p class="text-gray-700">{user.email}</p>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">NIF</h2>
+                            {
+                                user.nif ? (
+                                    <p class="text-gray-700">{user.nif}</p>
+                                ) : (
+                                    <p class="text-gray-700 italic">Sin NIF</p>
+                                )
+                            }
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold mb-2">NIP</h2>
+                            {
+                                user.nip ? (
+                                    <p class="text-gray-700">{user.nip}</p>
+                                ) : (
+                                    <p class="text-gray-700 italic">Sin NIP</p>
+                                )
+                            }
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h2 class="text-lg font-semibold mb-2">Comentarios</h2>
+                        <p class="text-gray-700">
+                            {user.comentarios}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>
+
+<script>
+    // fetch a getinfo para obtener toda la información de usuario y profesor
+    /* const perfil = document.querySelector("#perfil").textContent;
+    const url = `http://${window.location.hostname}:${window.location.port}/api/perfil/getinfo`;
+    const data = {
+        emailusuario: perfil,
+    };
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    }); */
+</script>
