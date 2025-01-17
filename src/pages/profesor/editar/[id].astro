@@ -43,7 +43,7 @@ if (!profesor) {
             id={profesor.id_profesor.toString()}
         >
             <fieldset
-                class="grid justify-center grid-cols-2 grid-rows gap-2 py-5 px-4"
+                class="grid justify-center grid-cols-2 gap-2 py-5 px-4"
             >
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
@@ -75,36 +75,36 @@ if (!profesor) {
                     value={profesor.usuario?.contrasena}
                 />
                 <Details title="Información adicional" classes="col-span-2">
-                        <FormElement
-                            texto="apellidos"
-                            placehold={profesor.apellidos ??
-                                ("Sin apellidos" as string)}
-                            value={profesor.apellidos as string}
-                        />
-                        <FormElement
-                            texto="telefono"
-                            placehold={profesor.telefono ??
-                                ("Sin telefono" as string)}
-                            value={profesor.telefono as string}
-                        />
-                        <FormElement
-                            texto="nif"
-                            placehold={profesor.nif ?? ("Sin NIF" as string)}
-                            value={profesor.nif as string}
-                        />
-                        <FormElement
-                            texto="nip"
-                            placehold={profesor.nip ?? ("Sin NIP" as string)}
-                            value={profesor.nip as string}
-                        />
-                        <FormElement
-                            classes="col-span-2 w-full"
-                            texto="comentarios"
-                            placehold={profesor.comentarios ??
-                                ("Sin comentarios" as string)}
-                            value={profesor.comentarios as string}
-                            type="textarea"
-                        />
+                    <FormElement
+                        texto="apellidos"
+                        placehold={profesor.apellidos ??
+                            ("Sin apellidos" as string)}
+                        value={profesor.apellidos as string}
+                    />
+                    <FormElement
+                        texto="telefono"
+                        placehold={profesor.telefono ??
+                            ("Sin telefono" as string)}
+                        value={profesor.telefono as string}
+                    />
+                    <FormElement
+                        texto="nif"
+                        placehold={profesor.nif ?? ("Sin NIF" as string)}
+                        value={profesor.nif as string}
+                    />
+                    <FormElement
+                        texto="nip"
+                        placehold={profesor.nip ?? ("Sin NIP" as string)}
+                        value={profesor.nip as string}
+                    />
+                    <FormElement
+                        classes="col-span-2 w-full"
+                        texto="comentarios"
+                        placehold={profesor.comentarios ??
+                            ("Sin comentarios" as string)}
+                        value={profesor.comentarios as string}
+                        type="textarea"
+                    />
                 </Details>
             </fieldset>
             <div class="text-center">

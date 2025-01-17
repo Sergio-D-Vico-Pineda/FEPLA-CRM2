@@ -45,9 +45,7 @@ if (!practica) {
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
             id={practica.id_practica.toString()}
         >
-            <fieldset
-                class="grid grid-cols-2 grid-rows gap-x-2 gap-y-4 py-5 px-4"
-            >
+            <fieldset class="grid grid-cols-2 gap-x-2 gap-y-4 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
                 >
@@ -84,27 +82,27 @@ if (!practica) {
                     value={practica.comentarios as string}
                 />
                 <Details title="Información Importante" classes="col-span-2">
-                        <Empresas
-                            classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                            checked={practica.empresa.nombre}
-                        />
-                        <TipoPractica checked={practica.tipo_practica} />
-                        <Cursos
-                            classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md col-span-2"
-                            checked={practica.curso.anio_academico}
-                        />
-                        <FormElement
-                            texto="fecha_inicio"
-                            value={practica.fecha_inicio
-                                ?.toISOString()
-                                .slice(0, 10)}
-                            type="date"
-                        />
-                        <FormElement
-                            texto="fecha_fin"
+                    <Empresas
+                        classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                        checked={practica.empresa.nombre}
+                    />
+                    <TipoPractica checked={practica.tipo_practica} />
+                    <Cursos
+                        classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md col-span-2"
+                        checked={practica.curso.anio_academico}
+                    />
+                    <FormElement
+                        texto="fecha_inicio"
+                        value={practica.fecha_inicio
+                            ?.toISOString()
+                            .slice(0, 10)}
+                        type="date"
+                    />
+                    <FormElement
+                        texto="fecha_fin"
                         value={practica.fecha_fin?.toISOString().slice(0, 10)}
-                            type="date"
-                        />
+                        type="date"
+                    />
                 </Details>
                 <hr class="border-black border-solid col-span-2" />
                 <div>

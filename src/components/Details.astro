@@ -9,7 +9,7 @@ const { title, classes } = Astro.props;
 
 <details class={classes}>
     <summary class="w-full text-center text-xl font-semibold">{title}</summary>
-    <div class="grid grid-cols-2 grid-rows gap-2 pt-2.5">
+    <div class="grid grid-cols-2 gap-2 pt-2.5">
         <slot />
     </div>
 </details>
