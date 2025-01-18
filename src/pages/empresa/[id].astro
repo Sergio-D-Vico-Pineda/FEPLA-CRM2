@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
+import SideContacts from "@comp/SideContacts.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -17,6 +18,13 @@ const empresa = await prisma.empresa.findUnique({
     where: {
         id_empresa: Number(id),
     },
+    include: {
+        contactos: {
+            include: {
+                contacto: true
+            }
+        }
+    }
 });
 
 if (!empresa) {
@@ -139,6 +147,12 @@ if (!empresa) {
         <Popup
             title="¿Está seguro de desactivar la empresa?"
             url=`/empresa/eliminar/${empresa.id_empresa}`
+        />
+        <SideContacts
+            title="Contactos"
+            object={empresa.contactos}
+            url="/contacto/crear"
+            urlLink="/contacto/vincular"
         />
     </main>
     <Footer />
