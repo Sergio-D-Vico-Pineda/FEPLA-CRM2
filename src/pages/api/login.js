@@ -8,9 +8,9 @@ async function POST({ request }) {
     const data = await request.json();
     const user = await prisma.usuario.findFirst({
         select: {
+            id_usuario: true,
             usuario: true,
             email: true,
-            contrasena: true,
             rol: true,
             id_profesor: true
         },

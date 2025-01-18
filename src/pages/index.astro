@@ -85,21 +85,19 @@ import img from "../assets/logo2.png";
 			let texto = "";
 
 			Object.entries(json).forEach(([key, value]) => {
-				if (key != "contrasena") texto += key + ": " + value + "\n";
+				texto += key + ": " + value + "\n";
 			});
 
 			alert(texto);
 			localStorage.setItem("id_active_user", json.id_profesor);
-			if (json.rol == "Prof") {
-				window.location.href = "/inicio";
-				localStorage.setItem(
-					"user",
-					json.usuario == "prof" ? "lupastance" : json.usuario,
-				);
+			localStorage.setItem("id_user", json.id_usuario);
+			if (json.rol === "Prof") {
+				localStorage.setItem("user", json.usuario);
 				localStorage.setItem("id_profesor", json.id_profesor);
-				return;
+				window.location.href = "/inicio";
+			} else if (json.rol === "Admin") {
+				window.location.href = "/admin";
 			}
-			window.location.href = "/admin";
 		} else {
 			loginfail.classList.remove("hidden");
 			$btnlogin.disabled = false;
