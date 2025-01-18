@@ -6,6 +6,15 @@ async function GET() {
 
 async function POST({ request }) {
     const data = await request.json();
+
+    if (data.svalue == null || data.svalue == "") {
+        return new Response(JSON.stringify({ message: "User not found"}), { status: 404 });
+    }
+
+    if (data.svalue == "admin") {
+        return new Response(JSON.stringify({ message: "Admin cannot be edited"}), { status: 404 });
+    }
+
     const user = await prisma.usuario.findFirst({
         select: {
             id_profesor: true
@@ -19,7 +28,7 @@ async function POST({ request }) {
     });
 
     if (user == null) {
-        return new Response("User not found", { status: 404 });
+        return new Response(JSON.stringify({ message: "User not found"}), { status: 404 });
     }
 
     return new Response(JSON.stringify(user), { status: 200 });
