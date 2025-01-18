@@ -170,14 +170,25 @@ if (!practica) {
         data.tipo_practica = form.tipo_practica.value;
         data.estado = form.estado.value;
         data.comentarios = form.comentarios.value;
-        data.id_curso = parseInt(
-            cursos.querySelector(`option[value="${form.id_curso.value}"]`)
-                .textContent,
-        );
-        data.id_empresa = parseInt(
-            empresas.querySelector(`option[value="${form.id_empresa.value}"]`)
-                .textContent,
-        );
+        try {
+            data.id_curso = parseInt(
+                cursos.querySelector(`option[value="${form.id_curso.value}"]`)
+                    .textContent,
+            );
+        } catch (error) {
+            alert("Debes seleccionar un curso");
+            return;
+        }
+        try {
+            data.id_empresa = parseInt(
+                empresas.querySelector(
+                    `option[value="${form.id_empresa.value}"]`,
+                ).textContent,
+            );
+        } catch (error) {
+            alert("Debes seleccionar una empresa");
+            return;
+        }
         data.id_profesor = parseInt(id_profesor);
 
         Object.keys(data).forEach((key) => {
