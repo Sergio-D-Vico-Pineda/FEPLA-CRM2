@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
+import Details from "@comp/Details.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -13,95 +14,65 @@ if (!Number(id)) {
     return Astro.redirect("/404");
 }
 
-const contacto = await prisma.contacto.findUnique({
+const empresa = await prisma.empresa.findUnique({
     where: {
-        id_contacto: Number(id),
+        id_empresa: Number(id),
     },
 });
 
-if (!contacto) {
+if (!empresa) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
 ---
 
-<Layout title="Modificación del contacto" kind={1}>
+<Layout title="Nuevo contacto vinculado" kind={1}>
     <Header />
-    <main class="flex justify-center items-center grid-flow-col gap-10">
+    <main class="grid place-content-center">
         <form
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
-            id={contacto.id_contacto.toString()}
+            id={empresa.id_empresa.toString()}
         >
             <fieldset class="grid grid-cols-2 gap-2 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
+                    >Nuevo contacto para <i>{empresa?.nombre}</i></legend
                 >
-                    Modificación de un contacto
-                </legend>
                 <FormElement
                     texto="nombre"
-                    placehold={contacto.nombre as string}
-                    value={contacto.nombre as string}
+                    placehold="Alberto"
                     isrequired={true}
                 />
-                <FormElement
-                    texto="apellidos"
-                    placehold={contacto.apellidos as string}
-                    value={contacto.apellidos as string}
-                />
-                <FormElement
-                    texto="telefono"
-                    placehold={contacto.telefono as string}
-                    value={contacto.telefono as string}
-                />
+                <FormElement texto="telefono" placehold="123456789" />
+
                 <FormElement
                     texto="email"
+                    placehold="albgarcia@alu.edu.gva.es"
                     type="email"
-                    placehold={contacto.email as string}
-                    value={contacto.email as string}
+                    classes="col-span-2"
                 />
-                <FormElement
+                <Details
                     classes="col-span-2 w-full"
-                    texto="comentarios"
-                    placehold="..."
-                    value={contacto.comentarios as string}
-                    type="textarea"
-                />
-                <hr class="border-black border-solid col-span-2 my-5" />
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">
-                        Fecha de Creación
-                    </h2>
-                    <p class="text-gray-700">
-                        {
-                            new Date(contacto.fecha_creacion)
-                                .toLocaleString("es-ES")
-                                .replace(",", "")
-                        }
-                    </p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">
-                        Fecha de Actualización
-                    </h2>
-                    <p class="text-gray-700">
-                        {
-                            new Date(contacto.fecha_actualizacion as Date)
-                                .toLocaleString("es-ES")
-                                .replace(",", "")
-                        }
-                    </p>
-                </div>
+                    title="Información adicional"
+                >
+                    <FormElement texto="apellidos" placehold="Garcia" />
+                    <FormElement texto="puesto" placehold="RRHH" />
+                    <FormElement
+                        classes="col-span-2 w-full"
+                        texto="comentarios"
+                        placehold="..."
+                        type="textarea"
+                    />
+                </Details>
             </fieldset>
             <div class="text-center">
                 <button
                     type="submit"
                     id="btnsubmit"
-                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors mx-auto"
+                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Añadir nuevo contacto</button
                 >
-                    Modificar contacto
-                </button>
-                <BackBtn title="Los cambios no se guardaran" />
+                <BackBtn />
             </div>
         </form>
     </main>
@@ -112,38 +83,40 @@ if (!contacto) {
     import { apiurl, data } from "/utils.js";
     const form = document.querySelector("form");
 
-    form.addEventListener("submit", async (e) => {
+    async function sendData(e) {
         e.preventDefault();
 
-        data.id_contacto = parseInt(form.id);
-        data.nombre = form.nombre.value;
+        let name = form.nombre.value;
+
+        if (!name) {
+            alert("El nombre del contacto es obligatorio.");
+            return;
+        }
+
+        data.nombre = name;
         data.apellidos = form.apellidos.value;
         data.telefono = form.telefono.value;
-        data.fecha_nacimiento = form.fecha_nacimiento.value;
         data.email = form.email.value;
-        data.nif = form.nif.value;
-        data.nia = form.nia.value;
-        data.nuss = form.nuss.value;
         data.comentarios = form.comentarios.value;
-        data.grupo_id = form.grupo_id.value;
-        data.instituto_id = form.instituto_id.value;
+        data.puesto = form.puesto.value;
+        data.id_empresa = parseInt(form.id);
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;
         });
 
-        const response = await fetch(apiurl + "/contacto", {
-            method: "PATCH",
+        const response = await fetch(apiurl + "/contacto/linked", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
         });
-
         alert((await response.json()).message);
-
         if (response.ok) {
             window.location.reload();
         }
-    });
+    }
+
+    form.addEventListener("submit", sendData);
 </script>
