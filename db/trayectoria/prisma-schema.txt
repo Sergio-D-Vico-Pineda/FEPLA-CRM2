@@ -1,0 +1,227 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Instituto {
+  id                Int                 @id @default(autoincrement())
+  nombre            String              @db.String
+  descripcion       String?             @db.String
+  direccion         String?             @db.String
+  sitio_web         String?             @db.String
+  telefono          String?             @db.String
+  comentarios       String?             @db.String
+  fecha_creacion    DateTime            @default(now())
+  fecha_actualizacion DateTime?         @updatedAt
+  grupos            Grupo[]
+  profesores        Profesor_Instituto[]
+}
+
+model Grupo {
+  id                Int           @id @default(autoincrement())
+  nombre            String        @db.String
+  descripcion       String?       @db.String
+  comentarios       String?       @db.String
+  fecha_creacion    DateTime      @default(now())
+  fecha_actualizacion DateTime?   @updatedAt
+  instituto         Instituto     @relation(fields: [id_instituto], references: [id])
+  id_instituto      Int
+  inscripciones     Inscripcion[]
+}
+
+model Curso {
+  id                Int                 @id @default(autoincrement())
+  anio_academico    String              @db.String
+  inscripciones     Inscripcion[]
+  profesores        Profesor_Instituto[]
+  practicas         Practica[]
+}
+
+model Alumno {
+  id                Int           @id @default(autoincrement())
+  nombre            String        @db.String
+  apellidos         String?       @db.String
+  telefono          String?       @db.String
+  direccion         String?       @db.String
+  fecha_nacimiento  DateTime?     @db.Date
+  email             String?       @unique @db.String
+  nif               String?       @db.String
+  nia               String?       @db.String
+  nuss              String?       @db.String
+  comentarios       String?       @db.String
+  activo            Boolean       @default(true)
+  fecha_creacion    DateTime      @default(now())
+  fecha_actualizacion DateTime?   @updatedAt
+  inscripciones     Inscripcion[]
+  practicas         Practica[]
+}
+
+model Inscripcion {
+  id                Int           @id @default(autoincrement())
+  fecha_inscripcion DateTime      @default(now()) @db.Date
+  fecha_actualizacion DateTime?   @updatedAt
+  alumno            Alumno        @relation(fields: [id_alumno], references: [id])
+  id_alumno         Int
+  grupo             Grupo         @relation(fields: [id_grupo], references: [id])
+  id_grupo          Int
+  curso             Curso         @relation(fields: [id_curso], references: [id])
+  id_curso          Int
+}
+
+model Profesor {
+  id                Int                 @id @default(autoincrement())
+  nombre            String              @db.String
+  apellidos         String?             @db.String
+  telefono          String?             @db.String
+  nif               String?             @db.String
+  nip               String?             @db.String
+  comentarios       String?             @db.String
+  fecha_creacion    DateTime            @default(now())
+  fecha_actualizacion DateTime?         @updatedAt
+  institutos        Profesor_Instituto[]
+  practicas         Practica[]
+  registros         Registro[]
+  usuario           Usuario?
+}
+
+model Profesor_Instituto {
+  id                Int           @id @default(autoincrement())
+  fecha_creacion    DateTime      @default(now())
+  fecha_actualizacion DateTime?   @updatedAt
+  profesor          Profesor      @relation(fields: [id_profesor], references: [id])
+  id_profesor       Int
+  instituto         Instituto     @relation(fields: [id_instituto], references: [id])
+  id_instituto      Int
+  curso             Curso         @relation(fields: [id_curso], references: [id])
+  id_curso          Int
+
+  @@unique([id_profesor, id_curso])
+}
+
+model Usuario {
+  id                Int           @id @default(autoincrement())
+  usuario           String        @unique @db.String
+  email             String        @unique @db.String
+  contrasena        String        @db.String
+  rol               Role          @default(Prof)
+  activo            Boolean       @default(true)
+  profesor          Profesor?     @relation(fields: [id_profesor], references: [id])
+  id_profesor       Int?          @unique
+}
+
+model Empresa {
+  id                Int                @id @default(autoincrement())
+  nombre            String             @db.String
+  nombre_empresarial String?           @db.String
+  direccion         String?            @db.String
+  cif               String?            @db.String
+  sitio_web         String?            @db.String
+  sector            String?            @db.String
+  tecnologias       String?            @db.String
+  comentarios       String?            @db.String
+  activo            Boolean            @default(true)
+  fecha_creacion    DateTime           @default(now())
+  fecha_actualizacion DateTime?        @updatedAt
+  practicas         Practica[]
+  contactos         Contacto_Empresa[]
+  interacciones     Interaccion[]
+}
+
+model Practica {
+  id                Int           @id @default(autoincrement())
+  fecha_inicio      DateTime?     @db.Date
+  fecha_fin         DateTime?     @db.Date
+  tipo_practica     TipoPractica @default(Normal)
+  estado            EstadoPractica @default(Pendiente)
+  comentarios       String?       @db.String
+  fecha_creacion    DateTime      @default(now())
+  fecha_actualizacion DateTime?   @updatedAt
+  alumno            Alumno        @relation(fields: [id_alumno], references: [id])
+  id_alumno         Int
+  profesor          Profesor      @relation(fields: [id_profesor], references: [id])
+  id_profesor       Int
+  empresa           Empresa       @relation(fields: [id_empresa], references: [id])
+  id_empresa        Int
+  curso             Curso         @relation(fields: [id_curso], references: [id])
+  id_curso          Int
+
+  @@unique([id_alumno, id_curso])
+}
+
+model Contacto {
+  id                Int                @id @default(autoincrement())
+  nombre            String             @db.String
+  apellidos         String?            @db.String
+  telefono          String?            @db.String
+  email             String?            @unique @db.String
+  comentarios       String?            @db.String
+  fecha_creacion    DateTime           @default(now())
+  fecha_actualizacion DateTime?        @updatedAt
+  empresas          Contacto_Empresa[]
+  interacciones     Interaccion[]
+}
+
+model Contacto_Empresa {
+  id                Int           @id @default(autoincrement())
+  puesto            String?       @db.String
+  fecha_creacion    DateTime      @default(now())
+  fecha_actualizacion DateTime?   @updatedAt
+  contacto          Contacto      @relation(fields: [id_contacto], references: [id])
+  id_contacto       Int
+  empresa           Empresa       @relation(fields: [id_empresa], references: [id])
+  id_empresa        Int
+
+  @@unique([id_contacto, id_empresa])
+}
+
+model Interaccion {
+  id                Int               @id @default(autoincrement())
+  descripcion       String?           @db.String
+  tipo              String?           @db.String
+  estado            EstadoInteraccion @default(Pendiente)
+  comentarios       String?           @db.String
+  fecha_interaccion DateTime?
+  fecha_creacion    DateTime          @default(now())
+  fecha_actualizacion DateTime?       @updatedAt
+  empresa           Empresa           @relation(fields: [id_empresa], references: [id])
+  id_empresa        Int
+  contacto          Contacto?         @relation(fields: [id_contacto], references: [id])
+  id_contacto       Int?
+}
+
+model Registro {
+  id                Int           @id @default(autoincrement())
+  entidad           String        @db.String
+  id_entidad        Int
+  descripcion       String        @db.String
+  fecha_accion      DateTime      @default(now())
+  profesor          Profesor      @relation(fields: [id_profesor], references: [id])
+  id_profesor       Int
+}
+
+enum Role {
+  Prof
+  Admin
+}
+
+enum TipoPractica {
+  Normal
+  Extraordinaria
+}
+
+enum EstadoPractica {
+  Pendiente
+  En_curso
+  Finalizada
+  Cancelada
+}
+
+enum EstadoInteraccion {
+  Pendiente
+  Cancelada
+  Finalizada
+}
