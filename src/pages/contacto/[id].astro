@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import prisma from "@db/index.js";
+import SideEmpresas from "@comp/SideEmpresas.astro";
 
 const { id } = Astro.params;
 
@@ -16,6 +17,13 @@ const contacto = await prisma.contacto.findUnique({
     where: {
         id_contacto: Number(id),
     },
+    include:{
+        empresas: {
+            include: {
+                empresa: true
+            }
+        }
+    }
 });
 
 if (!contacto) {
@@ -87,6 +95,7 @@ if (!contacto) {
             <span id="id_contacto" class="hidden">{contacto.id_contacto}</span>
         </div>
         }
+        <SideEmpresas title="Empresas" object={contacto.empresas} btntext="empresa" url="/vinculo/nuevo" />
     </main>
     <Footer />
 </Layout>
