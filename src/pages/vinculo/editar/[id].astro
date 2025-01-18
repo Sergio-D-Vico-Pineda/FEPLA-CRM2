@@ -1,0 +1,174 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import FormElement from "@comp/FormElement.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import Empresas from "@comp/Empresas.astro";
+import prisma from "@db/index.js";
+
+const { id } = Astro.params;
+
+if (!Number(id)) {
+    console.log("Id no válido");
+    return Astro.redirect("/404");
+}
+
+const contEmp = await prisma.contacto_Empresa.findUnique({
+    where: {
+        id_contacto_empresa: Number(id),
+    },
+    include: {
+        contacto: true,
+        empresa: true,
+    },
+});
+
+if (!contEmp) {
+    console.log("No hay registro con ese valor");
+    return Astro.redirect("/404");
+}
+---
+
+<Layout title="Modificación del vínculo" kind={1}>
+    <Header />
+    <main class="flex justify-center items-center grid-flow-col gap-10">
+        <form
+            class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
+            id={contEmp.id_contacto.toString()}
+        >
+            <fieldset class="grid grid-cols-2 gap-2 py-5 px-4">
+                <legend
+                    class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
+                >
+                    Vínculo con un empresa (🚧)
+                </legend>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
+                    <p class="text-gray-700">{contEmp.contacto.nombre}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
+                    <p class="text-gray-700">{contEmp.contacto.apellidos}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
+                    <p class="text-gray-700">{contEmp.contacto.telefono}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Email</h2>
+                    <p class="text-gray-700">{contEmp.contacto.email}</p>
+                </div>
+                <hr class="border-black border-solid col-span-2 my-2" />
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
+                    <p class="text-gray-700">{contEmp.empresa.nombre}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Nombre Empresarial
+                    </h2>
+                    <p class="text-gray-700">
+                        {contEmp.empresa.nombre_empresarial}
+                    </p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Dirección</h2>
+                    <p class="text-gray-700">{contEmp.empresa.direccion}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">CIF</h2>
+                    <p class="text-gray-700">{contEmp.empresa.cif}</p>
+                </div>
+                <hr class="border-black border-solid col-span-2 my-2" />
+                <FormElement
+                    texto="puesto"
+                    placehold={contEmp.puesto as string}
+                    value={contEmp.puesto as string}
+                    isrequired={true}
+                />
+                <Empresas
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                    checked={contEmp.empresa.nombre}
+                />
+                <hr class="border-black border-solid col-span-2 my-2" />
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Fecha de Creación
+                    </h2>
+                    <p class="text-gray-700">
+                        {
+                            new Date(contEmp.fecha_creacion)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")
+                        }
+                    </p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Fecha de Actualización
+                    </h2>
+                    <p class="text-gray-700">
+                        {
+                            new Date(contEmp.fecha_actualizacion as Date)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")
+                        }
+                    </p>
+                </div>
+            </fieldset>
+            <div class="text-center">
+                <button
+                    type="submit"
+                    id="btnsubmit"
+                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors mx-auto"
+                >
+                    Modificar vínculo
+                </button>
+                <BackBtn title="Los cambios no se guardaran" />
+            </div>
+        </form>
+    </main>
+    <Footer />
+</Layout>
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
+    const empresas = document.querySelector("#empresas");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        data.id_contacto_empresa = parseInt(form.id);
+        data.puesto = form.puesto.value;
+        try {
+            data.id_empresa = parseInt(
+                empresas.querySelector(
+                    `option[value="${form.id_empresa.value}"]`,
+                ).textContent,
+            );
+        } catch (error) {
+            alert("Debes seleccionar una empresa");
+            return;
+        }
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
+
+        const response = await fetch(apiurl + "/vinculo", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        alert((await response.json()).message);
+
+        if (response.ok) {
+            window.location.reload();
+        }
+    });
+</script>
