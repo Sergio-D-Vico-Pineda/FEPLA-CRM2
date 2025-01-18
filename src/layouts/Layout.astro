@@ -4,6 +4,8 @@ interface Props {
 	kind?: number;
 }
 
+import UserLoggedIn from "@comp/UserLoggedIn.astro";
+
 const { title, kind } = Astro.props;
 
 let structuretype = kind == 1 ? "structuresm" : "structure";
@@ -20,6 +22,7 @@ let structuretype = kind == 1 ? "structuresm" : "structure";
 		<title>{title}</title>
 	</head>
 	<body class={structuretype}>
+		<UserLoggedIn />
 		<slot />
 	</body>
 </html>

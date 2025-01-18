@@ -1,0 +1,9 @@
+---
+export const prerender = true;
+---
+
+<script is:inline>
+    if (!localStorage.getItem("user")) {
+        window.location.href = "/";
+    }
+</script>
