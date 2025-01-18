@@ -2,29 +2,43 @@
 interface Props {
     title: string;
     object?: Array<any>;
+    btntext?: string;
+    url?: string;
+    nombre?: string;
+    descripcion?: string;
 }
 
-const { title, object } = Astro.props;
+const {
+    title,
+    object,
+    btntext,
+    url,
+    nombre = "nombre",
+    descripcion = "descripcion",
+} = Astro.props;
+
 const { id } = Astro.params;
 ---
 
 <div class="gap-2 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit">
     <h2 class="text-xl font-semibold mb-2">{title}</h2>
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-y-4 my-3">
         {
             object &&
                 object.length > 0 &&
                 object.map((item) => (
-                    <span title={item.descripcion}>{item.nombre}</span>
+                    <span class="cursor-default" title={item[descripcion]}>
+                        {item[nombre]}
+                    </span>
                 ))
         }
     </div>
     <div class="flex justify-center">
         <a
-            href=`/grupo/nuevogrupo/${id}`
+            href=`${url}/${id}`
             class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
         >
-            Crear nuevo grupo
+            Crear nuevo {btntext}
         </a>
     </div>
 </div>
