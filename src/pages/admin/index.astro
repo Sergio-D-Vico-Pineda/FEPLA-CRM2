@@ -2,8 +2,10 @@
 import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
+import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
 ---
 
+<AdminLoggedIn />
 <Layout title="Página de administración" kind={1}>
     <Header admin={true} />
     <main class="flex justify-center items-center flex-row gap-20">
@@ -90,12 +92,13 @@ import Footer from "@comp/Footer.astro";
             },
             body: JSON.stringify(data),
         });
+        const json = await resp.json();
 
         if (resp.ok) {
-            const json = await resp.json();
             window.location.href = `/profesor/${json.id_profesor}`;
         } else {
             alert("Profesor no encontrado.");
+            console.log(json.message);
             $btnbuscar.disabled = false;
             $btnbuscar.classList.remove("bg-gray-400");
             $btnbuscar.classList.add("bg-blue-500");

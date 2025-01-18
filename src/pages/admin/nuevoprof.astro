@@ -5,11 +5,13 @@ import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Details from "@comp/Details.astro";
+import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
 
 /* Profesor: id_profesor, nombre, apellidos, telefono, nif, nip, comentarios, fecha_creacion*, fecha_actualizacion */
 /* Usuario: id_usuario, usuario*, email*, contrasena*, rol*, activo*, id_profesor*/
 ---
 
+<AdminLoggedIn />
 <Layout title="Nuevo Profesor" kind={1}>
     <Header admin={true} />
     <main class="grid place-content-center">

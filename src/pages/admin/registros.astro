@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import prisma from "@db/index.js";
+import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
 
 const rows = await prisma.registro.findMany({
     include: {
@@ -11,10 +12,11 @@ const rows = await prisma.registro.findMany({
     },
     orderBy: {
         fecha_accion: "desc",
-    }
+    },
 });
 ---
 
+<AdminLoggedIn />
 <Layout title="Registros">
     <Header admin={true} />
     <div class="flex justify-between w-full px-5 py-2 h-fit">
@@ -53,7 +55,8 @@ const rows = await prisma.registro.findMany({
                                         {registro.descripcion}
                                     </td>
                                     <td class="px-4 py-3 text-sm text-gray-900">
-                                        {registro.entidad} ({registro.id_entidad})
+                                        {registro.entidad} (
+                                        {registro.id_entidad})
                                     </td>
                                     <td class="px-4 py-3 text-sm text-gray-500">
                                         {new Date(registro.fecha_accion)
@@ -61,7 +64,8 @@ const rows = await prisma.registro.findMany({
                                             .replace(",", "")}
                                     </td>
                                     <td class="px-4 py-3 text-sm text-blue-500">
-                                        {registro.profesor?.nombre} ({registro.id_profesor})
+                                        {registro.profesor?.nombre} (
+                                        {registro.id_profesor})
                                     </td>
                                 </tr>
                             ))}

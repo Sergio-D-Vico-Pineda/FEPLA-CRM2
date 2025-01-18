@@ -1,0 +1,10 @@
+---
+export const prerender = true;
+---
+
+<span id="hperfil" class="hidden">0</span>
+<script is:inline>
+    let user = localStorage.getItem("id_active_user"),
+        perfil = document.querySelector("#hperfil");
+    if (user != perfil?.textContent) window.location.href = "/404";
+</script>
