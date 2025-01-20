@@ -133,7 +133,6 @@ const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
             if (data[key] == "") data[key] = null;
         });
 
-        console.log(data);
         const response = await fetch(apiurl + "/practica", {
             method: "POST",
             headers: {
