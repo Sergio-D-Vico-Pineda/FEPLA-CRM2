@@ -6,6 +6,7 @@ import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Empresas from "@comp/Empresas.astro";
 import prisma from "@db/index.js";
+import Popup from "@comp/Popup.astro";
 
 const { id } = Astro.params;
 
@@ -125,9 +126,19 @@ if (!contEmp) {
                 >
                     Modificar vínculo
                 </button>
+                <button
+                    id="btnEliminar"
+                    type="button"
+                    class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                >
+                    Eliminar
+                </button>
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
         </form>
+        <Popup title="¿Está seguro de eliminar el vínculo?" jdelete={true}>
+            <span class="text-red-600"> Esta acción es irreversible. </span>
+        </Popup>
     </main>
     <Footer />
 </Layout>
@@ -171,4 +182,35 @@ if (!contEmp) {
             window.location.reload();
         }
     });
+
+    const btnEliminar = document.querySelector("#btnEliminar");
+    const popup = document.querySelector("#popup");
+    const btnAceptar = document.querySelector("#btnconfirm");
+    const main = document.querySelector("main");
+
+    if (btnEliminar) {
+        btnEliminar.addEventListener("click", () => {
+            popup.style.display = "grid";
+        });
+    }
+
+    data.id_contacto_empresa = parseInt(main.id);
+
+    if (btnAceptar) {
+        btnAceptar.addEventListener("click", async () => {
+            popup.style.display = "none";
+
+            const response = await fetch(apiurl + "/vinculo", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+            alert((await response.json()).message);
+            if (response.ok) {
+                window.location.href = "/vinculo";
+            }
+        });
+    }
 </script>

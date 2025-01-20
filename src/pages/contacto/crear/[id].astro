@@ -4,7 +4,6 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
-import Empresas from "@comp/Empresas.astro";
 import prisma from "@db/index.js";
 import Details from "@comp/Details.astro";
 
@@ -28,6 +27,7 @@ if (!empresa) {
 
 /* id_contacto, nombre*, apellidos, telefono, email*, comentarios, fecha_creacion*, fecha_actualizacion */
 /* id_contacto_empresa, puesto, fecha_creacion, fecha_actualizacion, id_contacto*, id_empresa* */
+// crear contacto y vincular a una empresa
 ---
 
 <Layout title="Nuevo contacto vinculado" kind={1}>

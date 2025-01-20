@@ -2,9 +2,9 @@
 import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
-import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
-import Details from "@comp/Details.astro";
+import Contactos from "@comp/Contactos.astro";
+import FormElement from "@comp/FormElement.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -24,6 +24,7 @@ if (!empresa) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
+// Vincular contacto ya creado a empresa
 ---
 
 <Layout title="Nuevo contacto vinculado" kind={1}>
@@ -36,42 +37,21 @@ if (!empresa) {
             <fieldset class="grid grid-cols-2 gap-2 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
-                    >(🚧) Nuevo contacto para <i>{empresa?.nombre}</i> (🚧)</legend
+                    >Vincular contacto a <i title={empresa.comentarios}
+                        >{empresa.nombre}</i
+                    ></legend
                 >
-                <FormElement
-                    texto="nombre"
-                    placehold="Alberto"
-                    isrequired={true}
+                <Contactos
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 />
-                <FormElement texto="telefono" placehold="123456789" />
-
-                <FormElement
-                    texto="email"
-                    placehold="albgarcia@alu.edu.gva.es"
-                    type="email"
-                    classes="col-span-2"
-                />
-                <Details
-                    classes="col-span-2 w-full"
-                    title="Información adicional"
-                >
-                    <FormElement texto="apellidos" placehold="Garcia" />
-                    <FormElement texto="puesto" placehold="RRHH" />
-                    <FormElement
-                        classes="col-span-2 w-full"
-                        texto="comentarios"
-                        placehold="..."
-                        type="textarea"
-                    />
-                </Details>
+                <FormElement texto="puesto" placehold="RRHH" />
             </fieldset>
             <div class="text-center">
                 <button
-                    disabled
                     type="submit"
                     id="btnsubmit"
-                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors cursor-not-allowed"
-                    >Añadir nuevo contacto</button
+                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Vincular contacto</button
                 >
                 <BackBtn />
             </div>
@@ -83,31 +63,35 @@ if (!empresa) {
 <script is:inline type="module">
     import { apiurl, data } from "/utils.js";
     const form = document.querySelector("form");
+    const contactos = document.querySelector("#contactos");
 
     async function sendData(e) {
         e.preventDefault();
 
-        let name = form.nombre.value;
-
-        if (!name) {
-            alert("El nombre del contacto es obligatorio.");
+        if (!form.checkValidity()) {
+            alert("Faltan campos por rellenar");
             return;
         }
 
-        data.nombre = name;
-        data.apellidos = form.apellidos.value;
-        data.telefono = form.telefono.value;
-        data.email = form.email.value;
-        data.comentarios = form.comentarios.value;
-        data.puesto = form.puesto.value;
+        try {
+            data.id_contacto = parseInt(
+                contactos.querySelector(
+                    `option[value="${form.id_contacto.value}"]`,
+                ).textContent,
+            );
+        } catch (error) {
+            alert("Debes seleccionar un contacto");
+            return;
+        }
         data.id_empresa = parseInt(form.id);
+        data.puesto = form.puesto.value;
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;
         });
 
         const response = await fetch(apiurl + "/contacto/linked", {
-            method: "POST",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
