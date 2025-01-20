@@ -1,0 +1,177 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import Popup from "@comp/Popup.astro";
+import prisma from "@db/index.js";
+
+const { id } = Astro.params;
+
+if (!Number(id)) {
+    console.log("Id no válido");
+    return Astro.redirect("/404");
+}
+
+const contEmp = await prisma.contacto_Empresa.findUnique({
+    where: {
+        id_contacto_empresa: Number(id),
+    },
+    include: {
+        contacto: true,
+        empresa: true,
+    },
+});
+
+if (!contEmp) {
+    console.log("No hay registro con ese valor");
+    return Astro.redirect("/404");
+}
+
+/* id_contacto_empresa, puesto, fecha_creacion, fecha_actualizacion, id_contacto*, id_empresa* */
+---
+
+<Layout title="Detalles del vínculo" kind={1}>
+    <Header />
+    <main
+        class="flex justify-center items-center grid-flow-col gap-10"
+        id={contEmp.id_contacto_empresa.toString()}
+    >
+        <div
+            class="bg-gray-300 rounded-lg shadow-md w-fit pb-5 pt-2 px-8 flex flex-col"
+        >
+            <div class="grid grid-cols-2 gap-2 py-5 px-4">
+                <h2
+                    class="bg-[#476683] rounded-md text-white text-2xl font-semibold col-span-2 w-fit mx-auto px-2.5 mb-3"
+                >
+                    Vínculo con un empresa
+                </h2>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
+                    <p class="text-gray-700">{contEmp.contacto.nombre}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
+                    <p class="text-gray-700">{contEmp.contacto.apellidos}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
+                    <p class="text-gray-700">{contEmp.contacto.telefono}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Email</h2>
+                    <p class="text-gray-700">{contEmp.contacto.email}</p>
+                </div>
+                <hr class="border-black border-solid col-span-2 my-2" />
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
+                    <p class="text-gray-700">{contEmp.empresa.nombre}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Nombre Empresarial
+                    </h2>
+                    <p class="text-gray-700">
+                        {contEmp.empresa.nombre_empresarial}
+                    </p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Dirección</h2>
+                    <p class="text-gray-700">{contEmp.empresa.direccion}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">CIF</h2>
+                    <p class="text-gray-700">{contEmp.empresa.cif}</p>
+                </div>
+                <hr class="border-black border-solid col-span-2 my-2" />
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Puesto</h2>
+                    <p class="text-gray-700">
+                        {contEmp.puesto ? contEmp.puesto : <i>Sin puesto</i>}
+                    </p>
+                </div>
+                <hr class="border-black border-solid col-span-2 my-2" />
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Fecha de Creación
+                    </h2>
+                    <p class="text-gray-700">
+                        {
+                            new Date(contEmp.fecha_creacion)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")
+                        }
+                    </p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Fecha de Actualización
+                    </h2>
+                    <p class="text-gray-700">
+                        {
+                            new Date(contEmp.fecha_actualizacion as Date)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")
+                        }
+                    </p>
+                </div>
+            </div>
+            <div
+                class="flex items-center justify-center space-x-2 col-span-2 mt-2"
+            >
+                <a
+                    href=`/vinculo/editar/${contEmp.id_contacto_empresa}`
+                    class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                >
+                    Editar
+                </a>
+                <button
+                    id="btnEliminar"
+                    type="button"
+                    class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                >
+                    Eliminar
+                </button>
+                <BackBtn title="Los cambios no se guardaran" />
+            </div>
+        </div>
+        <Popup title="¿Está seguro de eliminar el vínculo?" jdelete={true}>
+            <span class="text-red-600"> Esta acción es irreversible. </span>
+        </Popup>
+    </main>
+    <Footer />
+</Layout>
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const btnEliminar = document.querySelector("#btnEliminar");
+    const popup = document.querySelector("#popup");
+    const btnAceptar = document.querySelector("#btnconfirm");
+    const main = document.querySelector("main");
+
+    if (btnEliminar) {
+        btnEliminar.addEventListener("click", () => {
+            popup.style.display = "grid";
+        });
+    }
+
+    data.id_contacto_empresa = parseInt(main.id);
+
+    if (btnAceptar) {
+        btnAceptar.addEventListener("click", async () => {
+            popup.style.display = "none";
+
+            const response = await fetch(apiurl + "/vinculo", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+            alert((await response.json()).message);
+            if (response.ok) {
+                window.location.href = "/vinculo";
+            }
+        });
+    }
+</script>
