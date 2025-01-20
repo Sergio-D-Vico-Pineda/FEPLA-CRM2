@@ -1,0 +1,108 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import FormElement from "@comp/FormElement.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import Empresas from "@comp/Empresas.astro";
+import Contactos from "@comp/Contactos.astro";
+
+const now = new Date();
+const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
+
+/* id_contacto_empresa, puesto, fecha_creacion, fecha_actualizacion, id_contacto*, id_empresa* */
+---
+
+<Layout title="Nueva vínculo" kind={1}>
+    <Header />
+    <main class="grid place-content-center">
+        <form
+            class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
+            id="formnew"
+        >
+            <fieldset class="grid grid-cols-2 gap-2 py-5 px-4">
+                <legend
+                    class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
+                    >Nueva vínculo</legend
+                >
+
+                <Empresas
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
+                <Contactos
+                    classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                />
+                <FormElement texto="puesto" placehold="RRHH" />
+            </fieldset>
+            <div class="text-center">
+                <button
+                    type="submit"
+                    id="btnsubmit"
+                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Crear nueva vínculo</button
+                >
+                <BackBtn />
+            </div>
+        </form>
+    </main>
+    <Footer />
+</Layout>
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
+    const empresas = document.querySelector("#empresas");
+    const contactos = document.querySelector("#contactos");
+
+    async function sendData(e) {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+            alert("Faltan campos por rellenar");
+            return;
+        }
+
+        try {
+            data.id_empresa = parseInt(
+                empresas.querySelector(
+                    `option[value="${form.id_empresa.value}"]`,
+                ).textContent,
+            );
+        } catch (error) {
+            alert("Debes seleccionar una empresa");
+            return;
+        }
+
+        try {
+            data.id_contacto = parseInt(
+                contactos.querySelector(
+                    `option[value="${form.id_contacto.value}"]`,
+                ).textContent,
+            );
+        } catch (error) {
+            alert("Debes seleccionar un contacto");
+            return;
+        }
+
+        data.puesto = form.puesto.value;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] == "") data[key] = null;
+        });
+
+        const response = await fetch(apiurl + "/vinculo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        alert((await response.json()).message);
+        if (response.ok) {
+            window.location.reload();
+        }
+    }
+
+    document.getElementById("btnsubmit").addEventListener("click", sendData);
+</script>
