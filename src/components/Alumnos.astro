@@ -24,7 +24,7 @@ const alumnos = await prisma.alumno.findMany({
 <div class={classes}>
     <label for="id_alumno">
         Alumno
-        <span class="text-red-600 font-bold">*</span>
+        {isrequired && <span class="text-red-600 font-bold">*</span>}
     </label>
     {
         isrequired ? (
@@ -50,8 +50,8 @@ const alumnos = await prisma.alumno.findMany({
 
 <datalist id="alumnos">
     {
-        alumnos.map(({ nombre, id_alumno }) => (
-            <option value={nombre} selected={nombre === checked}>
+        alumnos.map(({ nombre, apellidos, id_alumno }) => (
+            <option value=`${nombre} ${apellidos}` selected={nombre === checked}>
                 {id_alumno}
             </option>
         ))

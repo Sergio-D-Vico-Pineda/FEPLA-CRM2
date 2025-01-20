@@ -9,7 +9,7 @@ interface Props {
 const {
     classes = "",
     active = true,
-    isrequired = false,
+    isrequired = true,
     checked,
 } = Astro.props;
 import prisma from "@db/index.js";
@@ -24,7 +24,7 @@ const empresas = await prisma.empresa.findMany({
 <div class={classes}>
     <label for="id_empresa">
         Empresa
-        <span class="text-red-600 font-bold">*</span>
+        {isrequired && <span class="text-red-600 font-bold">*</span>}
     </label>
     {
         isrequired ? (

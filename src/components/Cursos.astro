@@ -2,9 +2,10 @@
 interface Props {
     classes?: string;
     checked?: string;
+    isrequired?: boolean;
 }
 
-const { classes, checked } = Astro.props;
+const { classes, checked, isrequired = true } = Astro.props;
 import prisma from "@db/index.js";
 
 const cursos = await prisma.curso.findMany();
@@ -13,7 +14,7 @@ const cursos = await prisma.curso.findMany();
 <div class={classes}>
     <label for="id_curso">
         Curso
-        <span class="text-red-600 font-bold">*</span>
+        {isrequired && <span class="text-red-600 font-bold">*</span>}
     </label>
     <input
         class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
