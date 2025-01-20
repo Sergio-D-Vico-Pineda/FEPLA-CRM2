@@ -1,10 +1,11 @@
 ---
 interface Props {
     title: string;
-    url: string;
+    url?: string;
+    jdelete?: boolean;
 }
 
-const { title, url } = Astro.props;
+const { title, url, jdelete = false } = Astro.props;
 ---
 
 <div id="popup" class="popup">
@@ -15,15 +16,20 @@ const { title, url } = Astro.props;
         <p>
             <slot />
         </p>
-        <p>
-            Para
-            <a
-                href={url}
-                target="_parent"
-                rel="noopener noreferrer"
-                class="cursor-pointer hover:underline text-red-600">eliminar</a
-            >.
-        </p>
+        {
+            !jdelete && (
+                <p>
+                    Para
+                    <a
+                        href={url}
+                        target="_parent"
+                        rel="noopener noreferrer"
+                        class="cursor-pointer hover:underline text-red-600"
+                    >
+                        eliminar</a>.
+                </p>
+            )
+        }
         <div class="flex justify-center space-x-2 mt-3">
             <button
                 id="btnconfirm"
