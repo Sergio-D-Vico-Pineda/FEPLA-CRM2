@@ -72,18 +72,18 @@ const rows = await prisma.interaccion.findMany({
                     {
                         rows.map((interaccion) => (
                             <tr class="hover:bg-gray-100" data-active>
-                                <td class="px-4 py-3 text-sm text-gray-900">{interaccion.contacto?.nombre}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">{interaccion.contacto?.nombre || (<i>Sin contacto</i>)}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900">{interaccion.empresa.nombre}</td>
                                 <td class="px-4 py-3 text-sm text-gray-500">{interaccion.estado}</td>
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
                                         <a
-                                            href=`/vinculo/editar/${interaccion.id_interaccion}`
+                                            href=`/interaccion/editar/${interaccion.id_interaccion}`
                                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Editar
                                         </a>
                                         <a
-                                        href=`/vinculo/${interaccion.id_interaccion}`
+                                        href=`/interaccion/${interaccion.id_interaccion}`
                                         class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
                                         </a>

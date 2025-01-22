@@ -6,10 +6,10 @@ import FormElement from "@comp/FormElement.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Empresas from "@comp/Empresas.astro";
 import Contactos from "@comp/Contactos.astro";
+import FormElementSelect from "@comp/FormElementSelect.astro";
 
-const now = new Date();
-const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
-
+const now = new Date(Date.now() + 3600000).toISOString().slice(0, 16);
+/* 2025-01-01T00:05 */
 /* id_contacto_empresa, puesto, fecha_creacion, fecha_actualizacion, id_contacto*, id_empresa* */
 ---
 
@@ -18,21 +18,35 @@ const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
     <main class="grid place-content-center">
         <form
             class="bg-gray-300 rounded-lg shadow-md w-fit py-10 px-8 flex flex-col"
-            id="formnew"
         >
             <fieldset class="grid grid-cols-2 gap-2 py-5 px-4">
                 <legend
                     class="px-1.5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
-                    >Nueva interacción</legend
                 >
-
+                    Nueva interacción
+                </legend>
                 <Empresas
                     classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 />
+                <!-- TODO Filtrar contactos por empresa -->
                 <Contactos
+                    isrequired={false}
                     classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 />
-                <FormElement texto="puesto" placehold="RRHH" />
+                <FormElement texto="descripcion" placehold="..." />
+                <FormElement texto="tipo" placehold="Llamada/Correo/Reunión" />
+                <FormElementSelect isrequired={true} />
+                <FormElement
+                    texto="fecha_interaccion"
+                    type="datetime-local"
+                    value={now}
+                />
+                <FormElement
+                    classes="col-span-2"
+                    texto="comentarios"
+                    placehold="..."
+                    type="textarea"
+                />
             </fieldset>
             <div class="text-center">
                 <button
@@ -80,17 +94,20 @@ const newdate = new Date(new Date().setMonth(now.getMonth() + 3));
                 ).textContent,
             );
         } catch (error) {
-            alert("Debes seleccionar un contacto");
-            return;
+            console.log("No se ha seleccionado un contacto");
         }
 
-        data.puesto = form.puesto.value;
+        data.descripcion = form.descripcion.value;
+        data.tipo = form.tipo.value;
+        data.estado = form.estado.value;
+        data.comentarios = form.comentarios.value;
+        data.fecha_interaccion = form.fecha_interaccion.value;
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;
         });
 
-        const response = await fetch(apiurl + "/vinculo", {
+        const response = await fetch(apiurl + "/interaccion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
