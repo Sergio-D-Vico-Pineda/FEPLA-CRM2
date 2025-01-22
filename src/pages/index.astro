@@ -45,6 +45,21 @@ import img from "../assets/logo2.png";
 				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
 				>Iniciar sesión</button
 			>
+			<button
+				id="btnadmin"
+				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+				type="button">Admin</button
+			>
+			<button
+				id="btnscarpy"
+				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+				type="button">Scarpy</button
+			>
+			<button
+				id="btnrafa"
+				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+				type="button">Rafa</button
+			>
 			<a href="/" id="enlace">¿Olvidaste tu contraseña?</a>
 		</form>
 	</main>
@@ -52,7 +67,7 @@ import img from "../assets/logo2.png";
 </LoginLayout>
 
 <script is:inline type="module">
-	import { url } from "./utils.js";
+	import { apiurl } from "./utils.js";
 	const form = document.querySelector("form");
 	const loginfail = document.querySelector("#loginfail");
 	const $btnlogin = document.querySelector("#btnlogin");
@@ -68,7 +83,7 @@ import img from "../assets/logo2.png";
 		$btnlogin.classList.add("bg-gray-400");
 		$btnlogin.textContent = "Cargando...";
 
-		const response = await fetch(url + "/api/login", {
+		const response = await fetch(apiurl + "/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -88,7 +103,7 @@ import img from "../assets/logo2.png";
 				texto += key + ": " + value + "\n";
 			});
 
-			alert(texto);
+			// alert(texto);
 			localStorage.setItem("id_active_user", json.id_profesor);
 			localStorage.setItem("id_user", json.id_usuario);
 			localStorage.setItem("user", json.usuario);
@@ -107,4 +122,26 @@ import img from "../assets/logo2.png";
 	}
 
 	form.addEventListener("submit", sendData);
+
+	const $btnadmin = document.querySelector("#btnadmin");
+	const $btnscarpy = document.querySelector("#btnscarpy");
+	const $btnrafa = document.querySelector("#btnrafa");
+
+	$btnadmin.addEventListener("click", () => {
+		form.emailusuario.value = "admin";
+		form.password.value = "admin";
+		$btnlogin.click();
+	});
+
+	$btnscarpy.addEventListener("click", () => {
+		form.emailusuario.value = "scarpy";
+		form.password.value = "scarpy";
+		$btnlogin.click();
+	});
+
+	$btnrafa.addEventListener("click", () => {
+		form.emailusuario.value = "prof";
+		form.password.value = "prof";
+		$btnlogin.click();
+	});
 </script>
