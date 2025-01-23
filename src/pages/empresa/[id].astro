@@ -5,6 +5,7 @@ import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
 import SideContacts from "@comp/SideContacts.astro";
+import SideInteraccion from "@comp/SideInteraccion.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -19,6 +20,7 @@ const empresa = await prisma.empresa.findUnique({
         id_empresa: Number(id),
     },
     include: {
+        interacciones: true,
         contactos: {
             include: {
                 contacto: true
@@ -38,6 +40,7 @@ if (!empresa) {
 <Layout title="Información de la empresa" kind={1}>
     <Header />
     <main class="flex justify-center items-center grid-flow-col gap-10">
+        <SideInteraccion title="Interacciones" btntext="interacción" url="/interaccion/empresa" object={empresa.interacciones} />
         <div
             class="grid grid-cols-2 gap-x-2 gap-y-3 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit"
         >
@@ -111,7 +114,7 @@ if (!empresa) {
                             href=`/practica/empresa/${empresa.id_empresa}`
                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                         >
-                            Crear prácticas (🛠)
+                            Crear prácticas
                         </a>
                         <a
                             href=`/empresa/editar/${empresa.id_empresa}`

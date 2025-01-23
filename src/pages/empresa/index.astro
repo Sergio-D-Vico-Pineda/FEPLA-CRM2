@@ -93,9 +93,14 @@ const rows = await prisma.empresa.findMany();
                                             Editar
                                         </a>
                                         <a
-                                        href=`/empresa/${empresa.id_empresa}`
-                                        class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
+                                            href=`/empresa/${empresa.id_empresa}`
+                                            class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
+                                        </a>
+                                        <a
+                                            href=`/interaccion/empresa/${empresa.id_empresa}`
+                                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300">
+                                            Crear interacción
                                         </a>
                                     </div>
                                 </td>
@@ -122,9 +127,14 @@ const rows = await prisma.empresa.findMany();
                                             Editar
                                         </a>
                                         <a
-                                        href=`/empresa/${empresa.id_empresa}`
-                                        class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
+                                            href=`/empresa/${empresa.id_empresa}`
+                                            class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
                                             Detalles
+                                        </a>
+                                        <a
+                                            href=`/interaccion/empresa/${empresa.id_empresa}`
+                                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300">
+                                            Crear interacción
                                         </a>
                                     </div>
                                 </td>
