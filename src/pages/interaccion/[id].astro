@@ -13,9 +13,9 @@ if (!Number(id)) {
     return Astro.redirect("/404");
 }
 
-const contEmp = await prisma.contacto_Empresa.findUnique({
+const interaccion = await prisma.interaccion.findUnique({
     where: {
-        id_contacto_empresa: Number(id),
+        id_interaccion: Number(id),
     },
     include: {
         contacto: true,
@@ -23,19 +23,19 @@ const contEmp = await prisma.contacto_Empresa.findUnique({
     },
 });
 
-if (!contEmp) {
+if (!interaccion) {
     console.log("No hay registro con ese valor");
     return Astro.redirect("/404");
 }
 
-/* id_contacto_empresa, puesto, fecha_creacion, fecha_actualizacion, id_contacto*, id_empresa* */
+/* id_interaccion, descripcion, tipo, estado*, comentarios, fecha_interaccion, fecha_creacion*, fecha_actualizacion, id_empresa*, id_contacto */
 ---
 
-<Layout title="Detalles del vínculo" kind={1}>
+<Layout title="Detalles de la interacción" kind={1}>
     <Header />
     <main
         class="flex justify-center items-center grid-flow-col gap-10"
-        id={contEmp.id_contacto_empresa.toString()}
+        id={interaccion.id_interaccion.toString()}
     >
         <div
             class="bg-gray-300 rounded-lg shadow-md w-fit pb-5 pt-2 px-8 flex flex-col"
@@ -44,60 +44,95 @@ if (!contEmp) {
                 <h2
                     class="bg-[#476683] rounded-md text-white text-2xl font-semibold col-span-2 w-fit mx-auto px-2.5 mb-3"
                 >
-                    Vínculo con un empresa
+                    Detalles de una interacción
                 </h2>
+                
                 <div>
                     <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                    <p class="text-gray-700">{contEmp.contacto.nombre}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
-                    <p class="text-gray-700">{contEmp.contacto.apellidos}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
-                    <p class="text-gray-700">{contEmp.contacto.telefono}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Email</h2>
-                    <p class="text-gray-700">{contEmp.contacto.email}</p>
-                </div>
-                <hr class="border-black border-solid col-span-2 my-2" />
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                    <p class="text-gray-700">{contEmp.empresa.nombre}</p>
+                    <p class="text-gray-700">{interaccion.empresa.nombre}</p>
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold mb-2">
                         Nombre Empresarial
                     </h2>
                     <p class="text-gray-700">
-                        {contEmp.empresa.nombre_empresarial}
+                        {interaccion.empresa.nombre_empresarial}
                     </p>
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold mb-2">Dirección</h2>
-                    <p class="text-gray-700">{contEmp.empresa.direccion}</p>
+                    <p class="text-gray-700">{interaccion.empresa.direccion}</p>
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold mb-2">CIF</h2>
-                    <p class="text-gray-700">{contEmp.empresa.cif}</p>
+                    <p class="text-gray-700">{interaccion.empresa.cif}</p>
                 </div>
                 <hr class="border-black border-solid col-span-2 my-2" />
+                {
+                    interaccion.contacto ? (
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Nombre</h2>
+                        <p class="text-gray-700">{interaccion.contacto.nombre}</p>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
+                        <p class="text-gray-700">
+                            {interaccion.contacto.apellidos}
+                        </p>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
+                        <p class="text-gray-700">
+                            {interaccion.contacto.telefono}
+                        </p>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Email</h2>
+                        <p class="text-gray-700">{interaccion.contacto.email}</p>
+                    </div>
+                    ) : ( 
+                        <i>Sin Contacto</i>
+                    )
+                }
+                <hr class="border-black border-solid col-span-2 my-2" />
                 <div>
-                    <h2 class="text-xl font-semibold mb-2">Puesto</h2>
+                    <h2 class="text-xl font-semibold mb-2">Descripción</h2>
+                    <p class="text-gray-700">{interaccion.descripcion ? interaccion.descripcion : <i>Sin descripción</i>}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Tipo</h2>
+                    <p class="text-gray-700">{interaccion.tipo ? interaccion.tipo : <i>Sin tipo</i>}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Estado</h2>
+                    <p class="text-gray-700">{interaccion.estado}</p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Fecha de la interacción</h2>
                     <p class="text-gray-700">
-                        {contEmp.puesto ? contEmp.puesto : <i>Sin puesto</i>}
+                        {
+                            new Date(interaccion.fecha_interaccion as Date)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")
+                        }
                     </p>
                 </div>
+                {
+                    interaccion.comentarios && (
+                    <div class="col-span-2">
+                        <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
+                        <p class="text-gray-700">{interaccion.comentarios}</p>
+                    </div>
+                    )
+                }
                 <hr class="border-black border-solid col-span-2 my-2" />
                 <div>
                     <h2 class="text-xl font-semibold mb-2">
-                        Fecha de Creación
+                        Creación
                     </h2>
                     <p class="text-gray-700">
                         {
-                            new Date(contEmp.fecha_creacion)
+                            new Date(interaccion.fecha_creacion)
                                 .toLocaleString("es-ES")
                                 .replace(",", "")
                         }
@@ -105,11 +140,11 @@ if (!contEmp) {
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold mb-2">
-                        Fecha de Actualización
+                        Actualización
                     </h2>
                     <p class="text-gray-700">
                         {
-                            new Date(contEmp.fecha_actualizacion as Date)
+                            new Date(interaccion.fecha_actualizacion as Date)
                                 .toLocaleString("es-ES")
                                 .replace(",", "")
                         }
@@ -120,7 +155,7 @@ if (!contEmp) {
                 class="flex items-center justify-center space-x-2 col-span-2 mt-2"
             >
                 <a
-                    href=`/vinculo/editar/${contEmp.id_contacto_empresa}`
+                    href=`/interaccion/editar/${interaccion.id_interaccion}`
                     class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                 >
                     Editar
@@ -135,7 +170,10 @@ if (!contEmp) {
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
         </div>
-        <Popup title="¿Está seguro de eliminar el vínculo?" jdelete={true}>
+        <Popup
+            title="¿Está seguro de eliminar la interacción?"
+            jdelete={true}
+        >
             <span class="text-red-600"> Esta acción es irreversible. </span>
         </Popup>
     </main>
@@ -155,13 +193,13 @@ if (!contEmp) {
         });
     }
 
-    data.id_contacto_empresa = parseInt(main.id);
+    data.id_interaccion = parseInt(main.id);
 
     if (btnAceptar) {
         btnAceptar.addEventListener("click", async () => {
             popup.style.display = "none";
 
-            const response = await fetch(apiurl + "/vinculo", {
+            const response = await fetch(apiurl + "/interaccion", {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -170,7 +208,7 @@ if (!contEmp) {
             });
             alert((await response.json()).message);
             if (response.ok) {
-                window.location.href = "/vinculo";
+                window.location.href = "/interaccion";
             }
         });
     }
