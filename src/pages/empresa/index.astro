@@ -19,6 +19,12 @@ const rows = await prisma.empresa.findMany();
                 <span>Activo</span>
                 <input id="activo-checkbox" type="checkbox" class="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" checked>
             </label>
+            <button
+                id="btnexportar"
+                type="button"
+                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                >Exportar CSV</button
+            >
             <input
                 id="busqueda"
                 class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg p-1.5"
@@ -153,6 +159,7 @@ const rows = await prisma.empresa.findMany();
     const activeCb = document.querySelector("#activo-checkbox");
     const inputBusqueda = document.querySelector("#busqueda");
     const btnBusqueda = document.querySelector("#btnbuscar");
+    const btnExportar = document.querySelector("#btnexportar");
     const rows = document.querySelectorAll("tr[data-active=false]");
     const allrows = document.querySelectorAll("tr[data-active]");
     const activerows = document.querySelectorAll("tr[data-active=true]");
@@ -183,6 +190,10 @@ const rows = await prisma.empresa.findMany();
         if (e.key === "Enter") {
             btnBusqueda.click();
         }
+    });
+
+    btnExportar.addEventListener("click", () => {
+        window.open("/api/empresa/exportar", "_blank"); 
     });
 
 </script>
