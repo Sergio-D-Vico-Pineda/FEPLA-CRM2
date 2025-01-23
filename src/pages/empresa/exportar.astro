@@ -1,0 +1,185 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import FormElement from "@comp/FormElement.astro";
+---
+
+<Layout title="Exportar">
+    <Header />
+    <div class="flex justify-between w-full px-5 py-2 h-fit">
+        <div class="flex items-center gap-x-5">
+            <BackBtn />
+            <h2 class="text-3xl">Exportar datos de empresas</h2>
+        </div>
+    </div>
+    <main class="grid place-content-center p-4">
+        <form class="bg-gray-300 p-4 rounded w-[500px] h-fit px-8 py-6 shadow-md">
+            <fieldset class="grid grid-cols-3 gap-x-4 gap-y-2 text-center">
+                <legend
+                    class="px-1.5 mb-5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
+                    >Seleccione datos de las empresas</legend
+                >
+                <label
+                    for="nombre"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Nombre
+                    <input type="checkbox" id="nombre" name="nombre" checked />
+                </label>
+                <label
+                    for="nombre_empresarial"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Nombre empresarial
+                    <input
+                        type="checkbox"
+                        id="nombre_empresarial"
+                        name="nombre_empresarial"
+                        checked
+                    />
+                </label>
+                <label
+                    for="direccion"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Dirección
+                    <input
+                        type="checkbox"
+                        id="direccion"
+                        name="direccion"
+                        checked
+                    />
+                </label>
+                <label
+                    for="cif"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    CIF
+                    <input type="checkbox" id="cif" name="cif" checked />
+                </label>
+                <label
+                    for="sitio_web"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Sitio web
+                    <input
+                        type="checkbox"
+                        id="sitio_web"
+                        name="sitio_web"
+                        checked
+                    />
+                </label>
+                <label
+                    for="sector"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Sector
+                    <input type="checkbox" id="sector" name="sector" checked />
+                </label>
+                <label
+                    for="tecnologias"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Tecnologias
+                    <input
+                        type="checkbox"
+                        id="tecnologias"
+                        name="tecnologias"
+                        checked
+                    />
+                </label>
+                <label
+                    for="comentarios"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Comentarios
+                    <input
+                        type="checkbox"
+                        id="comentarios"
+                        name="comentarios"
+                        checked
+                    />
+                </label>
+                <label
+                    for="activo"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Activo
+                    <input type="checkbox" id="activo" name="activo" checked />
+                </label>
+                <label
+                    for="fecha_creacion"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Fecha de creacion
+                    <input
+                        type="checkbox"
+                        id="fecha_creacion"
+                        name="fecha_creacion"
+                        checked
+                    />
+                </label>
+                <label
+                    for="fecha_actualizacion"
+                    class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
+                >
+                    Fecha de actualizacion
+                    <input
+                        type="checkbox"
+                        id="fecha_actualizacion"
+                        name="fecha_actualizacion"
+                        checked
+                    />
+                </label>
+            </fieldset>
+
+            <!-- <FormElement texto="nombre" type="checkbox" />
+            <FormElement texto="nombre_empresarial" type="checkbox" />
+            <FormElement texto="direccion" type="checkbox" />
+            <FormElement texto="cif" type="checkbox" />
+            <FormElement texto="sitio_web" type="checkbox" />
+            <FormElement texto="sector" type="checkbox" />
+            <FormElement texto="tecnologias" type="checkbox" />
+            <FormElement texto="comentarios" type="checkbox" />
+            <FormElement texto="activo" type="checkbox" />
+            <FormElement texto="fecha_creacion" type="checkbox" />
+            <FormElement texto="fecha_actualizacion" type="checkbox" /> -->
+            <div class="col-span-3 text-center">
+                <hr class="border-black border-solid my-2" />
+                <button
+                    type="submit"
+                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Exportar datos seleccionados</button
+                >
+            </div>
+        </form>
+    </main>
+</Layout>
+<Footer />
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const btnExportar = document.querySelector("#btnExportar");
+    const form = document.querySelector("form");
+
+    async function sendData() {
+        const resp = await fetch(apiurl + "/empresa/export", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        const json = await resp.json();
+        if (resp.ok) {
+            alert("ok");
+        } else {
+            alert("error");
+        }
+    }
+
+    form.addEventListener("submit", sendData);
+</script>
