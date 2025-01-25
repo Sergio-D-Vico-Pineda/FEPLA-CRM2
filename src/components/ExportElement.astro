@@ -1,0 +1,35 @@
+---
+import Dict from "@comp/Dict.ts";
+interface Props {
+    texto: string;
+    checked?: boolean;
+    classes?: string;
+    title?: string;
+    disabled?: boolean;
+}
+
+const {
+    texto,
+    checked = true,
+    classes = "",
+    title,
+    disabled = false,
+} = Astro.props;
+
+const textCapital = Dict(texto);
+---
+
+<label
+    for={texto}
+    class=`flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md ${classes}`
+    title={title}
+>
+    {textCapital}
+    <input
+        type="checkbox"
+        id={texto}
+        name={texto}
+        checked={checked}
+        disabled={disabled}
+    />
+</label>
