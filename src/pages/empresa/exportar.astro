@@ -10,12 +10,14 @@ import FormElement from "@comp/FormElement.astro";
     <Header />
     <div class="flex justify-between w-full px-5 py-2 h-fit">
         <div class="flex items-center gap-x-5">
-            <BackBtn />
+            <BackBtn url="/empresa" />
             <h2 class="text-3xl">Exportar datos de empresas</h2>
         </div>
     </div>
     <main class="grid place-content-center p-4">
-        <form class="bg-gray-300 p-4 rounded w-[500px] h-fit px-8 py-6 shadow-md">
+        <form
+            class="bg-gray-300 p-4 rounded w-[500px] h-fit px-8 py-6 shadow-md"
+        >
             <fieldset class="grid grid-cols-3 gap-x-4 gap-y-2 text-center">
                 <legend
                     class="px-1.5 mb-5 bg-[#476683] rounded-md text-white text-center text-2xl font-semibold"
@@ -26,7 +28,7 @@ import FormElement from "@comp/FormElement.astro";
                     class="flex justify-center items-center gap-x-2 p-2 bg-gray-200 rounded-md"
                 >
                     Nombre
-                    <input type="checkbox" id="nombre" name="nombre" checked />
+                    <input type="checkbox" id="nombre" name="nombre" checked disabled />
                 </label>
                 <label
                     for="nombre_empresarial"
@@ -134,18 +136,6 @@ import FormElement from "@comp/FormElement.astro";
                     />
                 </label>
             </fieldset>
-
-            <!-- <FormElement texto="nombre" type="checkbox" />
-            <FormElement texto="nombre_empresarial" type="checkbox" />
-            <FormElement texto="direccion" type="checkbox" />
-            <FormElement texto="cif" type="checkbox" />
-            <FormElement texto="sitio_web" type="checkbox" />
-            <FormElement texto="sector" type="checkbox" />
-            <FormElement texto="tecnologias" type="checkbox" />
-            <FormElement texto="comentarios" type="checkbox" />
-            <FormElement texto="activo" type="checkbox" />
-            <FormElement texto="fecha_creacion" type="checkbox" />
-            <FormElement texto="fecha_actualizacion" type="checkbox" /> -->
             <div class="col-span-3 text-center">
                 <hr class="border-black border-solid my-2" />
                 <button
@@ -161,23 +151,46 @@ import FormElement from "@comp/FormElement.astro";
 
 <script is:inline type="module">
     import { apiurl, data } from "/utils.js";
-    const btnExportar = document.querySelector("#btnExportar");
     const form = document.querySelector("form");
 
-    async function sendData() {
-        const resp = await fetch(apiurl + "/empresa/export", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
+    async function sendData(e) {
+        e.preventDefault();
+
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach((checkbox) => {
+            data[checkbox.id] = checkbox.checked;
         });
 
-        const json = await resp.json();
-        if (resp.ok) {
-            alert("ok");
-        } else {
-            alert("error");
+        data.nombre = true;
+
+        try {
+            const resp = await fetch(apiurl + "/empresa/export", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            
+            if (resp.ok) {
+                const blob = await resp.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "empresas.csv";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } else {
+                const json = await resp.json();
+                alert(json.message);
+                throw new Error("Network response was not ok");
+            }
+        } catch (error) {
+            console.error("Error downloading file:", error);
         }
     }
 
