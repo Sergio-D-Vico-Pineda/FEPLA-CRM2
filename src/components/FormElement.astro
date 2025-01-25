@@ -1,4 +1,5 @@
 ---
+import Dict from "@comp/Dict.ts";
 interface Props {
     texto: string;
     placehold?: string;
@@ -6,10 +7,6 @@ interface Props {
     isrequired?: boolean;
     value?: string;
     classes?: string;
-}
-
-interface MyObject {
-    [key: string]: string;
 }
 
 const {
@@ -21,28 +18,7 @@ const {
     classes = "",
 } = Astro.props;
 
-let textCapital = texto[0].toUpperCase() + texto.slice(1);
-
-const dict: MyObject = {
-    fecha_inicio: "Fecha de inicio",
-    fecha_fin: "Fecha de fin",
-    fecha_nacimiento: "Fecha de nacimiento",
-    telefono: "Teléfono",
-    nif: "NIF",
-    nia: "NIA",
-    nuss: "NUSS",
-    nip: "NIP",
-    cif: "CIF",
-    nombre_oficial: "Nombre empresarial",
-    sitio_web: "Sitio web",
-    tecnologias: "Tecnologías",
-    direccion: "Dirección",
-    descripcion: "Descripción",
-    confirmar_contraseña: "Confirmar contraseña",
-    fecha_interaccion: "Fecha de interacción",
-};
-
-if (dict[texto]) textCapital = dict[texto];
+const textCapital = Dict(texto);
 ---
 
 <label
