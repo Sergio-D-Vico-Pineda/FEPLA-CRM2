@@ -13,7 +13,10 @@ const rows = await prisma.contacto.findMany();
 <Layout title="Lista de contactos">
     <Header />
     <div class="flex justify-between w-full px-5 py-2 h-fit">
-        <h2 class="text-3xl">Listado de contactos</h2>
+        <div class="flex items-center gap-x-5">
+            <BackBtn />
+            <h2 class="text-3xl">Listado de contactos</h2>
+        </div>
         <div class="flex gap-4">
             { rows.length > 0 && (
                 <input
@@ -34,7 +37,6 @@ const rows = await prisma.contacto.findMany();
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
                 >Nuevo contacto</a
             >
-            <BackBtn />
         </div>
     </div>
     <main class="px-20 py-5">

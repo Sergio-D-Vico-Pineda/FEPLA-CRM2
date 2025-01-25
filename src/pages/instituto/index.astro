@@ -13,7 +13,10 @@ const rows = await prisma.instituto.findMany();
 <Layout title="Lista de institutos">
     <Header />
     <div class="flex justify-between w-full px-5 py-2 h-fit">
-        <h2 class="text-3xl">Listado de institutos</h2>
+        <div class="flex items-center gap-x-5">
+            <BackBtn />
+            <h2 class="text-3xl">Listado de institutos</h2>
+        </div>
         <div class="flex gap-4">
             { rows.length > 0 && (
             <input

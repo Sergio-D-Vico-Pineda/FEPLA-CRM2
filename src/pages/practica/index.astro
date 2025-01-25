@@ -17,9 +17,11 @@ const rows = await prisma.practica.findMany({
 <Layout title="Lista de practicas">
     <Header />
     <div class="flex justify-between w-full px-5 py-2 h-fit">
+        <div class="flex items-center gap-x-5">
+            <BackBtn />
         <h2 class="text-3xl">Listado de prácticas</h2>
+        </div>
         <div class="flex gap-4">
-        
             <input
                 id="busqueda"
                 class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg p-1.5"
@@ -38,7 +40,6 @@ const rows = await prisma.practica.findMany({
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
                 >Nueva práctica</a
             >
-            <BackBtn />
         </div>
     </div>
     <main class="px-20 py-5">
