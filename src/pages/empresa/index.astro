@@ -14,7 +14,7 @@ const rows = await prisma.empresa.findMany();
     <Header />
     <div class="flex justify-between w-full px-5 py-2 h-fit">
         <div class="flex items-center gap-x-5">
-            <BackBtn />
+            <BackBtn url="/inicio" />
             <h2 class="text-3xl">Listado de empresas</h2>
         </div>
         <div class="flex gap-4">
@@ -84,13 +84,18 @@ const rows = await prisma.empresa.findMany();
                                 <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre_empresarial}</td>
                                 <td class="px-4 py-3 text-sm text-gray-500">{empresa.direccion}</td>
                                 <td class="px-4 py-3 text-sm text-blue-500 hover:underline">
-                                    <a
+                                    {
+                                        empresa.sitio_web && (
+                                            <a
                                         href={`https://${empresa.sitio_web}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
                                         {empresa.sitio_web}
                                     </a>
+                                        )
+                                    }
+                                    
                                 </td>
                                 <td class="px-4 py-3 text-sm text-right">
                                     <div class="flex justify-center space-x-2">
