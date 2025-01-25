@@ -10,7 +10,7 @@ async function POST({ request }) {
             message: "No se ha seleccionado ningún campo para exportar.",
         }), { status: 400 });
     } */
-    
+
     try {
         const empresas = await prisma.empresa.findMany({
             select: {
@@ -69,15 +69,13 @@ async function POST({ request }) {
 
         return new Response(csv, {
             headers: {
-                "Content-Disposition": "attachment; filename=empresas.csv",
-                "Content-Type": "text/csv",
+                'Content-Disposition': 'attachment; filename=empresas.csv',
+                'Content-Type': 'text/csv; charset=utf-8',
             }
         });
     } catch (error) {
-        console.log(error);
-        return new Response(JSON.stringify({
-            message: "Error al exportar."
-        }), { status: 404 });
+        console.error('Error en exportación:', error);
+        return new Response(JSON.stringify({ message: "Error al exportar: " + error.message }), { status: 500 });
     }
 };
 
