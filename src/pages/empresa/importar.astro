@@ -1,0 +1,70 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import BackBtn from "@comp/BackBtn.astro";
+import ExportElement from "@comp/ExportElement.astro";
+import { Prisma } from "@prisma/client";
+import FormElement from "@comp/FormElement.astro";
+
+const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
+---
+
+<Layout title="Importar empresas">
+    <Header />
+    <div class="flex justify-between w-full px-5 py-2 h-fit">
+        <div class="flex items-center gap-x-5">
+            <BackBtn url="/empresa" />
+            <h2 class="text-3xl">Importar datos de empresas</h2>
+        </div>
+    </div>
+    <main class="flex p-4">
+        <form class="bg-gray-300 p-4 rounded w-full h-fit px-8 py-6 shadow-md">
+            <span
+                class="inline px-1.5 mb-5 bg-[#476683] rounded-md text-white text-2xl font-semibold"
+                >Subir archivo CSV</span
+            >
+            <FormElement classes="inline" texto="archivo" type="file" />
+
+            <div class="col-span-3 text-center">
+                <hr class="border-black border-solid my-2" />
+                <button
+                    type="submit"
+                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Exportar datos seleccionados</button
+                >
+            </div>
+        </form>
+    </main>
+</Layout>
+<Footer />
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
+
+    async function sendData(e) {
+        e.preventDefault();
+
+        try {
+            const resp = await fetch(apiurl + "/empresa/export", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (resp.ok) {
+            } else {
+                alert((await resp.json()).message);
+                throw new Error("Network response was not ok");
+            }
+        } catch (error) {
+            console.error("Error downloading file:", error);
+            alert("Error al subir el archivo");
+        }
+    }
+
+    form.addEventListener("submit", sendData);
+</script>
