@@ -19,19 +19,40 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
         </div>
     </div>
     <main class="flex p-4">
-        <form class="bg-gray-300 p-4 rounded w-full h-fit px-8 py-6 shadow-md">
-            <span
-                class="inline px-1.5 mb-5 bg-[#476683] rounded-md text-white text-2xl font-semibold"
-                >Subir archivo CSV</span
-            >
-            <FormElement classes="inline" texto="archivo" type="file" />
-
+        <form class="bg-gray-300 p-4 rounded w-fit h-fit px-8 py-6 shadow-md">
+            <div class="flex justify-center items-center gap-3">
+                <div
+                    class="p-1 bg-gray-400 rounded-lg shadow-md drop-shadow-md flex items-end"
+                >
+                    <label class="cursor-pointer flex flex-col items-center">
+                        <span class="px-3 text-2xl">Subir archivo CSV</span>
+                        <input
+                            class="bg-gray-700 text-white text-sm rounded-lg p-1"
+                            type="file"
+                            name="archivo"
+                            id="archivo"
+                            accept=".csv"
+                            required
+                        />
+                    </label>
+                    <button
+                        class="text-2xl leading-none p-1 ms-1 bg-red-500 text-white rounded"
+                        type="reset">X</button
+                    >
+                </div>
+            </div>
             <div class="col-span-3 text-center">
                 <hr class="border-black border-solid my-2" />
                 <button
+                    id="btnpreview"
+                    type="button"
+                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-2 py-2 transition-colors"
+                    >Previsualizar datos</button
+                >
+                <button
                     type="submit"
-                    class="mx-auto bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                    >Exportar datos seleccionados</button
+                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                    >Importar datos</button
                 >
             </div>
         </form>
@@ -42,10 +63,10 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
 <script is:inline type="module">
     import { apiurl, data } from "/utils.js";
     const form = document.querySelector("form");
+    const $btnpreview = document.querySelector("#btnpreview");
 
     async function sendData(e) {
         e.preventDefault();
-
         try {
             const resp = await fetch(apiurl + "/empresa/export", {
                 method: "POST",
