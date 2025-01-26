@@ -24,8 +24,9 @@ const contacto = await prisma.contacto.findMany();
                 id="id_contacto"
                 list="contactos"
                 value={checked}
+                autocomplete="off"
                 required
-            />
+                />
         ) : (
             <input
                 class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5"
@@ -33,6 +34,7 @@ const contacto = await prisma.contacto.findMany();
                 id="id_contacto"
                 list="contactos"
                 value={checked}
+                autocomplete="off"
             />
         )
     }
