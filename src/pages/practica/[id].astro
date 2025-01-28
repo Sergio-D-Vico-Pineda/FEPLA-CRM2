@@ -81,11 +81,11 @@ if (!practica) {
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold mb-2">Fecha de Inicio</h2>
-                    <p class="text-gray-700">{new Date(practica.fecha_inicio as Date).toLocaleDateString("es-ES")}</p>
+                    <p class="text-gray-700">{ practica.fecha_inicio ? new Date(practica.fecha_inicio as Date).toLocaleDateString("es-ES") : <i>Sin fecha de inicio</i>}</p>
                 </div>
                 <div>
                     <h2 class="text-xl font-semibold mb-2">Fecha de Fin</h2>
-                    <p class="text-gray-700">{new Date(practica.fecha_fin as Date).toLocaleDateString("es-ES")}</p>
+                    <p class="text-gray-700">{ practica.fecha_fin ? new Date(practica.fecha_fin as Date).toLocaleDateString("es-ES") : <i>Sin fecha de fin</i>}</p>
                 </div>
                 {
                     practica.comentarios && (
