@@ -123,4 +123,35 @@ const atributosAlumno = Object.values(Prisma.AlumnoScalarFieldEnum);
     }
 
     form.addEventListener("submit", sendData);
+
+    const formwithout = document.querySelector("form#export-without");
+    async function sendData2(e) {
+        e.preventDefault();
+
+        try {
+            const resp = await fetch(apiurl + "/alumno/export", {
+                method: "GET",
+            });
+
+            if (resp.ok) {
+                const blob = await resp.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "alumnossinpracticas.csv";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } else {
+                alert((await resp.json()).message);
+                throw new Error("Network response was not ok");
+            }
+        } catch (error) {
+            console.error("Error downloading file:", error);
+            alert("Error al descargar el archivo");
+        }
+    }
+
+    formwithout.addEventListener("submit", sendData2);
 </script>
