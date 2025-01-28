@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
+import InfoDivs from "@comp/InfoDivs.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -18,7 +19,6 @@ const alumno = await prisma.alumno.findUnique({
         id_alumno: Number(id),
     },
 })
-
 
 if (!alumno) {
     console.log("No hay registro con ese valor");
@@ -48,51 +48,16 @@ if (!alumno) {
                     )
                 }
             </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                <p class="text-gray-700">{alumno.nombre}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
-                <p class="text-gray-700">{alumno.apellidos}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
-                <p class="text-gray-700">{alumno.telefono}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Fecha de nacimiento</h2>
-                {
-                    alumno.fecha_nacimiento === null ? (
-                        <p class="text-gray-700 italic">Sin fecha de nacimiento</p>
-                    ) : (
-                        <p class="text-gray-700">{new Date(alumno.fecha_nacimiento as Date).toLocaleDateString("es-ES")}</p>
-                    )
-                }
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Email</h2>
-                <p class="text-gray-700">{alumno.email}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">NIF</h2>
-                <p class="text-gray-700">{alumno.nif}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">NIA</h2>
-                <p class="text-gray-700">{alumno.nia}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">NUSS</h2>
-                <p class="text-gray-700">{alumno.nif}</p>
-            </div>
+            <InfoDivs title="Nombre" value={alumno.nombre} />
+            <InfoDivs title="Apellidos" value={alumno.apellidos} />
+            <InfoDivs title="Teléfono" value={alumno.telefono} />
+            <InfoDivs title="Fecha de nacimiento" value={alumno.fecha_nacimiento} date />
+            <InfoDivs title="Email" value={alumno.email} />
+            <InfoDivs title="NIF" value={alumno.nif} />
+            <InfoDivs title="NIA" value={alumno.nia} />
+            <InfoDivs title="NUSS" value={alumno.nuss} />
             {
-                alumno.comentarios && (
-                    <div class="col-span-2 text-center">
-                        <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-                        <p class="text-gray-700">{alumno.comentarios}</p>
-                    </div>
-                )
+                alumno.comentarios && <InfoDivs title="Comentarios" value={alumno.comentarios} classes="col-span-2 text-center" />
             }
             <hr class="col-span-2 border-black" />
             <div>

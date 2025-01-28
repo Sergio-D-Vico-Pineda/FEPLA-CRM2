@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
+import InfoDivs from "@comp/InfoDivs.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -46,50 +47,23 @@ if (!contEmp) {
                 >
                     Vínculo con un empresa
                 </h2>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                    <p class="text-gray-700">{contEmp.contacto.nombre}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
-                    <p class="text-gray-700">{contEmp.contacto.apellidos}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
-                    <p class="text-gray-700">{contEmp.contacto.telefono}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Email</h2>
-                    <p class="text-gray-700">{contEmp.contacto.email}</p>
-                </div>
+                <InfoDivs title="Nombre" value={contEmp.contacto.nombre} />
+                <InfoDivs
+                    title="Apellidos"
+                    value={contEmp.contacto.apellidos}
+                />
+                <InfoDivs title="Teléfono" value={contEmp.contacto.telefono} />
+                <InfoDivs title="Email" value={contEmp.contacto.email} />
                 <hr class="border-black border-solid col-span-2 my-2" />
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                    <p class="text-gray-700">{contEmp.empresa.nombre}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">
-                        Nombre Empresarial
-                    </h2>
-                    <p class="text-gray-700">
-                        {contEmp.empresa.nombre_empresarial}
-                    </p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Dirección</h2>
-                    <p class="text-gray-700">{contEmp.empresa.direccion}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">CIF</h2>
-                    <p class="text-gray-700">{contEmp.empresa.cif}</p>
-                </div>
+                <InfoDivs title="Nombre" value={contEmp.empresa.nombre} />
+                <InfoDivs
+                    title="Nombre Empresarial"
+                    value={contEmp.empresa.nombre_empresarial}
+                />
+                <InfoDivs title="Dirección" value={contEmp.empresa.direccion} />
+                <InfoDivs title="CIF" value={contEmp.empresa.cif} />
                 <hr class="border-black border-solid col-span-2 my-2" />
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Puesto</h2>
-                    <p class="text-gray-700">
-                        {contEmp.puesto ? contEmp.puesto : <i>Sin puesto</i>}
-                    </p>
-                </div>
+                <InfoDivs title="Puesto" value={contEmp.puesto} />
                 <hr class="border-black border-solid col-span-2 my-2" />
                 <div>
                     <h2 class="text-xl font-semibold mb-2">
