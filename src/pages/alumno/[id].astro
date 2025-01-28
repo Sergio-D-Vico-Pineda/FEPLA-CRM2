@@ -105,14 +105,14 @@ if (!alumno) {
                 </h2>
                 <p class="text-gray-700">{new Date(alumno.fecha_actualizacion as Date).toLocaleString("es-ES").replace(",", "")}</p>
             </div>
-            <div class="flex justify-center space-x-2 col-span-2 mt-6">
+            <div class="flex justify-center space-x-2 col-span-2 mt-6 items-center">
                 {
                     alumno.activo ? (
                         <a
                             href=`/practica/alumno/${alumno.id_alumno}`
                             class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                         >
-                            Crear practicas (🛠)
+                            Crear prácticas
                         </a>
                         <a
                             href=`/alumno/editar/${alumno.id_alumno}`
