@@ -3,8 +3,9 @@ import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
-import prisma from "@db/index.js";
 import SideEmpresas from "@comp/SideEmpresas.astro";
+import InfoDivs from "@comp/InfoDivs.astro";
+import prisma from "@db/index.js";
 
 const { id } = Astro.params;
 
@@ -46,29 +47,12 @@ if (!contacto) {
                     Información
                 </h2>
             </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                <p class="text-gray-700">{contacto.nombre}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
-                <p class="text-gray-700">{contacto.apellidos}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
-                <p class="text-gray-700">{contacto.telefono}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Email</h2>
-                <p class="text-gray-700">{contacto.email}</p>
-            </div>
+            <InfoDivs title="Nombre" value={contacto.nombre} />
+            <InfoDivs title="Apellidos" value={contacto.apellidos} />
+            <InfoDivs title="Teléfono" value={contacto.telefono} />
+            <InfoDivs title="Email" value={contacto.email} />
             {
-                contacto.comentarios && (
-                    <div class="col-span-2 text-center">
-                        <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-                        <p class="text-gray-700">{contacto.comentarios}</p>
-                    </div>
-                )
+                contacto.comentarios && <InfoDivs title="Comentarios" value={contacto.comentarios} classes="col-span-2 text-center" />
             }
             <hr class="border-black border-solid col-span-2 my-5" />
             <div>

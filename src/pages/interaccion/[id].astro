@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
+import InfoDivs from "@comp/InfoDivs.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -46,67 +47,25 @@ if (!interaccion) {
                 >
                     Detalles de una interacción
                 </h2>
-                
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                    <p class="text-gray-700">{interaccion.empresa.nombre}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">
-                        Nombre Empresarial
-                    </h2>
-                    <p class="text-gray-700">
-                        {interaccion.empresa.nombre_empresarial}
-                    </p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Dirección</h2>
-                    <p class="text-gray-700">{interaccion.empresa.direccion}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">CIF</h2>
-                    <p class="text-gray-700">{interaccion.empresa.cif}</p>
-                </div>
+                <InfoDivs title="Nombre" value={interaccion.empresa.nombre} />
+                <InfoDivs title="Nombre Empresarial" value={interaccion.empresa.nombre_empresarial} />
+                <InfoDivs title="Dirección" value={interaccion.empresa.direccion} />
+                <InfoDivs title="CIF" value={interaccion.empresa.cif} />
                 <hr class="border-black border-solid col-span-2 my-2" />
                 {
                     interaccion.contacto ? (
-                    <div>
-                        <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                        <p class="text-gray-700">{interaccion.contacto.nombre}</p>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
-                        <p class="text-gray-700">
-                            {interaccion.contacto.apellidos}
-                        </p>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
-                        <p class="text-gray-700">
-                            {interaccion.contacto.telefono}
-                        </p>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold mb-2">Email</h2>
-                        <p class="text-gray-700">{interaccion.contacto.email}</p>
-                    </div>
+                        <InfoDivs title="Nombre" value={interaccion.contacto.nombre} />
+                        <InfoDivs title="Apellidos" value={interaccion.contacto.apellidos} />
+                        <InfoDivs title="Teléfono" value={interaccion.contacto.telefono} />
+                        <InfoDivs title="Email" value={interaccion.contacto.email} />
                     ) : ( 
                         <i>Sin Contacto</i>
                     )
                 }
                 <hr class="border-black border-solid col-span-2 my-2" />
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Descripción</h2>
-                    <p class="text-gray-700">{interaccion.descripcion ? interaccion.descripcion : <i>Sin descripción</i>}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Tipo</h2>
-                    <p class="text-gray-700">{interaccion.tipo ? interaccion.tipo : <i>Sin tipo</i>}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Estado</h2>
-                    <p class="text-gray-700">{interaccion.estado}</p>
-                </div>
+                <InfoDivs title="Descripción" value={interaccion.descripcion} />
+                <InfoDivs title="Tipo" value={interaccion.tipo} />
+                <InfoDivs title="Estado" value={interaccion.estado} />
                 <div>
                     <h2 class="text-xl font-semibold mb-2">Fecha de la interacción</h2>
                     <p class="text-gray-700">
@@ -119,10 +78,7 @@ if (!interaccion) {
                 </div>
                 {
                     interaccion.comentarios && (
-                    <div class="col-span-2">
-                        <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-                        <p class="text-gray-700">{interaccion.comentarios}</p>
-                    </div>
+                        <InfoDivs title="Comentarios" value={interaccion.comentarios} classes="col-span-2" />
                     )
                 }
                 <hr class="border-black border-solid col-span-2 my-2" />

@@ -1,0 +1,25 @@
+---
+interface Props {
+    title: string;
+    value: any;
+    classes?: string;
+    date?: boolean;
+}
+
+let { title, value, classes = "", date = false } = Astro.props;
+---
+
+<div class=`${classes}`>
+    <h2 class="text-xl font-semibold mb-2">{title}</h2>
+    {
+        value === null || value === "" ? (
+            <p class="text-gray-700 italic">Sin {title.toLowerCase()}</p>
+        ) : (
+            <p class="text-gray-700">
+                {date
+                    ? new Date(value as Date).toLocaleDateString("es-ES")
+                    : value}
+            </p>
+        )
+    }
+</div>

@@ -164,12 +164,6 @@ if (!practica) {
             return;
         }
 
-        data.id_practica = parseInt(form.id);
-        data.fecha_inicio = form.fecha_inicio.value;
-        data.fecha_fin = form.fecha_fin.value;
-        data.tipo_practica = form.tipo_practica.value;
-        data.estado = form.estado.value;
-        data.comentarios = form.comentarios.value;
         try {
             data.id_curso = parseInt(
                 cursos.querySelector(`option[value="${form.id_curso.value}"]`)
@@ -190,6 +184,12 @@ if (!practica) {
             return;
         }
         data.id_profesor = parseInt(id_profesor);
+        data.id_practica = parseInt(form.id);
+        data.fecha_inicio = form.fecha_inicio.value;
+        data.fecha_fin = form.fecha_fin.value;
+        data.tipo_practica = form.tipo_practica.value;
+        data.estado = form.estado.value;
+        data.comentarios = form.comentarios.value;
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;

@@ -4,6 +4,7 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import Popup from "@comp/Popup.astro";
+import InfoDivs from "@comp/InfoDivs.astro";
 import prisma from "@db/index.js";
 
 const { id } = Astro.params;
@@ -61,38 +62,15 @@ if (!practica) {
                         </a>
                     </p>
                 </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Profesor</h2>
-                    <p class="text-gray-700">
-                        {practica.profesor.nombre} {practica.profesor.apellidos}
-                    </p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Curso</h2>
-                    <p class="text-gray-700">{practica.curso.anio_academico}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Estado</h2>
-                    <p class="text-gray-700">{practica.estado}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Tipo de práctica</h2>
-                    <p class="text-gray-700">{practica.tipo_practica}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Fecha de Inicio</h2>
-                    <p class="text-gray-700">{new Date(practica.fecha_inicio as Date).toLocaleDateString("es-ES")}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Fecha de Fin</h2>
-                    <p class="text-gray-700">{new Date(practica.fecha_fin as Date).toLocaleDateString("es-ES")}</p>
-                </div>
+                <InfoDivs title="Profesor" value=`${practica.profesor.nombre} ${practica.profesor.apellidos}` />
+                <InfoDivs title="Curso" value={practica.curso.anio_academico} />
+                <InfoDivs title="Estado" value={practica.estado} />
+                <InfoDivs title="Tipo de práctica" value={practica.tipo_practica} />
+                <InfoDivs title="Fecha de inicio" value={practica.fecha_inicio} date />
+                <InfoDivs title="Fecha de fin" value={practica.fecha_fin} date />
                 {
                     practica.comentarios && (
-                        <div class="col-span-2">
-                            <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-                            <p class="text-gray-700">{practica.comentarios}</p>
-                        </div>
+                        <InfoDivs title="Comentarios" value={practica.comentarios} classes="col-span-2" />
                     )
                 }
                 <hr class="border-black border-solid col-span-2" />               
