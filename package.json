@@ -16,12 +16,12 @@
     "@astrojs/node": "^9.0.2",
     "@astrojs/tailwind": "^5.1.5",
     "@libsql/client": "^0.8.1",
-    "@prisma/adapter-libsql": "^6.2.1",
-    "@prisma/client": "^6.2.1",
-    "astro": "^5.1.9",
+    "@prisma/adapter-libsql": "^6.3.0",
+    "@prisma/client": "^6.3.0",
+    "astro": "^5.1.10",
     "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
-    "prisma": "^6.2.1"
+    "prisma": "^6.3.0"
   }
 }
