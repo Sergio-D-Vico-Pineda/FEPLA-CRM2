@@ -1,4 +1,5 @@
 import prisma from "@db/index.js";
+import { string } from "astro:schema";
 
 async function POST({ request }) {
     const data = await request.json();
@@ -21,8 +22,9 @@ async function POST({ request }) {
             Object.keys(selectFields).join(';'),
             ...empresas.map(empresa =>
                 Object.entries(empresa).map(([key, value]) => {
+                    if (key == 'activo') return value ? 'si' : 'no';
                     if (value instanceof Date) return value.toISOString();
-                    return value !== null && value !== undefined ? value.toString() : '';
+                    return value ? value.toString() : '';
                 }).join(';')
             )
         ].join('\n');

@@ -18,11 +18,9 @@ async function GET() {
             Object.keys(alumnos[0]).join(';'),
             ...alumnos.map(alumno =>
                 Object.entries(alumno).map(([key, value]) => {
-                    // Aplicar formato ISO solo a campos de fecha
-                    if (value instanceof Date) {
-                        return value.toISOString();
-                    }
-                    return value !== null && value !== undefined ? value.toString() : '';
+                    if (key == 'activo') return value ? 'si' : 'no';
+                    if (value instanceof Date) return value.toISOString();
+                    return value ? value.toString() : '';
                 }).join(';')
             )
         ].join('\n');
