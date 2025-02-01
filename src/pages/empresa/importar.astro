@@ -16,11 +16,11 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
             <h2 class="text-3xl">Importar datos de empresas</h2>
         </div>
     </div>
-    <main class="flex p-4">
-        <form class="bg-gray-300 rounded w-fit h-fit p-3 shadow-md me-2">
-            <div class="flex justify-center items-center gap-3">
+    <main class="grid justify-center grid-flow-col p-4 gap-2 overflow-hidden">
+        <div>
+            <form class="bg-gray-300 rounded w-fit h-fit p-3 shadow-md">
                 <div
-                    class="p-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md flex items-end"
+                    class="flex justify-center items-end gap-y-3 p-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
                 >
                     <label class="cursor-pointer flex flex-col items-center">
                         <span class="px-3 text-2xl text-nowrap"
@@ -36,38 +36,43 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                         />
                     </label>
                     <button
-                        class="ms-1 mb-1 w-6 h-6 bg-red-500 text-white rounded grid place-items-center pb-1"
+                        class="ms-1 mb-1 w-6 h-6 bg-red-500 text-white rounded place-items-center pb-1 hidden"
                         type="reset"
                         id="btnreset"
                         ><span class="text-2xl leading-[0]">×</span></button
                     >
                 </div>
-            </div>
-            <hr class="border-black border-solid my-2" />
+                <hr class="border-black border-solid my-2" />
+                <div
+                    class="col-span-3 text-center flex items-center justify-center gap-2"
+                >
+                    <button
+                        id="btnpreview"
+                        type="button"
+                        class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-2 py-2 transition-colors disabled:opacity-70 disabled:hover:bg-blue-700 disabled:cursor-not-allowed"
+                        disabled
+                        title="Debe subir un archivo CSV"
+                        >Previsualizar datos</button
+                    >
+                    <button
+                        id="btnsubmit"
+                        type="submit"
+                        class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors hidden"
+                        >Importar datos</button
+                    >
+                    <button
+                        class="w-6 h-6 bg-red-500 text-white rounded place-items-center hidden"
+                        type="reset"
+                        id="btnreset2"
+                        ><span class="text-2xl leading-[0]">×</span></button
+                    >
+                </div>
+            </form>
             <div
-                class="col-span-3 text-center flex items-center justify-center gap-2"
-            >
-                <button
-                    id="btnpreview"
-                    type="button"
-                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-2 py-2 transition-colors disabled:opacity-70 disabled:hover:bg-blue-700 disabled:cursor-not-allowed"
-                    disabled
-                    title="Debe subir un archivo CSV"
-                    >Previsualizar datos</button
-                >
-                <button
-                    type="submit"
-                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors hidden"
-                    >Importar datos</button
-                >
-                <button
-                    class="w-6 h-6 bg-red-500 text-white rounded place-items-center hidden"
-                    type="reset"
-                    id="btnreset2"
-                    ><span class="text-2xl leading-[0]">×</span></button
-                >
-            </div>
-        </form>
+                id="errores"
+                class="text-wrap text-center text-red-500 font-bold w-64 mx-auto"
+            ></div>
+        </div>
     </main>
 </Layout>
 <Footer />
@@ -79,6 +84,8 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
     const $input = document.querySelector("#archivo");
     const $btnreset = document.querySelector("#btnreset");
     const $btnreset2 = document.querySelector("#btnreset2");
+    const $btnsubmit = document.querySelector("#btnsubmit");
+    const $errores = document.querySelector("#errores");
 
     function formatDate(value) {
         // Expresión regular para detectar formato ISO (YYYY-MM-DD)
@@ -105,7 +112,7 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
         return value;
     }
 
-    function csvtojson(csvData) {
+    async function csvtojson(csvData) {
         const lines = csvData.split("\n");
         const result = [];
         const headers = lines[0].split(";").map((col) => col.trim());
@@ -126,34 +133,41 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
         }
         return result;
     }
+
     async function sendData(e) {
         e.preventDefault();
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const csvData = e.target.result;
-            const csvjson = csvtojson(csvData);
-            data.empresas = csvjson;
-        };
-        reader.readAsText(file);
-        try {
-            const resp = await fetch(apiurl + "/empresa/import", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
+        const file = $input.files[0];
+        if (!file) return;
 
-            if (resp.ok) {
-            } else {
-                alert((await resp.json()).message);
-                throw new Error("Network response was not ok");
+        const reader = new FileReader();
+
+        reader.onload = async function (e) {
+            const csvData = e.target.result;
+            data.empresas = await csvtojson(csvData);
+
+            try {
+                const resp = await fetch(apiurl + "/empresa/import", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (resp.ok) {
+                    alert((await resp.json()).message);
+                } else {
+                    alert((await resp.json()).message);
+                    throw new Error("Network response was not ok");
+                }
+            } catch (error) {
+                console.error("Error downloading file:", error);
+                alert("Error al subir el archivo");
             }
-        } catch (error) {
-            console.error("Error downloading file:", error);
-            alert("Error al subir el archivo");
-        }
+        };
+
+        reader.readAsText(file);
     }
 
     form.addEventListener("submit", sendData);
@@ -161,9 +175,12 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
     form.addEventListener("reset", () => {
         $btnpreview.disabled = true;
         $btnpreview.setAttribute("title", "Debe subir un archivo CSV");
-        $btnreset.classList.remove("hidden");
+        $btnpreview.classList.remove("hidden");
+        $btnreset.classList.add("hidden");
         $btnreset2.classList.add("hidden");
+        $btnsubmit.classList.add("hidden");
         $input.classList.remove("hidden");
+        $errores.innerHTML = "";
         const previewContainer = document.getElementById("preview-container");
         if (previewContainer) {
             previewContainer.remove();
@@ -173,6 +190,8 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
     $input.addEventListener("change", () => {
         $btnpreview.disabled = false;
         $btnpreview.removeAttribute("title");
+        $btnreset.classList.remove("hidden");
+        $btnreset.classList.add("grid");
     });
 
     $btnpreview.addEventListener("click", () => {
@@ -201,10 +220,16 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                                 return col.trim();
                             }
                             let processedValue = col.trim();
+                            // console.log(processedValue)
                             processedValue = formatDate(processedValue);
                             processedValue = translateBoolean(processedValue);
                             return processedValue;
                         });
+
+                        if (cols[0] === "") {
+                            $errores.innerHTML += `Fila saltada por tener el nombre vacío, linea ${index + 1} <br/>`;
+                            return;
+                        }
 
                         const tr = document.createElement("tr");
                         cols.forEach((col) => {
@@ -222,6 +247,8 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                         table.appendChild(tr);
                         $btnreset.classList.add("hidden");
                         $btnreset2.classList.remove("hidden");
+                        $btnpreview.classList.add("hidden");
+                        $btnsubmit.classList.remove("hidden");
                         $input.classList.add("hidden");
                     });
                 } catch (error) {
@@ -236,11 +263,12 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                 } else {
                     const newPreviewContainer = document.createElement("div");
                     newPreviewContainer.id = "preview-container";
+                    newPreviewContainer.classList.add("overflow-auto");
                     newPreviewContainer.appendChild(table);
                     const $main = document.querySelector("main");
                     $main.appendChild(newPreviewContainer);
                 }
-                console.log(csvtojson(csvData));
+                // console.log(csvtojson(csvData));
             };
             reader.readAsText(file, "ISO-8859-1");
         } else {

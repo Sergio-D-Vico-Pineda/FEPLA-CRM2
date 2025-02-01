@@ -7,6 +7,7 @@ async function POST({ request }) {
 
     try {
         console.log(data)
+        counter = data.empresas.length
         /* const newEmpr = await prisma.empresa.create({
             data: {
                 nombre: data.nombre,
@@ -22,9 +23,8 @@ async function POST({ request }) {
 
         const log = await createRegistro(prisma, { id_entidad: newEmpr.id_empresa, id_profesor: data.id_active_user }, "Empresa", "creación de empresa");
         console.log(log); */
-        newEmpr.message = "Empresa creada exitosamente.";
 
-        return new Response(JSON.stringify(newEmpr), { status: 200 });
+        return new Response(JSON.stringify({ message: `Petición alcanzada. ${counter} empresas creadas` }), { status: 200 });
     } catch (error) {
         console.log(error)
         return new Response(JSON.stringify({
