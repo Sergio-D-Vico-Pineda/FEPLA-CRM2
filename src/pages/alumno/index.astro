@@ -17,7 +17,7 @@ const rows = await prisma.alumno.findMany();
             <BackBtn url="/inicio" />
             <h2 class="text-3xl">Listado de alumnos</h2>
         </div>
-        <div class="flex gap-4">
+        <div class="flex items-center gap-4">
             <a
                 href="/alumno/exportar"
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
@@ -25,7 +25,8 @@ const rows = await prisma.alumno.findMany();
                 Exportar
             </a>
             { rows.length > 0 && (
-                <label class="flex items-center border px-3 gap-3 rounded border-gray-700 text-sm font-medium">
+                            <label class="flex items-center border py-1.5 px-3 gap-3 rounded border-gray-700 text-sm font-medium">
+
                 <span>Activo</span>
                 <input id="activo-checkbox" type="checkbox" class="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" checked>
             </label>
