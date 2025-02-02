@@ -1,10 +1,21 @@
 import prisma from "@db/index.js";
 
+function generateCSV(alumnos) {
+    return [
+        Object.keys(alumnos[0]).join(';'),
+        ...alumnos.map(alumno =>
+            Object.entries(alumno).map(([key, value]) => {
+                if (key == 'activo') return value ? 'si' : 'no';
+                if (value instanceof Date) return value.toISOString();
+                return value ? value.toString() : '';
+            }).join(';')
+        )
+    ].join('\n')
+}
+
 async function GET() {
-    // Para obtener los datos de los alumnos sin prácticas.
 
     try {
-
         const alumnos = await prisma.alumno.findMany({
             where: {
                 practicas: {
@@ -14,16 +25,7 @@ async function GET() {
         })
 
         // Generar CSV
-        const csvContent = [
-            Object.keys(alumnos[0]).join(';'),
-            ...alumnos.map(alumno =>
-                Object.entries(alumno).map(([key, value]) => {
-                    if (key == 'activo') return value ? 'si' : 'no';
-                    if (value instanceof Date) return value.toISOString();
-                    return value ? value.toString() : '';
-                }).join(';')
-            )
-        ].join('\n');
+        const csvContent = generateCSV(alumnos);
 
         return new Response(csvContent, {
             headers: {
@@ -56,18 +58,7 @@ async function POST({ request }) {
         });
 
         // 3. Generar CSV
-        const csvContent = [
-            Object.keys(selectFields).join(';'),
-            ...alumnos.map(alumno =>
-                Object.entries(alumno).map(([key, value]) => {
-                    // Aplicar formato ISO solo a campos de fecha
-                    if (value instanceof Date) {
-                        return value.toISOString();
-                    }
-                    return value !== null && value !== undefined ? value.toString() : '';
-                }).join(';')
-            )
-        ].join('\n');
+        const csvContent = generateCSV(alumnos);
 
         return new Response(csvContent, {
             headers: {
