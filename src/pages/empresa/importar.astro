@@ -3,9 +3,6 @@ import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
-import { Prisma } from "@prisma/client";
-
-const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
 ---
 
 <Layout title="Importar empresas">
@@ -14,6 +11,23 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
         <div class="flex items-center gap-x-5">
             <BackBtn url="/empresa" />
             <h2 class="text-3xl">Importar datos de empresas</h2>
+            <button
+                type="button"
+                id="btnremove"
+                class="hover:bg-red-500 text-white rounded-lg p-1 transition-colors "
+            >
+                Limpiar
+            </button>
+            <script is:inline>
+                document
+                    .querySelector("#btnremove")
+                    .addEventListener("click", async () => {
+                        const resp = await fetch(
+                            "http://localhost:4321/api/empresa/import",
+                        );
+                        alert((await resp.json()).message);
+                    });
+            </script>
         </div>
     </div>
     <main class="grid justify-center grid-flow-col p-4 gap-2 overflow-hidden">
@@ -57,7 +71,7 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                     <button
                         id="btnsubmit"
                         type="submit"
-                        class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors hidden"
+                        class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors hidden disabled:opacity-70 disabled:hover:bg-blue-700 disabled:cursor-not-allowed"
                         >Importar datos</button
                     >
                     <button
@@ -71,7 +85,8 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
             <div
                 id="errores"
                 class="text-wrap text-center text-red-500 font-bold w-64 mx-auto"
-            ></div>
+            >
+            </div>
         </div>
     </main>
 </Layout>
@@ -119,6 +134,7 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
         for (let i = 1; i < lines.length; i++) {
             const obj = {};
             const currentLine = lines[i].split(";");
+            if (!currentLine[0]) continue;
             if (!currentLine.join("").trim()) continue;
             for (let j = 0; j < headers.length; j++) {
                 let value = currentLine[j].trim();
@@ -136,6 +152,9 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
 
     async function sendData(e) {
         e.preventDefault();
+
+        $btnsubmit.disabled = true;
+        $btnsubmit.textContent = "Cargando...";
 
         const file = $input.files[0];
         if (!file) return;
@@ -157,9 +176,14 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
 
                 if (resp.ok) {
                     alert((await resp.json()).message);
+                    $btnsubmit.textContent = "Datos importados";
+                    $btnsubmit.classList.remove("bg-blue-700", "disabled:hover:bg-blue-700");
+                    $btnsubmit.classList.add("bg-green-700");
                 } else {
-                    alert((await resp.json()).message);
-                    throw new Error("Network response was not ok");
+                    alert((await resp.json()).message, "Problema del servidor");
+                    $btnsubmit.textContent = "Importar datos";
+                    $btnsubmit.disabled = false;
+                    // throw new Error("Network response was not ok");
                 }
             } catch (error) {
                 console.error("Error downloading file:", error);
@@ -167,7 +191,7 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
             }
         };
 
-        reader.readAsText(file);
+        reader.readAsText(file, "ISO-8859-1");
     }
 
     form.addEventListener("submit", sendData);
@@ -179,6 +203,7 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
         $btnreset.classList.add("hidden");
         $btnreset2.classList.add("hidden");
         $btnsubmit.classList.add("hidden");
+        $btnsubmit.disabled = false;
         $input.classList.remove("hidden");
         $errores.innerHTML = "";
         const previewContainer = document.getElementById("preview-container");
@@ -198,7 +223,7 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
         const file = $input.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = async function (e) {
                 const csvData = e.target.result;
                 const rows = csvData.split("\n");
                 const table = document.createElement("table");
@@ -220,13 +245,12 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                                 return col.trim();
                             }
                             let processedValue = col.trim();
-                            // console.log(processedValue)
                             processedValue = formatDate(processedValue);
                             processedValue = translateBoolean(processedValue);
                             return processedValue;
                         });
 
-                        if (cols[0] === "") {
+                        if (index !== 0 && cols[0] === "") {
                             $errores.innerHTML += `Fila saltada por tener el nombre vacío, linea ${index + 1} <br/>`;
                             return;
                         }
@@ -244,6 +268,7 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                             );
                             tr.appendChild(cell);
                         });
+
                         table.appendChild(tr);
                         $btnreset.classList.add("hidden");
                         $btnreset2.classList.remove("hidden");
@@ -254,12 +279,19 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                 } catch (error) {
                     alert(error.message);
                 }
+
                 // Clear previous preview if any
                 const previewContainer =
                     document.getElementById("preview-container");
                 if (previewContainer) {
                     previewContainer.innerHTML = "";
                     previewContainer.appendChild(table);
+                    const $ntr = table.querySelectorAll("tr");
+                    if ($ntr.length <= 1) {
+                        previewContainer.remove();
+                        $btnsubmit.disabled = true;
+                        console.log("no rows");
+                    }
                 } else {
                     const newPreviewContainer = document.createElement("div");
                     newPreviewContainer.id = "preview-container";
@@ -267,8 +299,14 @@ const atributosEmpresa = Object.values(Prisma.EmpresaScalarFieldEnum);
                     newPreviewContainer.appendChild(table);
                     const $main = document.querySelector("main");
                     $main.appendChild(newPreviewContainer);
+                    const $ntr = table.querySelectorAll("tr");
+                    if ($ntr.length <= 1) {
+                        newPreviewContainer.remove();
+                        $btnsubmit.disabled = true;
+                        console.log("no rows");
+                    }
                 }
-                // console.log(csvtojson(csvData));
+                console.log(await csvtojson(csvData));
             };
             reader.readAsText(file, "ISO-8859-1");
         } else {
