@@ -81,16 +81,22 @@ const cursos = await prisma.curso.findMany();
                     value={alumno.telefono as string}
                 />
                 <FormElement
-                    texto="fecha_nacimiento"
-                    type="date"
-                    placehold={alumno.fecha_nacimiento?.toString()}
-                    value={alumno.fecha_nacimiento?.toString()}
-                />
-                <FormElement
                     texto="email"
                     type="email"
                     placehold={alumno.email as string}
                     value={alumno.email as string}
+                />
+                <FormElement
+                    texto="direccion"
+                    placehold={alumno.direccion as string}
+                    value={alumno.direccion as string}
+                    classes="col-span-2"
+                />
+                <FormElement
+                    texto="fecha_nacimiento"
+                    type="date"
+                    placehold={alumno.fecha_nacimiento?.toString()}
+                    value={alumno.fecha_nacimiento?.toString()}
                 />
                 <FormElement
                     texto="nif"
@@ -108,7 +114,6 @@ const cursos = await prisma.curso.findMany();
                     value={alumno.nuss as string}
                 />
                 <FormElement
-                    classes="col-span-2"
                     texto="comentarios"
                     placehold="..."
                     value={alumno.comentarios as string}
