@@ -103,4 +103,21 @@ async function PUT({ request }) {
     }
 }
 
-export { GET, POST, PATCH, PUT };
+async function DELETE({ request }) {
+    const data = await request.json();
+
+    try {
+        await prisma.empresa.deleteMany({
+            where: {
+                id_empresa: data.id_empresa
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        return new Response(JSON.stringify({ message: "Empresa no eliminada." }), { status: 404 });
+    }
+
+    return new Response(JSON.stringify({ message: "Empresa eliminada exitosamente." }), { status: 200 });
+}
+
+export { GET, POST, PATCH, PUT, DELETE };
