@@ -29,8 +29,9 @@ if (!empresa) {
 <Layout title="Confirmar eliminación de la empresa" kind={1}>
     <Header />
     <main class="flex justify-center items-center grid-flow-col gap-10">
-        <div
+        <form
             class="grid grid-cols-2 gap-x-2 gap-y-3 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit"
+            id={empresa.id_empresa.toString()}
         >
             <div class="col-span-2 text-center">
                 <h2 class="text-2xl font-semibold">
@@ -100,14 +101,47 @@ if (!empresa) {
                 </p>
             </div>
             <div class="flex justify-center space-x-2 col-span-2 mt-6">
-                <a
+                <button
+                    id="btnsumbit"
+                    type="submit"
                     class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors duration-300"
                 >
                     Confirmar eliminación de la empresa
-                </a>
+                </button>
                 <BackBtn />
             </div>
-        </div>
+        </form>
     </main>
     <Footer />
 </Layout>
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
+    const $btnsumbit = document.querySelector("#btnsumbit");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        $btnsumbit.disabled = true;
+        $btnsumbit.textContent = "Cargando...";
+
+        data.id_empresa = parseInt(form.id);
+
+        const response = await fetch(apiurl + "/empresa", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        alert((await response.json()).message);
+
+        if (response.ok) {
+            window.location.href = "/empresa";
+        }
+        $btnsumbit.disabled = false;
+        $btnsumbit.textContent = "Confirmar eliminación de la empresa";
+    });
+</script>
