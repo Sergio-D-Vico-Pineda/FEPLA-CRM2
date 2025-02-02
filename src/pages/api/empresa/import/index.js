@@ -33,6 +33,7 @@ async function POST({ request }) {
                         sector: empresa.sector,
                         tecnologias: empresa.tecnologias,
                         comentarios: empresa.comentarios,
+                        activo: empresa.activo,
                         fecha_creacion: empresa.fecha_creacion == null || empresa.fecha_creacion == "" ? new Date() : new Date(empresa.fecha_creacion),
                     }
                 });

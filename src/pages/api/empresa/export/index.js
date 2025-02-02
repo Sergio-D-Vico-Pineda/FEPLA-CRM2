@@ -1,5 +1,4 @@
 import prisma from "@db/index.js";
-import { string } from "astro:schema";
 
 async function POST({ request }) {
     const data = await request.json();

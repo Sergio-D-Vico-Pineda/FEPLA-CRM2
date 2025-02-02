@@ -14,7 +14,7 @@ import BackBtn from "@comp/BackBtn.astro";
             <button
                 type="button"
                 id="btnremove"
-                class="hover:bg-red-500 text-white rounded-lg p-1 transition-colors "
+                class="hover:bg-red-500 text-white rounded-lg p-1 transition-colors"
             >
                 Limpiar
             </button>
@@ -138,8 +138,12 @@ import BackBtn from "@comp/BackBtn.astro";
             if (!currentLine.join("").trim()) continue;
             for (let j = 0; j < headers.length; j++) {
                 let value = currentLine[j].trim();
-                if (value === "true" || value === "false") {
-                    value = value === "true";
+                if (j == 8) {
+                    if (value === "si") {
+                        value = true;
+                    } else if (value === "no") {
+                        value = false;
+                    }
                 }
                 obj[headers[j]] = value;
 
@@ -177,7 +181,10 @@ import BackBtn from "@comp/BackBtn.astro";
                 if (resp.ok) {
                     alert((await resp.json()).message);
                     $btnsubmit.textContent = "Datos importados";
-                    $btnsubmit.classList.remove("bg-blue-700", "disabled:hover:bg-blue-700");
+                    $btnsubmit.classList.remove(
+                        "bg-blue-700",
+                        "disabled:hover:bg-blue-700",
+                    );
                     $btnsubmit.classList.add("bg-green-700");
                 } else {
                     alert((await resp.json()).message, "Problema del servidor");
