@@ -1,0 +1,341 @@
+---
+import Layout from "@lay/Layout.astro";
+import Header from "@comp/Header.astro";
+import Footer from "@comp/Footer.astro";
+import BackBtn from "@comp/BackBtn.astro";
+---
+
+<Layout title="Importar alumnos">
+    <Header />
+    <div class="flex justify-between w-full px-5 py-2 h-fit">
+        <div class="flex items-center gap-x-5">
+            <BackBtn url="/alumno" />
+            <h2 class="text-3xl">Importar datos de alumnos</h2>
+            <button
+                type="button"
+                id="btnremove"
+                class="hover:bg-red-500 text-white rounded-lg p-1 transition-colors"
+            >
+                Limpiar
+            </button>
+            <script is:inline>
+                document
+                    .querySelector("#btnremove")
+                    .addEventListener("click", async () => {
+                        const resp = await fetch(
+                            "http://localhost:4321/api/alumno/import",
+                        );
+                        alert((await resp.json()).message);
+                    });
+            </script>
+        </div>
+    </div>
+    <main class="grid justify-center grid-flow-col p-4 gap-2 overflow-hidden">
+        <div>
+            <form class="bg-gray-300 rounded w-fit h-fit p-3 shadow-md">
+                <div
+                    class="flex justify-center items-end gap-y-3 p-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
+                >
+                    <label class="cursor-pointer flex flex-col items-center">
+                        <span class="px-3 text-2xl text-nowrap"
+                            >Subir archivo CSV</span
+                        >
+                        <input
+                            class="bg-gray-700 text-white text-sm rounded-lg p-1"
+                            type="file"
+                            name="archivo"
+                            id="archivo"
+                            accept=".csv"
+                            required
+                        />
+                    </label>
+                    <button
+                        class="ms-1 mb-1 w-6 h-6 bg-red-500 text-white rounded place-items-center pb-1 hidden"
+                        type="reset"
+                        id="btnreset"
+                        ><span class="text-2xl leading-[0]">×</span></button
+                    >
+                </div>
+                <hr class="border-black border-solid my-2" />
+                <div
+                    class="col-span-3 text-center flex items-center justify-center gap-2"
+                >
+                    <button
+                        id="btnpreview"
+                        type="button"
+                        class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-2 py-2 transition-colors disabled:opacity-70 disabled:hover:bg-blue-700 disabled:cursor-not-allowed"
+                        disabled
+                        title="Debe subir un archivo CSV"
+                        >Previsualizar datos</button
+                    >
+                    <button
+                        id="btnsubmit"
+                        type="submit"
+                        class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors hidden disabled:opacity-70 disabled:hover:bg-blue-700 disabled:cursor-not-allowed"
+                        >Importar datos</button
+                    >
+                    <button
+                        class="w-6 h-6 bg-red-500 text-white rounded place-items-center hidden"
+                        type="reset"
+                        id="btnreset2"
+                        ><span class="text-2xl leading-[0]">×</span></button
+                    >
+                </div>
+            </form>
+            <div
+                id="errores"
+                class="text-wrap text-center text-red-500 font-bold w-64 mx-auto"
+            >
+            </div>
+        </div>
+    </main>
+</Layout>
+<Footer />
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const form = document.querySelector("form");
+    const $btnpreview = document.querySelector("#btnpreview");
+    const $input = document.querySelector("#archivo");
+    const $btnreset = document.querySelector("#btnreset");
+    const $btnreset2 = document.querySelector("#btnreset2");
+    const $btnsubmit = document.querySelector("#btnsubmit");
+    const $errores = document.querySelector("#errores");
+
+    function formatDate(value) {
+        // Expresión regular para detectar formato ISO (YYYY-MM-DD)
+        const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
+        if (dateRegex.test(value)) {
+            const date = new Date(value);
+
+            const day = String(date.getUTCDate()).padStart(2, "0");
+            const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Los meses van de 0 a 11
+            const year = date.getUTCFullYear();
+            const hours = String(date.getUTCHours()).padStart(2, "0");
+            const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+        return value;
+    }
+
+    // Función para traducir booleanos
+    function translateBoolean(value) {
+        const cleanedValue = value.toLowerCase().trim();
+        if (cleanedValue === "true") return "Sí";
+        if (cleanedValue === "false") return "No";
+        return value;
+    }
+
+    async function csvtojson(csvData) {
+        const lines = csvData.split("\n");
+        const result = [];
+        const headers = lines[0].split(";").map((col) => col.trim());
+        for (let i = 1; i < lines.length; i++) {
+            const obj = {};
+            const currentLine = lines[i].split(";");
+            console.log(currentLine);
+            if (!currentLine[0]) continue;
+            if (!currentLine.join("").trim()) continue;
+            for (let j = 0; j < headers.length; j++) {
+                let value = currentLine[j].trim();
+
+                if (headers[j] == "activo") {
+                    if (value === "si") {
+                        value = true;
+                    } else if (value === "no") {
+                        value = false;
+                    }
+                }
+
+                obj[headers[j]] = value;
+
+                if (obj[headers[j]] === "") obj[headers[j]] = null;
+            }
+            result.push(obj);
+        }
+        return result;
+    }
+
+    async function sendData(e) {
+        e.preventDefault();
+
+        $btnsubmit.disabled = true;
+        $btnsubmit.textContent = "Cargando...";
+
+        const file = $input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = async function (e) {
+            const csvData = e.target.result;
+            data.alumnos = await csvtojson(csvData);
+
+            try {
+                const resp = await fetch(apiurl + "/alumno/import", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (resp.ok) {
+                    alert((await resp.json()).message);
+                    $btnsubmit.textContent = "Datos importados";
+                    $btnsubmit.classList.remove(
+                        "bg-blue-700",
+                        "disabled:hover:bg-blue-700",
+                    );
+                    $btnsubmit.classList.add("bg-green-700");
+                } else {
+                    alert((await resp.json()).message, "Problema del servidor");
+                    $btnsubmit.textContent = "Importar datos";
+                    $btnsubmit.disabled = false;
+                    // throw new Error("Network response was not ok");
+                }
+            } catch (error) {
+                console.error("Error downloading file:", error);
+                alert("Error al subir el archivo");
+            }
+        };
+
+        reader.readAsText(file, "ISO-8859-1");
+    }
+
+    form.addEventListener("submit", sendData);
+
+    form.addEventListener("reset", () => {
+        $btnpreview.disabled = true;
+        $btnpreview.setAttribute("title", "Debe subir un archivo CSV");
+        $btnpreview.classList.remove("hidden");
+        $btnreset.classList.add("hidden");
+        $btnreset2.classList.add("hidden");
+        $btnsubmit.classList.add("hidden");
+        $btnsubmit.disabled = false;
+        $input.classList.remove("hidden");
+        $errores.innerHTML = "";
+        const previewContainer = document.getElementById("preview-container");
+        if (previewContainer) {
+            previewContainer.remove();
+        }
+    });
+
+    $input.addEventListener("change", () => {
+        $btnpreview.disabled = false;
+        $btnpreview.removeAttribute("title");
+        $btnreset.classList.remove("hidden");
+        $btnreset.classList.add("grid");
+    });
+
+    $btnpreview.addEventListener("click", () => {
+        const file = $input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const csvData = e.target.result;
+                const rows = csvData.split("\n");
+                const table = document.createElement("table");
+                table.classList.add(
+                    "table-auto",
+                    "w-full",
+                    "border-collapse",
+                    "border",
+                    "border-gray-400",
+                );
+
+                try {
+                    rows.forEach((row, index) => {
+                        if (!row.trim()) return;
+
+                        const cols = row.split(";").map((col) => {
+                            // Aplicar transformaciones solo a las filas de datos (no a los encabezados)
+                            if (index === 0) {
+                                return col.trim();
+                            }
+                            let processedValue = col.trim();
+                            processedValue = formatDate(processedValue);
+                            processedValue = translateBoolean(processedValue);
+                            return processedValue;
+                        });
+
+                        if (index !== 0 && cols[0] === "") {
+                            $errores.innerHTML += `Fila saltada por tener el nombre vacío, linea ${index + 1} <br/>`;
+                            return;
+                        }
+
+                        const tr = document.createElement("tr");
+                        cols.forEach((col) => {
+                            const cell = document.createElement(
+                                index === 0 ? "th" : "td",
+                            );
+                            cell.textContent = col;
+                            cell.classList.add(
+                                "border",
+                                "border-gray-400",
+                                "p-2",
+                            );
+                            tr.appendChild(cell);
+                        });
+
+                        table.appendChild(tr);
+                        $btnreset.classList.add("hidden");
+                        $btnreset2.classList.remove("hidden");
+                        $btnpreview.classList.add("hidden");
+                        $btnsubmit.classList.remove("hidden");
+                        $input.classList.add("hidden");
+                    });
+                } catch (error) {
+                    alert(error.message);
+                }
+
+                // Clear previous preview if any
+                const previewContainer =
+                    document.getElementById("preview-container");
+                if (previewContainer) {
+                    previewContainer.innerHTML = "";
+                    previewContainer.appendChild(table);
+                    const $ntr = table.querySelectorAll("tr");
+                    if ($ntr.length <= 1) {
+                        previewContainer.remove();
+                        $btnsubmit.disabled = true;
+                        console.log("no rows");
+                    }
+                } else {
+                    const newPreviewContainer = document.createElement("div");
+                    newPreviewContainer.id = "preview-container";
+                    newPreviewContainer.classList.add("overflow-auto");
+                    newPreviewContainer.appendChild(table);
+                    const $main = document.querySelector("main");
+                    $main.appendChild(newPreviewContainer);
+                    const $ntr = table.querySelectorAll("tr");
+                    if ($ntr.length <= 1) {
+                        newPreviewContainer.remove();
+                        $btnsubmit.disabled = true;
+                        console.log("no rows");
+                    }
+                }
+                console.log(await csvtojson(csvData));
+            };
+            reader.readAsText(file, "ISO-8859-1");
+        } else {
+            alert("Por favor, sube un archivo CSV primero.");
+        }
+    });
+</script>
+
+<style>
+    .table-auto {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table-auto th,
+    .table-auto td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    .table-auto th {
+        background-color: #f2f2f2;
+    }
+</style>
