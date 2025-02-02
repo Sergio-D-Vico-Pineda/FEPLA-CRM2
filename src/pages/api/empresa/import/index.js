@@ -1,36 +1,63 @@
 import prisma from "@db/index.js";
 import createRegistro from "@utils";
 
+async function GET() {
+    const delemp = await prisma.empresa.deleteMany({
+        where: {
+            fecha_creacion: new Date("2000-01-01T10:00:10.827Z")
+        }
+    });
+
+    return new Response(JSON.stringify({ message: `${delemp.count} empresas eliminadas.` }), { status: 200 });
+}
+
 async function POST({ request }) {
     let counter = 0;
     const data = await request.json();
+    const errormsg = { message: "" }
 
     try {
         console.log(data)
         counter = data.empresas.length
-        /* const newEmpr = await prisma.empresa.create({
-            data: {
-                nombre: data.nombre,
-                nombre_empresarial: data.nombre_oficial,
-                direccion: data.direccion,
-                cif: data.cif,
-                sitio_web: data.sitio_web,
-                sector: data.sector,
-                tecnologias: data.tecnologias,
-                comentarios: data.comentarios,
+        const empresas = data.empresas;
+
+        for (const empresa of empresas) {
+            try {
+                const newEmpr = await prisma.empresa.create({
+                    data: {
+                        nombre: empresa.nombre,
+                        nombre_empresarial: empresa.nombre_empresarial,
+                        direccion: empresa.direccion,
+                        cif: empresa.cif,
+                        sitio_web: empresa.sitio_web,
+                        sector: empresa.sector,
+                        tecnologias: empresa.tecnologias,
+                        comentarios: empresa.comentarios,
+                        fecha_creacion: empresa.fecha_creacion == null || empresa.fecha_creacion == "" ? new Date() : new Date(empresa.fecha_creacion),
+                    }
+                });
+            } catch (error) {
+                if (error.code === "SQLITE_CONSTRAINT") {
+                    console.log("Error creating empresa:", empresa.nombre);
+                    errormsg.message += `\nNo se ha podido crear la empresa: ${empresa.nombre}\n`;
+                }
+                counter--;
+                continue;
             }
-        })
+        }
 
-        const log = await createRegistro(prisma, { id_entidad: newEmpr.id_empresa, id_profesor: data.id_active_user }, "Empresa", "creación de empresa");
-        console.log(log); */
+        const log = await createRegistro(prisma, { id_entidad: 0, id_profesor: data.id_active_user }, "Empresa", "importación de empresas");
+        console.log(log);
 
-        return new Response(JSON.stringify({ message: `Petición alcanzada. ${counter} empresas creadas` }), { status: 200 });
+        if (counter == 0) {
+            errormsg.message += "\nNo se han creado empresas."
+            return new Response(JSON.stringify(errormsg), { status: 500 });
+        }
     } catch (error) {
-        console.log(error)
-        return new Response(JSON.stringify({
-            message: "Empresa no creada."
-        }), { status: 404 });
+        console.error("Error in POST:", error);
+        return new Response(JSON.stringify(error), { status: 500 });
     }
+    return new Response(JSON.stringify({ message: `${counter} empresas creadas.` }), { status: 201 });
 }
 
-export { POST };
+export { GET, POST };
