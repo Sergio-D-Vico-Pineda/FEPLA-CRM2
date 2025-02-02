@@ -31,29 +31,23 @@ async function POST({ request }) {
     }
 }
 
-async function PATCH({ request }) {
+async function DELETE({ request }) {
     const data = await request.json();
-
     try {
-        return new Response(JSON.stringify(user), { status: 200 });
+        await prisma.grupo.delete({
+            where: {
+                id_grupo: data.id_grupo
+            }
+        })
+
+        const log = await createRegistro(prisma, { id_entidad: data.id_grupo, id_profesor: data.id_active_user }, "Grupo", "eliminación de grupo");
+        console.log(log);
+
+        return new Response(JSON.stringify({ message: "Grupo eliminado exitosamente." }), { status: 200 });
     } catch (error) {
         console.log(error)
-        return new Response(JSON.stringify({
-            message: "User not found"
-        }), { status: 404 });
+        return new Response(JSON.stringify({ message: `Grupo no eliminado. ${error.code}` }), { status: 404 });
     }
 }
 
-async function PUT({ request }) {
-    const data = await request.json();
-    try {
-        return new Response(JSON.stringify(user), { status: 200 });
-    } catch (error) {
-        console.log(error)
-        return new Response(JSON.stringify({
-            message: "User not found"
-        }), { status: 404 });
-    }
-}
-
-export { GET, POST, PATCH, PUT };
+export { GET, POST, DELETE };   

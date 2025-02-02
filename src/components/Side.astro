@@ -22,17 +22,27 @@ const { id } = Astro.params;
 
 <div class="gap-2 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit">
     <h2 class="text-xl font-semibold mb-2">{title}</h2>
-    <div class="flex flex-col gap-y-4 my-3">
+    <ul class="flex flex-col gap-y-1 my-3">
         {
             object &&
                 object.length > 0 &&
                 object.map((item) => (
-                    <span class="cursor-default" title={item[descripcion]}>
-                        {item[nombre]}
-                    </span>
+                    <li class="flex justify-between cursor-default">
+                        <span title={item[descripcion]}>{item[nombre]}</span>
+                        <form id={item.id_grupo.toString()}>
+                            <button
+                                title={`Eliminar ${btntext}`}
+                                class="pb-0.5 pr-[1px] w-4 h-4 bg-red-500 text-white rounded grid place-content-center "
+                                type="submit"
+                                id="btnsubmit"
+                            >
+                                <span>×</span>
+                            </button>
+                        </form>
+                    </li>
                 ))
         }
-    </div>
+    </ul>
     <div class="flex justify-center">
         <a
             href=`${url}/${id}`
@@ -42,3 +52,30 @@ const { id } = Astro.params;
         </a>
     </div>
 </div>
+
+<script is:inline type="module">
+    import { apiurl, data } from "/utils.js";
+    const forms = document.querySelectorAll("form");
+
+    forms.forEach((form) => {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            data.id_grupo = parseInt(form.id);
+
+            const response = await fetch(apiurl + "/grupo", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            alert((await response.json()).message);
+
+            if (response.ok) {
+                window.location.reload();
+            }
+        });
+    });
+</script>
