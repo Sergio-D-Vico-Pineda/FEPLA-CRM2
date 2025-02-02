@@ -3,6 +3,27 @@ import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
+import Counter from "@comp/Counter.astro";
+import prisma from "@db/index.js";
+
+const profesores = await prisma.profesor.count();
+
+const profesoresSinTelefono = await prisma.profesor.count({
+    where: {
+        telefono: null,
+    },
+});
+
+const profesoresSinNIP = await prisma.profesor.count({
+    where: {
+        nip: null,
+        AND: {
+            id_profesor: {
+                not: 0,
+            },
+        },
+    },
+});
 ---
 
 <AdminLoggedIn />
@@ -42,7 +63,13 @@ import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
                     href="/admin/listaprof"
                     class="rounded-md shadow-md p-2 w-fit text-white bg-blue-500 hover:bg-blue-700 transition-colors"
                 >
-                    Lista de profesores
+                    Listado de profesores {
+                        profesores && (
+                            <span class="text-center text-lg">
+                                ({profesores})
+                            </span>
+                        )
+                    }
                 </a>
                 <a
                     href="/admin/registros"
@@ -58,7 +85,16 @@ import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
             <h2 class="text-3xl font-semibold text-center">Avisos</h2>
             <hr class="border-black border-solid border-2 m-4" />
             <ul class="text-gray-700 flex flex-col gap-1">
-                <li>Hay profesores sin NIP. (🚧)</li>
+                <Counter
+                    num={profesoresSinTelefono}
+                    texto="profesor sin teléfono"
+                    textos="profesores sin teléfono"
+                />
+                <Counter
+                    num={profesoresSinNIP}
+                    texto="profesor sin NIP"
+                    textos="profesores sin NIP"
+                />
             </ul>
         </div>
     </main>

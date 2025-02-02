@@ -2,6 +2,46 @@
 import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
+import Counter from "@comp/Counter.astro";
+import prisma from "@db/index.js";
+
+const empresas = await prisma.empresa.count();
+const contactos = await prisma.contacto.count();
+const institutos = await prisma.instituto.count();
+
+const empresasConAlumnos = await prisma.empresa.count({
+    where: {
+        practicas: {
+            some: {},
+        },
+    },
+});
+
+const alumnosConPracticas = await prisma.alumno.count({
+    where: {
+        practicas: {
+            some: {},
+        },
+    },
+});
+
+const alumnosSinEmail = await prisma.alumno.count({
+    where: {
+        email: null,
+    },
+});
+
+const alumnosSinNia = await prisma.alumno.count({
+    where: {
+        nia: null,
+    },
+});
+
+const alumnosSinNuss = await prisma.alumno.count({
+    where: {
+        nuss: null,
+    },
+});
 ---
 
 <Layout title="Inicio de FEPLA-CRM" kind={1}>
@@ -70,14 +110,43 @@ import Footer from "@comp/Footer.astro";
                     href="/instituto/nuevoinstituto">instituto</a
                 >.
             </p>
+            <hr class="border-black border-solid my-4" />
+            <div class="flex gap-2">
+                <Counter num={empresas} texto="empresa" />
+                <Counter num={contactos} texto="contacto" />
+                <Counter num={1} texto="instituto" />
+                <Counter
+                    num={empresasConAlumnos}
+                    texto="empresa con alumnos"
+                    textos="empresas con alumnos"
+                />
+                <Counter
+                    num={alumnosConPracticas}
+                    texto="alumno con práctica"
+                    textos="alumnos con prácticas"
+                />
+            </div>
         </div>
         <div
-            class="min-w-[300px] max-w-[550px] flex flex-col gap-2 py-8 ps-10 h-full overflow-hidden flex-1"
+            class="min-w-[300px] max-w-[550px] flex flex-col gap-2 py-8 ps-10 h-full overflow-hidden flex-1 bg-gray-300 rounded-lg m-2"
         >
             <h2 class="text-3xl font-semibold mb-2">Avisos</h2>
-            <ul class="text-gray-700 flex flex-col gap-1">
-                <li>Hay alumnos sin email. (🚧)</li>
-                <li>Hay alumnos sin NIA. (🚧)</li>
+            <ul class="text-gray-700 flex flex-col gap-1 text-lg">
+                <Counter
+                    num={alumnosSinEmail}
+                    texto="alumno sin mail"
+                    textos="alumnos sin email"
+                />
+                <Counter
+                    num={alumnosSinNia}
+                    texto="alumno sin NIA"
+                    textos="alumnos sin NIA"
+                />
+                <Counter
+                    num={alumnosSinNuss}
+                    texto="alumno sin NUSS"
+                    textos="alumnos sin NUSS"
+                />
             </ul>
         </div>
     </main>
