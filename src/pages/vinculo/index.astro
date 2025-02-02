@@ -3,7 +3,6 @@ import Layout from "@lay/Layout.astro";
 import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
-import Empresas from "@comp/Empresas.astro";
 import prisma from "@db/index.js";
 
 const rows = await prisma.contacto_Empresa.findMany({
@@ -24,7 +23,7 @@ const rows = await prisma.contacto_Empresa.findMany({
             <h2 class="text-3xl">Listado de vínculos</h2>
         </div>
         <div class="flex items-center gap-4">
-            <Empresas isrequired={false} />(🚧)
+            <!-- <Empresas isrequired={false} />(🚧) -->
             <input
                 id="busqueda"
                 class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg p-1.5"
