@@ -138,7 +138,7 @@ import BackBtn from "@comp/BackBtn.astro";
             if (!currentLine.join("").trim()) continue;
             for (let j = 0; j < headers.length; j++) {
                 let value = currentLine[j].trim();
-                if (j == 8) {
+                if (headers[j] == "activo") {
                     if (value === "si") {
                         value = true;
                     } else if (value === "no") {
