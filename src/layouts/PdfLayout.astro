@@ -16,7 +16,7 @@ const { title } = Astro.props;
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
     </head>
-    <body class="structuresm">
+    <body class="structure">
         <slot />
     </body>
 </html>
@@ -58,9 +58,14 @@ const { title } = Astro.props;
             Courier New,
             monospace;
     }
-    .structuresm {
-        display: grid;
+    .structure {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
         height: 100vh;
-        grid-template-rows: auto 1fr auto;
+        width: 100vw;
+        padding-inline: 1rem;
+        padding: 50px;
     }
 </style>

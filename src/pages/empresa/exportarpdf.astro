@@ -1,0 +1,104 @@
+---
+import Layout from "@lay/PdfLayout.astro";
+import prisma from "@db/index.js";
+
+const empresas = await prisma.empresa.findMany({
+    include: {
+        contactos: {
+            include: {
+                contacto: true,
+            },
+        },
+    },
+});
+---
+
+<Layout title="Exportar PDF">
+    {
+        empresas.map((empresa) => (
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="9">{empresa.nombre}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{empresa.id_empresa}</td>
+                        <td>{empresa.nombre_empresarial}</td>
+                        <td>{empresa.direccion}</td>
+                        <td>{empresa.cif}</td>
+                        <td>{empresa.sitio_web}</td>
+                        <td>{empresa.sector}</td>
+                        <td>{empresa.tecnologias}</td>
+                        <td>{empresa.comentarios}</td>
+                        <td>{empresa.activo}</td>
+                    </tr>
+                    {empresa.contactos.length != 0 && (
+                        <tr>
+                            <td colspan="4">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Contacto</th>
+                                            <th>Teléfono</th>
+                                            <th>Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {empresa.contactos.map((contacto) => (
+                                            <tr>
+                                                <td>
+                                                    {contacto.contacto.nombre}
+                                                </td>
+                                                <td>
+                                                    {contacto.contacto.telefono}
+                                                </td>
+                                                <td>
+                                                    {contacto.contacto.email}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        ))
+    }
+</Layout>
+
+<style>
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    @media print {
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td,
+        th {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    td,
+    th {
+        border: 1px solid black;
+        padding: 5px;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
