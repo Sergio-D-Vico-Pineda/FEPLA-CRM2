@@ -9,7 +9,7 @@ interface Props {
 let { title, value, classes = "", date = false } = Astro.props;
 ---
 
-<div class=`${classes}`>
+<div class={classes}>
     <h2 class="text-xl font-semibold mb-2">{title}</h2>
     {
         value === null || value === "" ? (

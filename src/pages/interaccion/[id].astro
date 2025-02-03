@@ -48,17 +48,37 @@ if (!interaccion) {
                     Detalles de una interacción
                 </h2>
                 <InfoDivs title="Nombre" value={interaccion.empresa.nombre} />
-                <InfoDivs title="Nombre Empresarial" value={interaccion.empresa.nombre_empresarial} />
-                <InfoDivs title="Dirección" value={interaccion.empresa.direccion} />
+                <InfoDivs
+                    title="Nombre Empresarial"
+                    value={interaccion.empresa.nombre_empresarial}
+                />
+                <InfoDivs
+                    title="Dirección"
+                    value={interaccion.empresa.direccion}
+                />
                 <InfoDivs title="CIF" value={interaccion.empresa.cif} />
                 <hr class="border-black border-solid col-span-2 my-2" />
                 {
                     interaccion.contacto ? (
-                        <InfoDivs title="Nombre" value={interaccion.contacto.nombre} />
-                        <InfoDivs title="Apellidos" value={interaccion.contacto.apellidos} />
-                        <InfoDivs title="Teléfono" value={interaccion.contacto.telefono} />
-                        <InfoDivs title="Email" value={interaccion.contacto.email} />
-                    ) : ( 
+                        <>
+                            <InfoDivs
+                                title="Nombre"
+                                value={interaccion.contacto.nombre}
+                            />
+                            <InfoDivs
+                                title="Apellidos"
+                                value={interaccion.contacto.apellidos}
+                            />
+                            <InfoDivs
+                                title="Teléfono"
+                                value={interaccion.contacto.telefono}
+                            />
+                            <InfoDivs
+                                title="Email"
+                                value={interaccion.contacto.email}
+                            />
+                        </>
+                    ) : (
                         <i>Sin Contacto</i>
                     )
                 }
@@ -67,7 +87,9 @@ if (!interaccion) {
                 <InfoDivs title="Tipo" value={interaccion.tipo} />
                 <InfoDivs title="Estado" value={interaccion.estado} />
                 <div>
-                    <h2 class="text-xl font-semibold mb-2">Fecha de la interacción</h2>
+                    <h2 class="text-xl font-semibold mb-2">
+                        Fecha de la interacción
+                    </h2>
                     <p class="text-gray-700">
                         {
                             new Date(interaccion.fecha_interaccion as Date)
@@ -78,14 +100,16 @@ if (!interaccion) {
                 </div>
                 {
                     interaccion.comentarios && (
-                        <InfoDivs title="Comentarios" value={interaccion.comentarios} classes="col-span-2" />
+                        <InfoDivs
+                            title="Comentarios"
+                            value={interaccion.comentarios}
+                            classes="col-span-2"
+                        />
                     )
                 }
                 <hr class="border-black border-solid col-span-2 my-2" />
                 <div>
-                    <h2 class="text-xl font-semibold mb-2">
-                        Creación
-                    </h2>
+                    <h2 class="text-xl font-semibold mb-2">Creación</h2>
                     <p class="text-gray-700">
                         {
                             new Date(interaccion.fecha_creacion)
@@ -95,9 +119,7 @@ if (!interaccion) {
                     </p>
                 </div>
                 <div>
-                    <h2 class="text-xl font-semibold mb-2">
-                        Actualización
-                    </h2>
+                    <h2 class="text-xl font-semibold mb-2">Actualización</h2>
                     <p class="text-gray-700">
                         {
                             new Date(interaccion.fecha_actualizacion as Date)
@@ -111,7 +133,7 @@ if (!interaccion) {
                 class="flex items-center justify-center space-x-2 col-span-2 mt-2"
             >
                 <a
-                    href=`/interaccion/editar/${interaccion.id_interaccion}`
+                    href={`/interaccion/editar/${interaccion.id_interaccion}`}
                     class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                 >
                     Editar
@@ -126,10 +148,7 @@ if (!interaccion) {
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
         </div>
-        <Popup
-            title="¿Está seguro de eliminar la interacción?"
-            jdelete={true}
-        >
+        <Popup title="¿Está seguro de eliminar la interacción?" jdelete={true}>
             <span class="text-red-600"> Esta acción es irreversible. </span>
         </Popup>
     </main>

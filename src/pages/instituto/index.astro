@@ -18,20 +18,25 @@ const rows = await prisma.instituto.findMany();
             <h2 class="text-3xl">Listado de institutos</h2>
         </div>
         <div class="flex items-center gap-4">
-            { rows.length > 0 && (
-                <input
-                    id="busqueda"
-                    class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg p-1.5"
-                    type="text"
-                    placeholder="Nombre del instituto"
-                />
-                <button
-                    id="btnbuscar"
-                    type="button"
-                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                    >Buscar</button
-                >
-            )}
+            {
+                rows.length > 0 && (
+                    <>
+                        <input
+                            id="busqueda"
+                            class="bg-gray-700 border border-gray-300 text-white text-sm rounded-lg p-1.5"
+                            type="text"
+                            placeholder="Nombre del instituto"
+                        />
+                        <button
+                            id="btnbuscar"
+                            type="button"
+                            class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
+                        >
+                            Buscar
+                        </button>
+                    </>
+                )
+            }
             <a
                 href="/instituto/nuevoinstituto"
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
@@ -40,69 +45,79 @@ const rows = await prisma.instituto.findMany();
         </div>
     </div>
     <main class="px-20 py-5">
-        <div
-            class="max-h-[68vh] overflow-y-auto shadow-md rounded-lg"
-        >
-        { rows.length > 0 ? (
-            <table class="min-w-full bg-white overflow-y-auto">
-                <thead class="bg-gray-100">
-                    <tr class="border-b-2 border-black border-solid">
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Nombre</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Descripción</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Dirección</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Teléfono</th
-                        >
-                        <th
-                            class="px-4 py-3 text-center text-sm font-semibold text-gray-600"
-                            >Acciones</th
-                        >
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    {
-                        rows.map((instituto) => (
-                            <tr class="hover:bg-gray-100" data-active="true">
-                                <td class="px-4 py-3 text-sm text-gray-900">{instituto.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{instituto.descripcion}</td>
-                                <td class="px-4 py-3 text-sm text-gray-500">{instituto.direccion}</td>
-                                <td class="px-4 py-3 text-sm text-blue-500">{instituto.telefono}</td>
-                                <td class="px-4 py-3 text-sm text-right">
-                                    <div class="flex justify-center space-x-2">
-                                        <a
-                                            href=`/instituto/editar/${instituto.id_instituto}`
-                                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                                Editar
-                                        </a>
-                                        <a
-                                            href=`/instituto/${instituto.id_instituto}`
-                                            class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                                Detalles
-                                        </a>
-                                        <a href=`/grupo/nuevogrupo/${instituto.id_instituto}`
-                                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                                Nuevo grupo
-                                        </a>
-                                    </div>
-                                </td>
+        <div class="max-h-[68vh] overflow-y-auto shadow-md rounded-lg">
+            {
+                rows.length > 0 ? (
+                    <table class="min-w-full bg-white overflow-y-auto">
+                        <thead class="bg-gray-100">
+                            <tr class="border-b-2 border-black border-solid">
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Nombre
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Descripción
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Dirección
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Teléfono
+                                </th>
+                                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                    Acciones
+                                </th>
                             </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
-            ) : (
-                <h3 class="py-10 text-center text-red-500 text-3xl">No hay institutos registrados</h3>
-            )}
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {rows.map((instituto) => (
+                                <tr
+                                    class="hover:bg-gray-100"
+                                    data-active="true"
+                                >
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {instituto.nombre}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {instituto.descripcion}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-500">
+                                        {instituto.direccion}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-blue-500">
+                                        {instituto.telefono}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-right">
+                                        <div class="flex justify-center space-x-2">
+                                            <a
+                                                href={`/instituto/editar/${instituto.id_instituto}`}
+                                                class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Editar
+                                            </a>
+                                            <a
+                                                href={`/instituto/${instituto.id_instituto}`}
+                                                class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Detalles
+                                            </a>
+                                            <a
+                                                href={`/grupo/nuevogrupo/${instituto.id_instituto}`}
+                                                class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Nuevo grupo
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <h3 class="py-10 text-center text-red-500 text-3xl">
+                        No hay institutos registrados
+                    </h3>
+                )
+            }
         </div>
     </main>
     <Footer />
@@ -116,8 +131,10 @@ const rows = await prisma.instituto.findMany();
     if (btnBusqueda) {
         btnBusqueda.addEventListener("click", () => {
             const textoBusqueda = inputBusqueda.value.toLowerCase();
-            allrows.forEach(row => {
-                let textoCelda = row.querySelector("td").textContent.toLowerCase();
+            allrows.forEach((row) => {
+                let textoCelda = row
+                    .querySelector("td")
+                    .textContent.toLowerCase();
                 if (textoCelda.includes(textoBusqueda)) {
                     row.classList.remove("hidden");
                 } else {
@@ -127,12 +144,11 @@ const rows = await prisma.instituto.findMany();
         });
     }
 
-    if (inputBusqueda) {   
+    if (inputBusqueda) {
         inputBusqueda.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 btnBusqueda.click();
             }
         });
     }
-
 </script>

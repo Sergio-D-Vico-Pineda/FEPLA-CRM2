@@ -10,7 +10,7 @@ const rows = await prisma.contacto_Empresa.findMany({
         contacto: true,
         empresa: true,
     },
-})
+});
 
 /* id_contacto_empresa, puesto, fecha_creacion, fecha_actualizacion, id_contacto*, id_empresa* */
 ---
@@ -44,60 +44,64 @@ const rows = await prisma.contacto_Empresa.findMany({
         </div>
     </div>
     <main class="px-20 py-5">
-        <div
-            class="max-h-[68vh] overflow-y-auto shadow-md rounded-lg"
-        >
-        { rows.length > 0 ? (
-            <table class="min-w-full bg-white overflow-y-auto">
-                <thead class="bg-gray-100">
-                    <tr class="border-b-2 border-black border-solid">
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Contacto</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Empresa</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Puesto</th
-                        >
-                        <th
-                            class="px-4 py-3 text-center text-sm font-semibold text-gray-600"
-                            >Acciones</th
-                        >
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    {
-                        rows.map((vinculo) => (
-                            <tr class="hover:bg-gray-100" data-active>
-                                <td class="px-4 py-3 text-sm text-gray-900">{vinculo.contacto.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{vinculo.empresa.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-500">{vinculo.puesto}</td>
-                                <td class="px-4 py-3 text-sm text-right">
-                                    <div class="flex justify-center space-x-2">
-                                        <a
-                                            href=`/vinculo/editar/${vinculo.id_contacto_empresa}`
-                                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Editar
-                                        </a>
-                                        <a
-                                        href=`/vinculo/${vinculo.id_contacto_empresa}`
-                                        class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Detalles
-                                        </a>
-                                    </div>
-                                </td>
+        <div class="max-h-[68vh] overflow-y-auto shadow-md rounded-lg">
+            {
+                rows.length > 0 ? (
+                    <table class="min-w-full bg-white overflow-y-auto">
+                        <thead class="bg-gray-100">
+                            <tr class="border-b-2 border-black border-solid">
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Contacto
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Empresa
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Puesto
+                                </th>
+                                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                    Acciones
+                                </th>
                             </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
-            ) : (
-                <h3 class="py-10 text-center text-red-500 text-3xl">No hay vínculos registrados</h3>
-            )}
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {rows.map((vinculo) => (
+                                <tr class="hover:bg-gray-100" data-active>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {vinculo.contacto.nombre}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {vinculo.empresa.nombre}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-500">
+                                        {vinculo.puesto}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-right">
+                                        <div class="flex justify-center space-x-2">
+                                            <a
+                                                href={`/vinculo/editar/${vinculo.id_contacto_empresa}`}
+                                                class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Editar
+                                            </a>
+                                            <a
+                                                href={`/vinculo/${vinculo.id_contacto_empresa}`}
+                                                class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Detalles
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <h3 class="py-10 text-center text-red-500 text-3xl">
+                        No hay vínculos registrados
+                    </h3>
+                )
+            }
         </div>
     </main>
     <Footer />
@@ -110,10 +114,17 @@ const rows = await prisma.contacto_Empresa.findMany({
     if (btnBusqueda) {
         btnBusqueda.addEventListener("click", () => {
             const textoBusqueda = inputBusqueda.value.toLowerCase();
-            allrows.forEach(row => {
-                let textoCelda = row.querySelector("td").textContent.toLowerCase();
-                let textoCelda2 = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
-                if (textoCelda.includes(textoBusqueda) || textoCelda2.includes(textoBusqueda)) {
+            allrows.forEach((row) => {
+                let textoCelda = row
+                    .querySelector("td")
+                    .textContent.toLowerCase();
+                let textoCelda2 = row
+                    .querySelector("td:nth-child(2)")
+                    .textContent.toLowerCase();
+                if (
+                    textoCelda.includes(textoBusqueda) ||
+                    textoCelda2.includes(textoBusqueda)
+                ) {
                     row.classList.remove("hidden");
                 } else {
                     row.classList.add("hidden");
@@ -122,12 +133,11 @@ const rows = await prisma.contacto_Empresa.findMany({
         });
     }
 
-    if (inputBusqueda) {   
+    if (inputBusqueda) {
         inputBusqueda.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 btnBusqueda.click();
             }
         });
     }
-
 </script>

@@ -33,9 +33,9 @@ if (!interaccion) {
 
 let contac_name = "";
 if (interaccion.contacto) {
-    contac_name = interaccion.contacto?.nombre + " " + interaccion.contacto?.apellidos
+    contac_name =
+        interaccion.contacto?.nombre + " " + interaccion.contacto?.apellidos;
 }
-
 ---
 
 <Layout title="Modificación de la interacción" kind={1}>
@@ -72,27 +72,44 @@ if (interaccion.contacto) {
                     <p class="text-gray-700">{interaccion.empresa.cif}</p>
                 </div>
                 <hr class="border-black border-solid col-span-2 my-2" />
-                { interaccion.contacto && (
-                        <div>
-                        <h2 class="text-xl font-semibold mb-2">Nombre</h2>
-                        <p class="text-gray-700">{interaccion.contacto.nombre}</p>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold mb-2">Apellidos</h2>
-                        <p class="text-gray-700">
-                            {interaccion.contacto.apellidos}
-                        </p>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold mb-2">Teléfono</h2>
-                        <p class="text-gray-700">{interaccion.contacto.telefono}</p>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold mb-2">Email</h2>
-                        <p class="text-gray-700">{interaccion.contacto.email}</p>
-                    </div>
-                    <hr class="border-black border-solid col-span-2 my-2" />
-                    ) 
+                {
+                    interaccion.contacto && (
+                        <>
+                            <div>
+                                <h2 class="text-xl font-semibold mb-2">
+                                    Nombre
+                                </h2>
+                                <p class="text-gray-700">
+                                    {interaccion.contacto.nombre}
+                                </p>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-semibold mb-2">
+                                    Apellidos
+                                </h2>
+                                <p class="text-gray-700">
+                                    {interaccion.contacto.apellidos}
+                                </p>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-semibold mb-2">
+                                    Teléfono
+                                </h2>
+                                <p class="text-gray-700">
+                                    {interaccion.contacto.telefono}
+                                </p>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-semibold mb-2">
+                                    Email
+                                </h2>
+                                <p class="text-gray-700">
+                                    {interaccion.contacto.email}
+                                </p>
+                            </div>
+                            <hr class="border-black border-solid col-span-2 my-2" />
+                        </>
+                    )
                 }
                 <Contactos
                     classes="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
@@ -116,7 +133,9 @@ if (interaccion.contacto) {
                 <FormElement
                     texto="fecha_interaccion"
                     type="datetime-local"
-                    value={(interaccion.fecha_interaccion as Date).toISOString().slice(0, 16)}
+                    value={(interaccion.fecha_interaccion as Date)
+                        .toISOString()
+                        .slice(0, 16)}
                 />
                 <FormElement
                     texto="comentarios"
@@ -130,7 +149,7 @@ if (interaccion.contacto) {
                 <button
                     type="submit"
                     id="btnsubmit"
-                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm p-2 transition-colors" 
+                    class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm p-2 transition-colors"
                 >
                     Modificar interacción
                 </button>
@@ -163,8 +182,8 @@ if (interaccion.contacto) {
 
         try {
             const id_contacto = contactos.querySelector(
-                    `option[value="${form.id_contacto.value}"]`,
-                );
+                `option[value="${form.id_contacto.value}"]`,
+            );
             if (!id_contacto) {
                 data.id_contacto = null;
             } else {

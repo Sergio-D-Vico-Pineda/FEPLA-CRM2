@@ -10,7 +10,7 @@ import prisma from "@db/index.js";
 const { id } = Astro.params;
 
 if (!Number(id)) {
-    console.log("Id no válido")
+    console.log("Id no válido");
     return Astro.redirect("/404");
 }
 
@@ -18,7 +18,7 @@ const alumno = await prisma.alumno.findUnique({
     where: {
         id_alumno: Number(id),
     },
-})
+});
 
 if (!alumno) {
     console.log("No hay registro con ese valor");
@@ -31,86 +31,108 @@ if (!alumno) {
 <Layout title="Información de la alumno" kind={1}>
     <Header />
     <main class="flex justify-center items-center grid-flow-col gap-10">
-        { alumno &&
-        <div
-            class="grid grid-cols-2 gap-x-2 gap-y-2.5 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit"
-        >
-            <div class="col-span-2 text-center">
-                {
-                    alumno.activo ? (
-                        <h2 class="text-2xl font-semibold mb-2 text-green-500">
-                            Información
+        {
+            alumno && (
+                <div class="grid grid-cols-2 gap-x-2 gap-y-2.5 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit">
+                    <div class="col-span-2 text-center">
+                        {alumno.activo ? (
+                            <h2 class="text-2xl font-semibold mb-2 text-green-500">
+                                Información
+                            </h2>
+                        ) : (
+                            <h2 class="text-2xl font-semibold mb-2 text-red-500">
+                                Información
+                            </h2>
+                        )}
+                    </div>
+                    <InfoDivs title="Nombre" value={alumno.nombre} />
+                    <InfoDivs title="Apellidos" value={alumno.apellidos} />
+                    <InfoDivs title="Teléfono" value={alumno.telefono} />
+                    <InfoDivs title="Email" value={alumno.email} />
+                    <InfoDivs
+                        title="Dirección"
+                        value={alumno.direccion}
+                        classes="col-span-2 text-center"
+                    />
+                    <InfoDivs
+                        title="Fecha de nacimiento"
+                        value={alumno.fecha_nacimiento}
+                        date
+                    />
+                    <InfoDivs title="NIF" value={alumno.nif} />
+                    <InfoDivs title="NIA" value={alumno.nia} />
+                    <InfoDivs title="NUSS" value={alumno.nuss} />
+                    {alumno.comentarios && (
+                        <InfoDivs
+                            title="Comentarios"
+                            value={alumno.comentarios}
+                            classes="col-span-2 text-center"
+                        />
+                    )}
+                    <hr class="col-span-2 border-black" />
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">
+                            Fecha de Creación
                         </h2>
-                    ) : (
-                        <h2 class="text-2xl font-semibold mb-2 text-red-500">
-                            Información
+                        <p class="text-gray-700">
+                            {new Date(alumno.fecha_creacion)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")}
+                        </p>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">
+                            Fecha de Actualización
                         </h2>
-                    )
-                }
-            </div>
-            <InfoDivs title="Nombre" value={alumno.nombre} />
-            <InfoDivs title="Apellidos" value={alumno.apellidos} />
-            <InfoDivs title="Teléfono" value={alumno.telefono} />
-            <InfoDivs title="Email" value={alumno.email} />
-            <InfoDivs title="Dirección" value={alumno.direccion} classes="col-span-2 text-center" />
-            <InfoDivs title="Fecha de nacimiento" value={alumno.fecha_nacimiento} date />
-            <InfoDivs title="NIF" value={alumno.nif} />
-            <InfoDivs title="NIA" value={alumno.nia} />
-            <InfoDivs title="NUSS" value={alumno.nuss} />
-            {
-                alumno.comentarios && <InfoDivs title="Comentarios" value={alumno.comentarios} classes="col-span-2 text-center" />
-            }
-            <hr class="col-span-2 border-black" />
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
-                <p class="text-gray-700">{new Date(alumno.fecha_creacion).toLocaleString("es-ES").replace(",", "")}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">
-                    Fecha de Actualización
-                </h2>
-                <p class="text-gray-700">{new Date(alumno.fecha_actualizacion as Date).toLocaleString("es-ES").replace(",", "")}</p>
-            </div>
-            <div class="flex justify-center space-x-2 col-span-2 mt-6 items-center">
-                {
-                    alumno.activo ? (
-                        <a
-                            href=`/practica/alumno/${alumno.id_alumno}`
-                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
-                        >
-                            Crear prácticas
-                        </a>
-                        <a
-                            href=`/alumno/editar/${alumno.id_alumno}`
-                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
-                        >
-                            Editar
-                        </a>
-                        <button
-                            id="btnDesactivar"
-                            type="button"
-                            class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors duration-300"
-                        >
-                            Desactivar
-                        </button>
-                    ) : (
-                    <button
-                            id="btnActivar"
-                            type="button"
-                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300"
-                        >
-                            Activar
-                        </button>
-                    )
-                }
-                <BackBtn />
-            </div>
-            <span id="id_alumno" class="hidden">{alumno.id_alumno}</span>
-        </div>
+                        <p class="text-gray-700">
+                            {new Date(alumno.fecha_actualizacion as Date)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")}
+                        </p>
+                    </div>
+                    <div class="flex justify-center space-x-2 col-span-2 mt-6 items-center">
+                        {alumno.activo ? (
+                            <>
+                                <a
+                                    href={`/practica/alumno/${alumno.id_alumno}`}
+                                    class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                >
+                                    Crear prácticas
+                                </a>
+                                <a
+                                    href={`/alumno/editar/${alumno.id_alumno}`}
+                                    class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                >
+                                    Editar
+                                </a>
+                                <button
+                                    id="btnDesactivar"
+                                    type="button"
+                                    class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                >
+                                    Desactivar
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                id="btnActivar"
+                                type="button"
+                                class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                            >
+                                Activar
+                            </button>
+                        )}
+                        <BackBtn />
+                    </div>
+                    <span id="id_alumno" class="hidden">
+                        {alumno.id_alumno}
+                    </span>
+                </div>
+            )
         }
         <Popup
             title="¿Está seguro de desactivar el alumno?"
-            url=`/alumno/eliminar/${alumno.id_alumno}`
+            url={`/alumno/eliminar/${alumno.id_alumno}`}
         />
     </main>
     <Footer />
@@ -131,7 +153,7 @@ if (!alumno) {
         });
     }
 
-    data.id_alumno = parseInt(id_alu.textContent)
+    data.id_alumno = parseInt(id_alu.textContent);
 
     const cambiarEstado = async (estado) => {
         data.activo = estado;

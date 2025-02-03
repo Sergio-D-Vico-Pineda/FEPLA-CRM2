@@ -9,7 +9,7 @@ import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
 const rows = await prisma.profesor.findMany({
     include: {
         usuario: true,
-    }
+    },
 });
 
 let profesores = rows.map((row) => {
@@ -27,10 +27,9 @@ let profesores = rows.map((row) => {
         id_usuario: row.usuario?.id_usuario,
         usuario: row.usuario?.usuario,
         activo: row.usuario?.activo,
-    }
+    };
     return profesor;
 });
-
 ---
 
 <AdminLoggedIn />
@@ -39,103 +38,128 @@ let profesores = rows.map((row) => {
     <div class="flex justify-between w-full px-5 py-2 h-fit">
         <h2 class="text-3xl">Listado de profesores</h2>
         <div class="flex items-center gap-4">
-            { rows.length > 0 && (
-                            <label class="flex items-center border py-1.5 px-3 gap-3 rounded border-gray-700 text-sm font-medium">
-
-                <span>Activo</span>
-                <input id="activo-checkbox" type="checkbox" class="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" checked>
-            </label>
-            )}
+            {
+                rows.length > 0 && (
+                    <label class="flex items-center border py-1.5 px-3 gap-3 rounded border-gray-700 text-sm font-medium">
+                        <span>Activo</span>
+                        <input
+                            id="activo-checkbox"
+                            type="checkbox"
+                            class="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            checked
+                        />
+                    </label>
+                )
+            }
             <BackBtn />
         </div>
     </div>
     <main class="px-20 py-5">
-        <div
-            class="max-h-[68vh] overflow-y-auto shadow-md rounded-lg"
-        >
-        { rows.length > 0 ? (
-            <table class="min-w-full bg-white overflow-y-auto">
-                <thead class="bg-gray-100">
-                    <tr class="border-b-2 border-black border-solid">
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Nombre</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Apellidos</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Usuario</th
-                        >
-                        <th
-                            class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
-                            >Email</th
-                        >
-                        <th
-                            class="px-4 py-3 text-center text-sm font-semibold text-gray-600"
-                            >Acciones</th
-                        >
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    {
-                        profesores.map((profesor) => (
-                        profesor.activo ? (
-                            <tr class="hover:bg-gray-100" data-active="true">
-                                <td class="px-4 py-3 text-sm text-gray-900">{profesor.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{profesor.apellidos}</td>
-                                <td class="px-4 py-3 text-sm text-gray-500">{profesor.usuario}</td>
-                                <td class="px-4 py-3 text-sm text-blue-500">{profesor.email}</td>
-                                <td class="px-4 py-3 text-sm text-right">
-                                {
-                                    profesor.usuario != "admin" && (
-                                    <div class="flex justify-center space-x-2">
-                                        <a
-                                            href=`/profesor/editar/${profesor.id_profesor}`
-                                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Editar
-                                        </a>
-                                        <a
-                                        href=`/profesor/${profesor.id_profesor}`
-                                        class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Detalles
-                                        </a>
-                                    </div>
-                                    )
-                                }
-                                </td>
+        <div class="max-h-[68vh] overflow-y-auto shadow-md rounded-lg">
+            {
+                rows.length > 0 ? (
+                    <table class="min-w-full bg-white overflow-y-auto">
+                        <thead class="bg-gray-100">
+                            <tr class="border-b-2 border-black border-solid">
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Nombre
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Apellidos
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Usuario
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">
+                                    Email
+                                </th>
+                                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                    Acciones
+                                </th>
                             </tr>
-                        ) : (
-                            <tr class="hover:bg-gray-100 hidden border border-red-500" data-active="false">
-                                <td class="px-4 py-3 text-sm text-gray-900">{profesor.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{profesor.apellidos}</td>
-                                <td class="px-4 py-3 text-sm text-gray-500">{profesor.usuario}</td>
-                                <td class="px-4 py-3 text-sm text-blue-500">{profesor.email}</td>
-                                <td class="px-4 py-3 text-sm text-right">
-                                    <div class="flex justify-center space-x-2">
-                                        <a
-                                            href=`/profesor/editar/${profesor.id_profesor}`
-                                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Editar
-                                        </a>
-                                        <a
-                                        href=`/profesor/${profesor.id_profesor}`
-                                        class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Detalles
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            )
-                        ))
-                    }
-                </tbody>
-            </table>
-            ) : (
-                <h3 class="py-10 text-center text-red-500 text-3xl">No hay profesores registrados</h3>
-            )}
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {profesores.map((profesor) =>
+                                profesor.activo ? (
+                                    <tr
+                                        class="hover:bg-gray-100"
+                                        data-active="true"
+                                    >
+                                        <td class="px-4 py-3 text-sm text-gray-900">
+                                            {profesor.nombre}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">
+                                            {profesor.apellidos}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-gray-500">
+                                            {profesor.usuario}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-blue-500">
+                                            {profesor.email}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-right">
+                                            {profesor.usuario != "admin" && (
+                                                <div class="flex justify-center space-x-2">
+                                                    <a
+                                                        href={`/profesor/editar/${profesor.id_profesor}`}
+                                                        class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                                    >
+                                                        Editar
+                                                    </a>
+                                                    <a
+                                                        href={`/profesor/${profesor.id_profesor}`}
+                                                        class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                                    >
+                                                        Detalles
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    <tr
+                                        class="hover:bg-gray-100 hidden border border-red-500"
+                                        data-active="false"
+                                    >
+                                        <td class="px-4 py-3 text-sm text-gray-900">
+                                            {profesor.nombre}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">
+                                            {profesor.apellidos}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-gray-500">
+                                            {profesor.usuario}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-blue-500">
+                                            {profesor.email}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-right">
+                                            <div class="flex justify-center space-x-2">
+                                                <a
+                                                    href={`/profesor/editar/${profesor.id_profesor}`}
+                                                    class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                                >
+                                                    Editar
+                                                </a>
+                                                <a
+                                                    href={`/profesor/${profesor.id_profesor}`}
+                                                    class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                                >
+                                                    Detalles
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ),
+                            )}
+                        </tbody>
+                    </table>
+                ) : (
+                    <h3 class="py-10 text-center text-red-500 text-3xl">
+                        No hay profesores registrados
+                    </h3>
+                )
+            }
         </div>
     </main>
     <Footer />

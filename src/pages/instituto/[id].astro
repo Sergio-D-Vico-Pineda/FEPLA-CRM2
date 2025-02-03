@@ -10,7 +10,7 @@ import prisma from "@db/index.js";
 const { id } = Astro.params;
 
 if (!Number(id)) {
-    console.log("Id no válido")
+    console.log("Id no válido");
     return Astro.redirect("/404");
 }
 
@@ -19,8 +19,8 @@ const instituto = await prisma.instituto.findUnique({
         id_instituto: Number(id),
     },
     include: {
-        grupos: true
-    }
+        grupos: true,
+    },
 });
 
 if (!instituto) {
@@ -34,60 +34,84 @@ if (!instituto) {
 <Layout title="Información del instituto" kind={1}>
     <Header />
     <main class="flex justify-center items-center grid-flow-col gap-10">
-        { instituto &&
-        <div
-            class="grid grid-cols-2 gap-x-2 gap-y-3 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit"
-        >
-            <div class="col-span-2 text-center">
-                <h2 class="text-2xl font-semibold mb-2">
-                    Información
-                </h2>
-            </div>
-            <InfoDivs title="Nombre" value={instituto.nombre} />
-            <InfoDivs title="Descripción" value={instituto.descripcion} />
-            <InfoDivs title="Dirección" value={instituto.direccion} />
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Sitio web</h2>
-                <p class="text-blue-500 hover:underline">
-                    {instituto.sitio_web === null || instituto.sitio_web === "" ? (
-                        <p class="text-gray-700 italic">Sin sitio web</p>
-                    ) : (
+        {
+            instituto && (
+                <div class="grid grid-cols-2 gap-x-2 gap-y-3 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit">
+                    <div class="col-span-2 text-center">
+                        <h2 class="text-2xl font-semibold mb-2">Información</h2>
+                    </div>
+                    <InfoDivs title="Nombre" value={instituto.nombre} />
+                    <InfoDivs
+                        title="Descripción"
+                        value={instituto.descripcion}
+                    />
+                    <InfoDivs title="Dirección" value={instituto.direccion} />
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Sitio web</h2>
+                        <p class="text-blue-500 hover:underline">
+                            {instituto.sitio_web === null ||
+                            instituto.sitio_web === "" ? (
+                                <p class="text-gray-700 italic">
+                                    Sin sitio web
+                                </p>
+                            ) : (
+                                <a
+                                    href={`https://${instituto.sitio_web}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {instituto.sitio_web}
+                                </a>
+                            )}
+                        </p>
+                    </div>
+                    <InfoDivs title="Teléfono" value={instituto.telefono} />
+                    <InfoDivs
+                        title="Comentarios"
+                        value={instituto.comentarios}
+                    />
+                    <hr class="border-black border-solid col-span-2 my-3" />
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">
+                            Fecha de Creación
+                        </h2>
+                        <p class="text-gray-700">
+                            {new Date(instituto.fecha_creacion).toLocaleString(
+                                "es-ES",
+                            )}
+                        </p>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">
+                            Fecha de Actualización
+                        </h2>
+                        <p class="text-gray-700">
+                            {new Date(
+                                instituto.fecha_actualizacion as Date,
+                            ).toLocaleString("es-ES")}
+                        </p>
+                    </div>
+                    <div class="flex justify-center space-x-2 col-span-2 mt-6">
                         <a
-                            href={`https://${instituto.sitio_web}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href={`/instituto/editar/${instituto.id_instituto}`}
+                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
                         >
-                            {instituto.sitio_web}
+                            Editar
                         </a>
-                    )}
-                </p>
-            </div>
-            <InfoDivs title="Teléfono" value={instituto.telefono} />
-            <InfoDivs title="Comentarios" value={instituto.comentarios} />
-            <hr class="border-black border-solid col-span-2 my-3" />
-            <div>
-                <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
-                <p class="text-gray-700">{new Date(instituto.fecha_creacion).toLocaleString("es-ES")}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold mb-2">
-                    Fecha de Actualización
-                </h2>
-                <p class="text-gray-700">{new Date(instituto.fecha_actualizacion as Date).toLocaleString("es-ES")}</p>
-            </div>
-            <div class="flex justify-center space-x-2 col-span-2 mt-6">
-                <a
-                    href=`/instituto/editar/${instituto.id_instituto}`
-                    class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
-                >
-                    Editar
-                </a>
-                <BackBtn />
-            </div>
-            <span id="id_instituto" class="hidden">{instituto.id_instituto}</span>
-        </div>
+                        <BackBtn />
+                    </div>
+                    <span id="id_instituto" class="hidden">
+                        {instituto.id_instituto}
+                    </span>
+                </div>
+            )
         }
-        <Side title="Grupos" object={instituto.grupos} btntext="grupo" url="/grupo/nuevogrupo" />
+        <Side
+            title="Grupos"
+            object={instituto.grupos}
+            btntext="grupo"
+            url="/grupo/nuevogrupo"
+        />
     </main>
     <Footer />
 </Layout>

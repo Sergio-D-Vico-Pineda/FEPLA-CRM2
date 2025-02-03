@@ -119,62 +119,66 @@ const cursos = await prisma.curso.findMany();
                     value={alumno.comentarios as string}
                     type="textarea"
                 />
-                { alumno.inscripciones[0] && (
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    <label for="id_grupo"
-                        >Grupo <span class="text-red-600 font-bold">*</span
-                        ></label
-                    >
-                    <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
-                        type="text"
-                        id="id_grupo"
-                        list="grupos"
-                        value=`${alumno.inscripciones[0].grupo.nombre} (${alumno.inscripciones[0].grupo.id_grupo})`
-                    />
-                </div>
+                {
+                    alumno.inscripciones[0] && (
+                        <>
+                            <div class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md">
+                                <label for="id_grupo">
+                                    Grupo{" "}
+                                    <span class="text-red-600 font-bold">
+                                        *
+                                    </span>
+                                </label>
+                                <input
+                                    class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
+                                    type="text"
+                                    id="id_grupo"
+                                    list="grupos"
+                                    value={`${alumno.inscripciones[0].grupo.nombre} (${alumno.inscripciones[0].grupo.id_grupo})`}
+                                />
+                            </div>
 
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    <label for="id_curso"
-                        >Curso <span class="text-red-600 font-bold">*</span
-                        ></label
-                    >
-                    <input
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
-                        type="text"
-                        id="id_curso"
-                        list="cursos"
-                        value=`${alumno.inscripciones[0].curso?.anio_academico} (${alumno.inscripciones[0].curso.id_curso})`
-                    />
-                </div>
-                <div
-                    class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md"
-                >
-                    <label for="id_instituto"
-                        >Instituto <span class="text-red-600 font-bold">*</span
-                        ></label
-                    >
-                    <input
-                        value=`${alumno.inscripciones[0].grupo.instituto.nombre} (${alumno.inscripciones[0].grupo.instituto.id_instituto})`
-                        class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
-                        type="text"
-                        id="id_instituto"
-                        disabled
-                        title="No se puede cambiar el instituto desde aqui."
-                    />
-                </div>
-                <input
-                class="hidden"
-                type="text"
-                name="id_inscripcion"
-                value={alumno.inscripciones[0].id_inscripcion}
-                readonly
-            />
-                )}
+                            <div class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md">
+                                <label for="id_curso">
+                                    Curso{" "}
+                                    <span class="text-red-600 font-bold">
+                                        *
+                                    </span>
+                                </label>
+                                <input
+                                    class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
+                                    type="text"
+                                    id="id_curso"
+                                    list="cursos"
+                                    value={`${alumno.inscripciones[0].curso?.anio_academico} (${alumno.inscripciones[0].curso.id_curso})`}
+                                />
+                            </div>
+                            <div class="flex flex-col p-2 gap-1.5 bg-gray-400 rounded-lg shadow-md drop-shadow-md">
+                                <label for="id_instituto">
+                                    Instituto{" "}
+                                    <span class="text-red-600 font-bold">
+                                        *
+                                    </span>
+                                </label>
+                                <input
+                                    value={`${alumno.inscripciones[0].grupo.instituto.nombre} (${alumno.inscripciones[0].grupo.instituto.id_instituto})`}
+                                    class="bg-gray-700 border border-gray-400 text-white text-sm rounded-lg p-1.5 disabled:cursor-not-allowed disabled:bg-gray-800"
+                                    type="text"
+                                    id="id_instituto"
+                                    disabled
+                                    title="No se puede cambiar el instituto desde aqui."
+                                />
+                            </div>
+                            <input
+                                class="hidden"
+                                type="text"
+                                name="id_inscripcion"
+                                value={alumno.inscripciones[0].id_inscripcion}
+                                readonly
+                            />
+                        </>
+                    )
+                }
 
                 <datalist id="grupos">
                     {
@@ -225,7 +229,6 @@ const cursos = await prisma.curso.findMany();
                 >
                 <BackBtn title="Los cambios no se guardaran" />
             </div>
-            
         </form>
     </main>
     <Footer />

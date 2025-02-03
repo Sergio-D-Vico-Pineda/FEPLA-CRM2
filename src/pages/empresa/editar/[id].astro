@@ -9,7 +9,7 @@ import prisma from "@db/index.js";
 const { id } = Astro.params;
 
 if (!Number(id)) {
-    console.log("Id no válido")
+    console.log("Id no válido");
     return Astro.redirect("/404");
 }
 

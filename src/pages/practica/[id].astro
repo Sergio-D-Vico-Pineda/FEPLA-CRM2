@@ -10,7 +10,7 @@ import prisma from "@db/index.js";
 const { id } = Astro.params;
 
 if (!Number(id)) {
-    console.log("Id no válido")
+    console.log("Id no válido");
     return Astro.redirect("/404");
 }
 
@@ -22,9 +22,9 @@ const practica = await prisma.practica.findUnique({
         alumno: true,
         empresa: true,
         curso: true,
-        profesor: true
-    }
-})
+        profesor: true,
+    },
+});
 
 if (!practica) {
     console.log("No hay registro con ese valor");
@@ -37,68 +37,107 @@ if (!practica) {
 <Layout title="Información de la práctica" kind={1}>
     <Header />
     <main class="flex justify-center items-center gap-10">
-        { practica &&
-            <div
-                class="grid grid-cols-2  gap-x-2 gap-y-4 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit text-center"
-            >
-                <div class="col-span-2 text-center">
-                    <h2 class="text-2xl font-semibold mb-2">
-                        Información de la práctica
-                    </h2>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Alumno</h2>
-                    <p class="text-gray-700">
-                        <a href={`/alumno/${practica.id_alumno}`} class="text-blue-700 hover:text-blue-500 hover:underline">
-                        {practica.alumno.nombre} {practica.alumno.apellidos}
+        {
+            practica && (
+                <div class="grid grid-cols-2  gap-x-2 gap-y-4 py-10 px-8 bg-gray-300 rounded-lg shadow-md w-fit text-center">
+                    <div class="col-span-2 text-center">
+                        <h2 class="text-2xl font-semibold mb-2">
+                            Información de la práctica
+                        </h2>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Alumno</h2>
+                        <p class="text-gray-700">
+                            <a
+                                href={`/alumno/${practica.id_alumno}`}
+                                class="text-blue-700 hover:text-blue-500 hover:underline"
+                            >
+                                {practica.alumno.nombre}{" "}
+                                {practica.alumno.apellidos}
+                            </a>
+                        </p>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Empresa</h2>
+                        <p class="text-gray-700">
+                            <a
+                                href={`/empresa/${practica.id_empresa}`}
+                                class="text-blue-700 hover:text-blue-500 hover:underline"
+                                title={practica.empresa.nombre_empresarial}
+                            >
+                                {practica.empresa.nombre}
+                            </a>
+                        </p>
+                    </div>
+                    <InfoDivs
+                        title="Profesor"
+                        value={`${practica.profesor.nombre} ${practica.profesor.apellidos}`}
+                    />
+                    <InfoDivs
+                        title="Curso"
+                        value={practica.curso.anio_academico}
+                    />
+                    <InfoDivs title="Estado" value={practica.estado} />
+                    <InfoDivs
+                        title="Tipo de práctica"
+                        value={practica.tipo_practica}
+                    />
+                    <InfoDivs
+                        title="Fecha de inicio"
+                        value={practica.fecha_inicio}
+                        date
+                    />
+                    <InfoDivs
+                        title="Fecha de fin"
+                        value={practica.fecha_fin}
+                        date
+                    />
+                    {practica.comentarios && (
+                        <InfoDivs
+                            title="Comentarios"
+                            value={practica.comentarios}
+                            classes="col-span-2"
+                        />
+                    )}
+                    <hr class="border-black border-solid col-span-2" />
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">
+                            Fecha de Creación
+                        </h2>
+                        <p class="text-gray-700">
+                            {new Date(practica.fecha_creacion)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")}
+                        </p>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">
+                            Fecha de Actualización
+                        </h2>
+                        <p class="text-gray-700">
+                            {new Date(practica.fecha_actualizacion as Date)
+                                .toLocaleString("es-ES")
+                                .replace(",", "")}
+                        </p>
+                    </div>
+                    <div class="flex justify-center space-x-2 col-span-2 mt-6">
+                        <a
+                            href={`/practica/editar/${practica.id_practica}`}
+                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                        >
+                            Editar
                         </a>
-                    </p>
+                        <BackBtn />
+                    </div>
+                    <span id="id_practica" class="hidden">
+                        {practica.id_practica}
+                    </span>
                 </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Empresa</h2>
-                    <p class="text-gray-700">
-                        <a href={`/empresa/${practica.id_empresa}`} class="text-blue-700 hover:text-blue-500 hover:underline" title={practica.empresa.nombre_empresarial}>
-                        {practica.empresa.nombre}
-                        </a>
-                    </p>
-                </div>
-                <InfoDivs title="Profesor" value=`${practica.profesor.nombre} ${practica.profesor.apellidos}` />
-                <InfoDivs title="Curso" value={practica.curso.anio_academico} />
-                <InfoDivs title="Estado" value={practica.estado} />
-                <InfoDivs title="Tipo de práctica" value={practica.tipo_practica} />
-                <InfoDivs title="Fecha de inicio" value={practica.fecha_inicio} date />
-                <InfoDivs title="Fecha de fin" value={practica.fecha_fin} date />
-                {
-                    practica.comentarios && (
-                        <InfoDivs title="Comentarios" value={practica.comentarios} classes="col-span-2" />
-                    )
-                }
-                <hr class="border-black border-solid col-span-2" />               
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">Fecha de Creación</h2>
-                    <p class="text-gray-700">{ new Date(practica.fecha_creacion).toLocaleString("es-ES").replace(",", "")}</p>
-                </div>
-                <div>
-                    <h2 class="text-xl font-semibold mb-2">
-                        Fecha de Actualización
-                    </h2>
-                    <p class="text-gray-700">{ new Date(practica.fecha_actualizacion as Date).toLocaleString("es-ES").replace(",", "")}</p>
-                </div>
-                <div class="flex justify-center space-x-2 col-span-2 mt-6">
-                    <a
-                        href=`/practica/editar/${practica.id_practica}`
-                        class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
-                    >
-                        Editar
-                    </a>
-                <BackBtn />
-                </div>
-                <span id="id_practica" class="hidden">{practica.id_practica}</span>
-            </div>
+            )
         }
         <Popup
             title="¿Está seguro de desactivar la practica?"
-            url=`/practica/elimiar/${practica.id_practica}`
+            url={`/practica/elimiar/${practica.id_practica}`}
         />
     </main>
     <Footer />
@@ -119,7 +158,7 @@ if (!practica) {
         });
     }
 
-    data.id_practica = parseInt(id_prac.textContent)
+    data.id_practica = parseInt(id_prac.textContent);
 
     const cambiarEstado = async (estado) => {
         data.activo = estado;

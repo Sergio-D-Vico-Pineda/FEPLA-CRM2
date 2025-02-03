@@ -192,7 +192,7 @@ const cursos = await prisma.curso.findMany();
     institutoInput.addEventListener("input", () => {
         console.log(institutoInput.value);
         const selectedInstituto = institutoInput.value;
-        const selectedInstitutoId = selectedInstituto.match(/\(([^)]+)\)/)[1]; 
+        const selectedInstitutoId = selectedInstituto.match(/\(([^)]+)\)/)[1];
 
         gruposDatalist.innerHTML = "";
         grupoInput.disabled = true;

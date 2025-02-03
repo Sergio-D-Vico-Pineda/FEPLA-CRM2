@@ -27,14 +27,20 @@ const { id } = Astro.params;
                                 {item.empresa.nombre} {item.empresa.apellidos}
                             </span>
                         </a>
-                        <a class="text-black hover:text-gray-600 hover:underline" href=`/vinculo/editar/${item.id_contacto_empresa}` title="Editar vinculo">✏</a>
+                        <a
+                            class="text-black hover:text-gray-600 hover:underline"
+                            href={`/vinculo/editar/${item.id_contacto_empresa}`}
+                            title="Editar vinculo"
+                        >
+                            ✏
+                        </a>
                     </li>
                 ))
         }
     </ul>
     <div class="flex flex-col justify-center items-center gap-2">
         <a
-            href=`${url}/${id}`
+            href={`${url}/${id}`}
             class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
         >
             Vincular {btntext} existente

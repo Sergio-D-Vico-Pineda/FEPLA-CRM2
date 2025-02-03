@@ -6,12 +6,7 @@ interface Props {
     checked?: string;
 }
 
-const {
-    classes = "",
-    isrequired = true,
-    active = true,
-    checked,
-} = Astro.props;
+const { classes = "", isrequired = true, active = true, checked } = Astro.props;
 import prisma from "@db/index.js";
 
 const alumnos = await prisma.alumno.findMany({
@@ -51,7 +46,10 @@ const alumnos = await prisma.alumno.findMany({
 <datalist id="alumnos">
     {
         alumnos.map(({ nombre, apellidos, id_alumno }) => (
-            <option value=`${nombre} ${apellidos}` selected={nombre === checked}>
+            <option
+                value={`${nombre} ${apellidos}`}
+                selected={nombre === checked}
+            >
                 {id_alumno}
             </option>
         ))
