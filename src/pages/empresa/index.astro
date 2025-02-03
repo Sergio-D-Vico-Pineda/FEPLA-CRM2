@@ -4,8 +4,14 @@ import Header from "@comp/Header.astro";
 import Footer from "@comp/Footer.astro";
 import BackBtn from "@comp/BackBtn.astro";
 import prisma from "@db/index.js";
+import Dropdownbtn from "@comp/Dropdownbtn.astro";
 
 const rows = await prisma.empresa.findMany();
+
+const values = [
+    { name: "CSV", href: "/empresa/exportar" },
+    { name: "PDF", href: "/empresa/exportarpdf" },
+];
 
 /* id_empresa, nombre*, nombre_empresarial, direccion, cif, sitio_web, sector, tecnologias, comentarios, activo*, fecha_creacion*, fecha_actualizacion  */
 ---
@@ -18,19 +24,22 @@ const rows = await prisma.empresa.findMany();
             <h2 class="text-3xl">Listado de empresas</h2>
         </div>
         <div class="flex items-center gap-4">
+            <Dropdownbtn title="Exportar" values={values} />
             <a
-            href="/empresa/exportar"
-                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
-                >Exportar</a
-            >
-            <a
-            href="/empresa/importar"
+                href="/empresa/importar"
                 class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm px-2 py-2 transition-colors"
                 >Importar</a
             >
-            <label class="flex items-center border py-1.5 px-3 gap-3 rounded border-gray-700 text-sm font-medium">
+            <label
+                class="flex items-center border py-1.5 px-3 gap-3 rounded border-gray-700 text-sm font-medium"
+            >
                 <span>Activo</span>
-                <input id="activo-checkbox" type="checkbox" class="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" checked>
+                <input
+                    id="activo-checkbox"
+                    type="checkbox"
+                    class="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    checked
+                />
             </label>
             <input
                 id="busqueda"
@@ -82,82 +91,103 @@ const rows = await prisma.empresa.findMany();
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     {
-                        rows.map((empresa) => (
-                        empresa.activo ? (
-                            <tr class="hover:bg-gray-100" data-active="true">
-                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre_empresarial}</td>
-                                <td class="px-4 py-3 text-sm text-gray-500">{empresa.direccion}</td>
-                                <td class="px-4 py-3 text-sm text-blue-500 hover:underline">
-                                    {
-                                        empresa.sitio_web && (
+                        rows.map((empresa) =>
+                            empresa.activo ? (
+                                <tr
+                                    class="hover:bg-gray-100"
+                                    data-active="true"
+                                >
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {empresa.nombre}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {empresa.nombre_empresarial}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-500">
+                                        {empresa.direccion}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-blue-500 hover:underline">
+                                        {empresa.sitio_web && (
                                             <a
-                                        href={`https://${empresa.sitio_web}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {empresa.sitio_web}
-                                    </a>
-                                        )
-                                    }
-                                    
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <div class="flex justify-center items-center space-x-2">
+                                                href={`https://${empresa.sitio_web}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {empresa.sitio_web}
+                                            </a>
+                                        )}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm">
+                                        <div class="flex justify-center items-center space-x-2">
+                                            <a
+                                                href={`/empresa/editar/${empresa.id_empresa}`}
+                                                class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Editar
+                                            </a>
+                                            <a
+                                                href={`/empresa/${empresa.id_empresa}`}
+                                                class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Detalles
+                                            </a>
+                                            <a
+                                                href={`/interaccion/empresa/${empresa.id_empresa}`}
+                                                class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Crear interacción
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                <tr
+                                    class="hover:bg-gray-100 hidden"
+                                    data-active="false"
+                                >
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {empresa.nombre}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">
+                                        {empresa.nombre_empresarial}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-500">
+                                        {empresa.direccion}
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-blue-500 hover:underline">
                                         <a
-                                            href=`/empresa/editar/${empresa.id_empresa}`
-                                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Editar
+                                            href={`https://${empresa.sitio_web}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {empresa.sitio_web}
                                         </a>
-                                        <a
-                                            href=`/empresa/${empresa.id_empresa}`
-                                            class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Detalles
-                                        </a>
-                                        <a
-                                            href=`/interaccion/empresa/${empresa.id_empresa}`
-                                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Crear interacción
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        ) : (
-                            <tr class="hover:bg-gray-100 hidden" data-active="false">
-                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900">{empresa.nombre_empresarial}</td>
-                                <td class="px-4 py-3 text-sm text-gray-500">{empresa.direccion}</td>
-                                <td class="px-4 py-3 text-sm text-blue-500 hover:underline">
-                                    <a
-                                        href={`https://${empresa.sitio_web}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {empresa.sitio_web}
-                                    </a>
-                                </td>
-                                <td class="px-4 py-3 text-sm text-right">
-                                    <div class="flex justify-center space-x-2">
-                                        <a
-                                            href=`/empresa/editar/${empresa.id_empresa}`
-                                            class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Editar
-                                        </a>
-                                        <a
-                                            href=`/empresa/${empresa.id_empresa}`
-                                            class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Detalles
-                                        </a>
-                                        <a
-                                            href=`/interaccion/empresa/${empresa.id_empresa}`
-                                            class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300">
-                                            Crear interacción
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            )
-                        ))
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-right">
+                                        <div class="flex justify-center space-x-2">
+                                            <a
+                                                href={`/empresa/editar/${empresa.id_empresa}`}
+                                                class="bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Editar
+                                            </a>
+                                            <a
+                                                href={`/empresa/${empresa.id_empresa}`}
+                                                class="bg-gray-500 hover:bg-gray-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Detalles
+                                            </a>
+                                            <a
+                                                href={`/interaccion/empresa/${empresa.id_empresa}`}
+                                                class="bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1 transition-colors duration-300"
+                                            >
+                                                Crear interacción
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ),
+                        )
                     }
                 </tbody>
             </table>
@@ -173,19 +203,19 @@ const rows = await prisma.empresa.findMany();
     const rows = document.querySelectorAll("tr[data-active=false]");
     const allrows = document.querySelectorAll("tr[data-active]");
     const activerows = document.querySelectorAll("tr[data-active=true]");
-    
+
     activeCb.addEventListener("change", () => {
-        activerows.forEach(row => {
+        activerows.forEach((row) => {
             row.classList.toggle("hidden");
-        })
-        rows.forEach(row => {
+        });
+        rows.forEach((row) => {
             row.classList.toggle("hidden");
         });
     });
 
     btnBusqueda.addEventListener("click", () => {
         const textoBusqueda = inputBusqueda.value.toLowerCase();
-        allrows.forEach(row => {
+        allrows.forEach((row) => {
             const td = row.querySelector("td");
             let textoCelda = td.textContent.toLowerCase();
             if (textoCelda.includes(textoBusqueda)) {
