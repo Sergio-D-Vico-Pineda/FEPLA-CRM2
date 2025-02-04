@@ -1,7 +1,6 @@
 ---
 import Layout from "@lay/PdfLayout.astro";
 import prisma from "@db/index.js";
-
 const empresas = await prisma.empresa.findMany({
     include: {
         contactos: {
@@ -14,67 +13,114 @@ const empresas = await prisma.empresa.findMany({
 ---
 
 <Layout title="Exportar PDF">
-    {
-        empresas.map((empresa) => (
-            <table>
-                <thead>
-                    <tr>
-                        <th colspan="9">{empresa.nombre}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{empresa.id_empresa}</td>
-                        <td>{empresa.nombre_empresarial}</td>
-                        <td>{empresa.direccion}</td>
-                        <td>{empresa.cif}</td>
-                        <td>{empresa.sitio_web}</td>
-                        <td>{empresa.sector}</td>
-                        <td>{empresa.tecnologias}</td>
-                        <td>{empresa.comentarios}</td>
-                        <td>{empresa.activo}</td>
-                    </tr>
-                    {empresa.contactos.length != 0 && (
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="9">Empresas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="w-[5%]">Id</th>
+                    <th class="w-[15%]">Nombre</th>
+                    <th class="w-[20%]">Dirección</th>
+                    <th class="w-[10%]">CIF</th>
+                    <th class="w-[15%]">Sitio web</th>
+                    <th class="w-[10%]">Sector</th>
+                    <th class="w-[10%]">Tecnologías</th>
+                    <th class="w-[15%]">Comentarios</th>
+                    <th class="w-[5%] min-w-[75px]">Activo</th>
+                </tr>
+            </tbody>
+        </table>
+        {
+            empresas.map((empresa) => (
+                <table>
+                    <thead>
                         <tr>
-                            <td colspan="4">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Contacto</th>
-                                            <th>Teléfono</th>
-                                            <th>Email</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {empresa.contactos.map((contacto) => (
-                                            <tr>
-                                                <td>
-                                                    {contacto.contacto.nombre}
-                                                </td>
-                                                <td>
-                                                    {contacto.contacto.telefono}
-                                                </td>
-                                                <td>
-                                                    {contacto.contacto.email}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <th colspan="9">{empresa.nombre}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="w-[5%]">{empresa.id_empresa}</td>
+                            <td class="w-[15%]">
+                                {empresa.nombre_empresarial}
+                            </td>
+                            <td class="w-[20%]">{empresa.direccion}</td>
+                            <td class="w-[10%]">{empresa.cif}</td>
+                            <td class="w-[15%]">{empresa.sitio_web}</td>
+                            <td class="w-[10%]">{empresa.sector}</td>
+                            <td class="w-[10%]">{empresa.tecnologias}</td>
+                            <td class="w-[15%]">{empresa.comentarios}</td>
+                            <td class="text-center w-[5%] min-w-[75px]">
+                                {empresa.activo ? "Sí" : "No"}
                             </td>
                         </tr>
-                    )}
-                </tbody>
-            </table>
-        ))
-    }
+                        {empresa.contactos.length != 0 && (
+                            <tr>
+                                <td class="!p-0 !border-none" colspan="9">
+                                    <table class="stable">
+                                        <thead>
+                                            <tr>
+                                                <th class="w-[33.33%]">
+                                                    Contacto
+                                                </th>
+                                                <th class="w-[33.33%]">
+                                                    Teléfono
+                                                </th>
+                                                <th class="w-[33.33%]">
+                                                    Email
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {empresa.contactos.map(
+                                                (contacto) => (
+                                                    <tr>
+                                                        <td class="w-[33.33%]">
+                                                            {contacto.contacto
+                                                                .nombre +
+                                                                " " +
+                                                                contacto
+                                                                    .contacto
+                                                                    .apellidos}
+                                                        </td>
+                                                        <td class="w-[33.33%]">
+                                                            {
+                                                                contacto
+                                                                    .contacto
+                                                                    .telefono
+                                                            }
+                                                        </td>
+                                                        <td class="w-[33.33%]">
+                                                            {
+                                                                contacto
+                                                                    .contacto
+                                                                    .email
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            ))
+        }
+    </main>
 </Layout>
-
 <style>
     @page {
         size: A4;
         margin: 0;
     }
+
     @media print {
         table {
             width: 100%;
@@ -89,16 +135,36 @@ const empresas = await prisma.empresa.findMany({
             background-color: #f2f2f2;
         }
     }
+
+    main {
+        width: 100%;
+        padding: 20px 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
     }
-    td,
-    th {
+
+    main > table td,
+    main > table th {
         border: 1px solid black;
         padding: 5px;
     }
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
+
+    .stable {
+        border: none;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .stable td,
+    .stable th {
+        border: 1px solid black;
+        padding: 5px;
     }
 </style>
