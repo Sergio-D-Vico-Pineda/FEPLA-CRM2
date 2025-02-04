@@ -12,7 +12,7 @@ const empresas = await prisma.empresa.findMany({
 });
 ---
 
-<Layout title="Exportar PDF">
+<Layout title="listaempresas">
     <main>
         <table>
             <thead>
@@ -114,6 +114,12 @@ const empresas = await prisma.empresa.findMany({
             ))
         }
     </main>
+    <script is:inline type="module">
+        window.print();
+        window.onafterprint = () => {
+            window.history.back();
+        };
+    </script>
 </Layout>
 <style>
     @page {
@@ -122,17 +128,36 @@ const empresas = await prisma.empresa.findMany({
     }
 
     @media print {
+        main {
+            width: 100%;
+            padding: 20px 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1rem;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        td,
-        th {
+
+        main > table td,
+        main > table th {
             border: 1px solid black;
             padding: 5px;
         }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+
+        .stable {
+            border: none;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .stable td,
+        .stable th {
+            border: 1px solid black;
+            padding: 5px;
         }
     }
 
