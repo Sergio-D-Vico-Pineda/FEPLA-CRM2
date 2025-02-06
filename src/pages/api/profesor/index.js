@@ -34,7 +34,12 @@ async function PATCH({ request }) {
 
         const log = await createRegistro(prisma, { id_entidad: data.id_profesor, id_profesor: data.id_active_user }, "Profesor", "actualización de perfil de un profesor");
 
-        return new Response(JSON.stringify({ message: "Perfil actualizado exitosamente." }), { status: 200 });
+        const resp = {
+            message: "Perfil actualizado exitosamente.",
+            usuario: data.usuario
+        }
+
+        return new Response(JSON.stringify(resp), { status: 200 });
     } catch (error) {
         console.log(error)
         return new Response(JSON.stringify({

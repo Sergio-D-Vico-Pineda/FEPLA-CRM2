@@ -167,7 +167,7 @@ if (!usuario) {
         if (response.ok) {
             const json = await response.json();
             alert(json.message);
-            window.location.href = `/perfil/${form.usuario.value}`;
+            window.location.href = `/inicio`;
         }
     }
 
