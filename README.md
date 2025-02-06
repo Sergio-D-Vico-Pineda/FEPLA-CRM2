@@ -1,6 +1,6 @@
 # FEPLA-CRM
 
-Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arnau
+Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arnau.
 
 ## Manual de instalación
 
@@ -26,8 +26,8 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
 
 3. Crear el archivo `.env`. Si la opción es `turso`, se debe completar con:
 
-    TURSO_DATABASE_URL=libsql://...
-    TURSO_AUTH_TOKEN=...
+    TURSO_DATABASE_URL=libsql://...  
+    TURSO_AUTH_TOKEN=...  
     DATABASE_URL=file:./dev.db
 
 4. Ejecutar el servidor.
