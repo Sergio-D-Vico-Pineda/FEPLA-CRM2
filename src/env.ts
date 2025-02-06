@@ -1,4 +1,4 @@
-const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = import.meta.env;
+const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, DATABASE_URL } = import.meta.env;
 
 export default function getEnv() {
 
@@ -10,5 +10,9 @@ export default function getEnv() {
         throw new Error('Environment variable TURSO_AUTH_TOKEN is not defined.');
     }
 
-    return { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN };
+    if (!DATABASE_URL) {
+        throw new Error('Environment variable DATABASE_URL is not defined.');
+    }
+
+    return { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, DATABASE_URL };
 }
