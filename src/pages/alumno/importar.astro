@@ -14,16 +14,19 @@ import BackBtn from "@comp/BackBtn.astro";
             <button
                 type="button"
                 id="btnremove"
-                class="hover:bg-red-500 text-white rounded-lg p-1 transition-colors"
-            >
-                Limpiar
+                class="hover:bg-red-500 hover:text-white text-transparent rounded-lg p-1 transition-colors"
+                >Limpiar
             </button>
             <script is:inline>
                 document
                     .querySelector("#btnremove")
                     .addEventListener("click", async () => {
                         const resp = await fetch(
-                            "http://localhost:4321/api/alumno/import",
+                            "http://" +
+                                window.location.hostname +
+                                ":" +
+                                window.location.port +
+                                "/api/alumno/import",
                         );
                         alert((await resp.json()).message);
                     });
