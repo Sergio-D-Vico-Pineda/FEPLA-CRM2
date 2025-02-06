@@ -8,7 +8,7 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
 
 - Ejecutador de JavaScript (Node.js)
 - Administrador de paquetes (npm o pnpm)
-- Base datos SQLite _online_ (Turso) o _local_ (Puerto 3306?)
+- Base datos SQLite _online_ (Turso) o _local_ (archivo .db)
 
 ### Instrucciones
 
@@ -24,16 +24,27 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
     pnpm install
     ```
 
-3. Crear el archivo `.env`. Si la opción es `turso`, se debe completar con:
+3. Crear el archivo `.env`. Si la opción es `Turso`, se debe completar con:
 
-    TURSO_DATABASE_URL=libsql://...  
-    TURSO_AUTH_TOKEN=...  
-    DATABASE_URL=file:./dev.db
+    TURSO_DATABASE_URL=_libsql://example.turso.io_  
+    TURSO_AUTH_TOKEN=_...InR5cCI6I..._
 
-4. Ejecutar el servidor.
+    - Si la opción es local:
 
-    ```bash
+    DATABASE_URL=file:_./dev.db_
+
+    > _Se puede poner las 3 variables por si `Turso` falla._
+
+4. Generar la base datos.
+
+    ```pnpm
+    pnpm prisma generate
+    ```
+
+5. Ejecutar el servidor.
+
+    ```pnpm
     pnpm dev --host
     ```
 
-5. Abrir la página web. Una posible url puede ser `http://localhost:4321`.
+6. Abrir la página web. Una posible url puede ser `http://localhost:4321`.
