@@ -47,4 +47,4 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
     pnpm dev --host
     ```
 
-6. Abrir la página web. Una posible url puede ser `http://localhost:4321`.
+6. Abrir la página web en el navegador a través una url que se mostrará con el anterior comando. Una posible url (desde el mismo ordenador) puede ser `http://localhost:4321`.
