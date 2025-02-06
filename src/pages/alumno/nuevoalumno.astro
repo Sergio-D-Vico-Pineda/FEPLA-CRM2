@@ -142,6 +142,33 @@ const cursos = await prisma.curso.findMany();
             return;
         }
 
+        try {
+            data.id_grupo = parseInt(
+                form.id_grupo.value.match(/\(([^)]+)\)/)[1],
+            );
+        } catch (e) {
+            alert("El grupo no existe");
+            return;
+        }
+
+        try {
+            data.id_instituto = parseInt(
+                form.id_instituto.value.match(/\(([^)]+)\)/)[1],
+            );
+        } catch (e) {
+            alert("El instituto no existe");
+            return;
+        }
+
+        try {
+            data.id_curso = parseInt(
+                form.id_curso.value.match(/\(([^)]+)\)/)[1],
+            );
+        } catch (e) {
+            alert("El curso no existe");
+            return;
+        }
+
         data.nombre = name;
         data.apellidos = form.apellidos.value;
         data.telefono = form.telefono.value;
@@ -152,11 +179,6 @@ const cursos = await prisma.curso.findMany();
         data.nia = form.nia.value;
         data.nuss = form.nuss.value;
         data.comentarios = form.comentarios.value;
-        data.id_grupo = parseInt(form.id_grupo.value.match(/\(([^)]+)\)/)[1]);
-        data.id_instituto = parseInt(
-            form.id_instituto.value.match(/\(([^)]+)\)/)[1],
-        );
-        data.id_curso = parseInt(form.id_curso.value.match(/\(([^)]+)\)/)[1]);
 
         Object.keys(data).forEach((key) => {
             if (data[key] == "") data[key] = null;
