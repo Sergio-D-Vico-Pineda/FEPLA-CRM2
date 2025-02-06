@@ -1,6 +1,7 @@
 ---
 import Layout from "@lay/PdfLayout.astro";
 import prisma from "@db/index.js";
+
 const empresas = await prisma.empresa.findMany({
     include: {
         contactos: {
