@@ -16,12 +16,17 @@
     "@astrojs/node": "^9.0.2",
     "@astrojs/tailwind": "^5.1.5",
     "@libsql/client": "^0.8.1",
-    "@prisma/adapter-libsql": "^6.3.0",
-    "@prisma/client": "^6.3.0",
-    "astro": "^5.2.3",
-    "tailwindcss": "^3.4.17"
+    "@prisma/adapter-libsql": "6.3.1",
+    "@prisma/client": "6.3.1",
+    "astro": "^5.2.5",
+    "tailwindcss": "3.4.17"
   },
   "devDependencies": {
-    "prisma": "^6.3.0"
+    "prisma": "6.3.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client"
+    ]
   }
 }
