@@ -24,7 +24,7 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
     pnpm install
     ```
 
-3. Crear el archivo `.env`. Si la opción es `Turso`, se debe completar con:
+3. Crear o modificar el archivo `.env`. Si la opción es `Turso`, se debe completar con:
 
     TURSO_DATABASE_URL=_libsql://example.turso.io_  
     TURSO_AUTH_TOKEN=_...InR5cCI6I..._
@@ -41,10 +41,16 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
     pnpm prisma generate
     ```
 
-5. Ejecutar el servidor.
+5. Rellenar la base de datos con los datos necesarios.
+
+    ```pnpm
+    pnpm prisma db seed
+    ```
+
+6. Ejecutar el servidor.
 
     ```pnpm
     pnpm dev --host
     ```
 
-6. Abrir la página web en el navegador a través una url que se mostrará con el anterior comando. Una posible url (desde el mismo ordenador) puede ser `http://localhost:4321`.
+7. Abrir la página web en el navegador a través una url que se mostrará con el anterior comando. Una posible url (desde el mismo ordenador) puede ser `http://localhost:4321`.
