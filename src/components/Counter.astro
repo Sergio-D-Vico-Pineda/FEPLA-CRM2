@@ -10,8 +10,5 @@ const { num, texto, textos = texto } = Astro.props;
 
 <p>
     Hay {num}
-    {
-        num != 0 &&
-            (num === 1 ? texto : textos === texto ? `${textos}s` : textos)
-    }.
+    {num === 1 ? texto : textos === texto ? `${textos}s` : textos}.
 </p>
