@@ -15,7 +15,8 @@ try {
     const adapter = new PrismaLibSQL(db);
     prisma = new PrismaClient({ adapter })
 } catch (error) {
-    console.error('Error al conectar con Turso, usando base de datos local:', error);
+    console.log(error)
+    console.error('Error al conectar con Turso, usando base de datos local:');
     prisma = new PrismaClient({
         datasources: {
             db: {
