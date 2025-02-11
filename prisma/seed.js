@@ -130,7 +130,8 @@ async function main() {
     try {
         contactos = await prisma.contacto.createMany({
             data: [
-                { id_contacto: 1, nombre: 'David', apellidos: 'Perez', telefono: '123456789', email: 'dper@fepla.es', comentarios: 'Comentarios 1' }
+                { id_contacto: 1, nombre: 'David', apellidos: 'Perez', telefono: '123456789', email: 'dper@fepla.es', comentarios: 'Comentarios 1' },
+                { id_contacto: 2, nombre: 'Rafael', apellidos: 'Sánchez', telefono: '987654321', email: 'rsan@fepla.es', comentarios: 'Comentarios 2' }
             ]
         })
         console.log("Contactos creado exitosamente.")
