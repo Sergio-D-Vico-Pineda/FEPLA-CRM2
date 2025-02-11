@@ -15,7 +15,7 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
 1. Clonar el repositorio (recomendado) o descargar el repositorio.
 
     ```bash
-    git clone https://github.com/Scarpy/FEPLA-CRM2.git
+    git clone https://github.com/Sergio-D-Vico-Pineda/FEPLA-CRM2.git
     ```
 
 2. Instalar paquetes.
