@@ -12,10 +12,14 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
 
 ### Instrucciones
 
-1. Clonar el repositorio (recomendado) o descargar el repositorio.
+1. Clonar el repositorio (recomendado) o descargar el repositorio, y acceder a la carpeta.
 
     ```bash
     git clone https://github.com/Sergio-D-Vico-Pineda/FEPLA-CRM2.git
+    ```
+
+    ```bash
+    cd FEPLA-CRM2
     ```
 
 2. Instalar paquetes.
