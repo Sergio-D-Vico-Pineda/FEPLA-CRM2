@@ -21,10 +21,7 @@ async function main() {
     try {
         cursos = await prisma.curso.createMany({
             data: [
-                { id_curso: 1, anio_academico: '2022/2023' },
-                { id_curso: 2, anio_academico: '2023/2024' },
-                { id_curso: 3, anio_academico: '2024/2025' },
-                { id_curso: 4, anio_academico: '2025/2026' },
+                { id_curso: 1, anio_academico: '2022/2023' }
             ],
         })
         console.log("Cursos creado exitosamente.")
@@ -37,15 +34,9 @@ async function main() {
     }
 
     try {
-
         grupos = await prisma.grupo.createMany({
             data: [
-                { id_grupo: 1, nombre: '1 DAW', id_instituto: 1 },
-                { id_grupo: 2, nombre: '2 DAW', id_instituto: 1 },
-                { id_grupo: 3, nombre: '1 DAM', id_instituto: 1 },
-                { id_grupo: 4, nombre: '2 DAM', id_instituto: 1 },
-                { id_grupo: 5, nombre: '1 ASIR', id_instituto: 1 },
-                { id_grupo: 6, nombre: '2 ASIR', id_instituto: 1 },
+                { id_grupo: 1, nombre: '1 DAW', id_instituto: 1 }
             ],
         })
         console.log("Grupos creado exitosamente.")
@@ -62,9 +53,7 @@ async function main() {
         profesores = await prisma.profesor.createMany({
             data: [
                 { id_profesor: 0, nombre: 'Admin' },
-                { id_profesor: 1, nombre: 'Sergio', apellidos: 'Vico', telefono: '123456789', nif: '123456789', nip: '123456789', comentarios: 'Admin' },
-                { id_profesor: 2, nombre: 'Vicente', apellidos: 'Santonja', telefono: '987654321', nif: '987654321', nip: '987654321', comentarios: 'Comentarios 2' },
-                { id_profesor: 3, nombre: 'Luis', apellidos: 'Alemañ', telefono: '555555555', nif: '555555555', nip: '555555555', comentarios: 'Comentarios 3' },
+                { id_profesor: 1, nombre: 'Sergio', apellidos: 'Vico', telefono: '123456789', nif: '123456789', nip: '123456789', comentarios: 'Comentarios 1' }
             ],
         })
         console.log("Profesores creado exitosamente.")
@@ -79,9 +68,7 @@ async function main() {
 
         prof_inst = await prisma.profesor_Instituto.createMany({
             data: [
-                { id_profesor_instituto: 1, id_profesor: 1, id_instituto: 1, id_curso: 1 },
-                { id_profesor_instituto: 2, id_profesor: 2, id_instituto: 1, id_curso: 1 },
-                { id_profesor_instituto: 3, id_profesor: 3, id_instituto: 1, id_curso: 1 },
+                { id_profesor_instituto: 1, id_profesor: 1, id_instituto: 1, id_curso: 1 }
             ],
         })
         console.log("Profesores_Institutos creado exitosamente.")
@@ -97,9 +84,7 @@ async function main() {
         usuarios = await prisma.usuario.createMany({
             data: [
                 { id_usuario: 1, usuario: 'admin', email: 'admin@fepla.es', contrasena: 'admin', rol: 'Admin', activo: true, id_profesor: 0 },
-                { id_usuario: 2, usuario: 'vjsan', email: 'vjsan@fepla.es', contrasena: 'prof', rol: 'Prof', activo: true, id_profesor: 2 },
-                { id_usuario: 3, usuario: 'lupastance', email: 'lale@fepla.es', contrasena: 'prof', rol: 'Prof', activo: true, id_profesor: 3 },
-                { id_usuario: 4, usuario: 'prof', email: 'prof@fepla.es', contrasena: 'prof', rol: 'Prof', activo: true, id_profesor: 1 },
+                { id_usuario: 2, usuario: 'scarpy', email: 'scarpy@fepla.es', contrasena: 'prof', rol: 'Prof', activo: true, id_profesor: 1 }
             ],
         })
         console.log("Usuarios creado exitosamente.")
@@ -114,7 +99,7 @@ async function main() {
 
         alumnos = await prisma.alumno.createMany({
             data: [
-                { id_alumno: 1, nombre: 'Sergio', apellidos: 'Vico', telefono: '123456789', nif: '123456788', nia: '10651110', nuss: '123456789', comentarios: 'Es un admin también' },
+                { id_alumno: 1, nombre: 'Sergio', apellidos: 'Vico', telefono: '123456789', nif: '123456788', nia: '10651110', nuss: '123456789', comentarios: 'Es un alumno' },
                 { id_alumno: 2, nombre: 'Rafa', apellidos: 'Sánchez', telefono: '987654321', nif: '987654321', nia: '21762221', nuss: '987654321', comentarios: 'Comentarios 2' }
             ],
         })
@@ -131,8 +116,7 @@ async function main() {
         empresas = await prisma.empresa.createMany({
             data: [
                 { id_empresa: 1, nombre: 'Banco Sabadell', nombre_empresarial: 'Banco Sabadell S.A.', direccion: 'Calle 1', comentarios: 'Comentarios 1' },
-                { id_empresa: 2, nombre: 'Logitech', nombre_empresarial: 'Logitech S.A.', sitio_web: 'po.ta.to', direccion: 'Calle 2', comentarios: 'Comentarios 2' },
-                { id_empresa: 3, nombre: 'Mircosoft', nombre_empresarial: 'Microsoft S.A.', sitio_web: 'ieselpla.es', direccion: 'Calle 3', comentarios: 'Comentarios 3', activo: false }
+                { id_empresa: 2, nombre: 'Mircosoft', nombre_empresarial: 'Microsoft S.A.', sitio_web: 'ieselpla.es', direccion: 'Calle 3', comentarios: 'Comentarios 2', activo: false }
             ],
         })
         console.log("Empresas creado exitosamente.")
@@ -146,9 +130,7 @@ async function main() {
     try {
         contactos = await prisma.contacto.createMany({
             data: [
-                { id_contacto: 1, nombre: 'David', apellidos: 'Perez', telefono: '123456789', email: 'dper@fepla.es', comentarios: 'Comentarios 1' },
-                { id_contacto: 2, nombre: 'Rafael', apellidos: 'Sánchez', telefono: '987654321', email: 'rsan@fepla.es', comentarios: 'Comentarios 2' },
-                { id_contacto: 3, nombre: 'Fernando', apellidos: 'Alonsa', telefono: '555555555', email: 'lale@fepla.es', comentarios: 'Comentarios 3' }
+                { id_contacto: 1, nombre: 'David', apellidos: 'Perez', telefono: '123456789', email: 'dper@fepla.es', comentarios: 'Comentarios 1' }
             ]
         })
         console.log("Contactos creado exitosamente.")
