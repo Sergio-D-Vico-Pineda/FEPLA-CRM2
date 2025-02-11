@@ -31,7 +31,7 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
 
     - Si la opción es local:
 
-    DATABASE_URL=file:_./dev.db_
+    DATABASE_URL=file:_../prisma/dev.db_
 
     > _Se puede poner las 3 variables por si `Turso` falla._
 
