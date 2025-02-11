@@ -45,22 +45,7 @@ import img from "../assets/logo2.png";
 				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
 				>Iniciar sesión</button
 			>
-			<button
-				id="btnadmin"
-				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-				type="button">Admin</button
-			>
-			<button
-				id="btnscarpy"
-				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-				type="button">Scarpy</button
-			>
-			<button
-				id="btnrafa"
-				class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-				type="button">Rafa</button
-			>
-			<a href="/" id="enlace">¿Olvidaste tu contraseña?</a>
+			<a href="#" id="enlace">¿Olvidaste tu contraseña?</a>
 		</form>
 	</main>
 	<Footer />
@@ -122,26 +107,4 @@ import img from "../assets/logo2.png";
 	}
 
 	form.addEventListener("submit", sendData);
-
-	const $btnadmin = document.querySelector("#btnadmin");
-	const $btnscarpy = document.querySelector("#btnscarpy");
-	const $btnrafa = document.querySelector("#btnrafa");
-
-	$btnadmin.addEventListener("click", () => {
-		form.emailusuario.value = "admin";
-		form.password.value = "admin";
-		$btnlogin.click();
-	});
-
-	$btnscarpy.addEventListener("click", () => {
-		form.emailusuario.value = "scarpy";
-		form.password.value = "scarpy";
-		$btnlogin.click();
-	});
-
-	$btnrafa.addEventListener("click", () => {
-		form.emailusuario.value = "Mapachelo";
-		form.password.value = "1234";
-		$btnlogin.click();
-	});
 </script>
