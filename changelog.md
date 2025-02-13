@@ -1,4 +1,4 @@
-# Historial de version de FEPLA-CRM
+# Historial de versiones de FEPLA-CRM
 
 ## Versión 0.2.7
 
