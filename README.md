@@ -6,11 +6,13 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
 
 ### Requisitos
 
-- Ejecutador de JavaScript (Node.js)
-- Administrador de paquetes (npm o pnpm)
+- Ejecutador de JavaScript ([Node.js](https://nodejs.org/es))
+- Administrador de paquetes (npm o [pnpm](https://pnpm.io/))
 - Base datos SQLite _online_ (Turso) o _local_ (archivo .db)
 
 ### Instrucciones
+
+0. Abrir una terminal o consola (cmd o powershell).
 
 1. Clonar el repositorio (recomendado) o descargar el repositorio, y acceder a la carpeta.
 
@@ -22,13 +24,13 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
     cd FEPLA-CRM2
     ```
 
-2. Instalar paquetes.
+2. Instalar dependencias del proyecto.
 
     ```pnpm
     pnpm install
     ```
 
-3. Crear o modificar el archivo `.env`. Si la opción es `Turso`, se debe completar con:
+3. Crear o modificar el archivo `.env`. Si la opción es `Turso`, se debe completar con: (opcional, necesario si la opción es **online**)
 
     TURSO_DATABASE_URL=_libsql://example.turso.io_  
     TURSO_AUTH_TOKEN=_...InR5cCI6I..._
