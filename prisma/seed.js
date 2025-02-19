@@ -21,7 +21,12 @@ async function main() {
     try {
         cursos = await prisma.curso.createMany({
             data: [
-                { id_curso: 1, anio_academico: '2022/2023' }
+                { id_curso: 1, anio_academico: '2021/2022' },
+                { id_curso: 2, anio_academico: '2022/2023' },
+                { id_curso: 3, anio_academico: '2023/2024' },
+                { id_curso: 4, anio_academico: '2024/2025' },
+                { id_curso: 5, anio_academico: '2025/2026' },
+                { id_curso: 6, anio_academico: '2026/2027' }
             ],
         })
         console.log("Cursos creado exitosamente.")
