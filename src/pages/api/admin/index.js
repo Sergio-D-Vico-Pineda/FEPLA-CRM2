@@ -67,7 +67,10 @@ async function PATCH({ request }) {
 
         return new Response(JSON.stringify({ message: "Profesor actualizado exitosamente." }), { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify(error), { status: 404 });
+        console.log(error)
+        return new Response(JSON.stringify({
+            message: "Profesor no actualizado."
+        }), { status: 404 });
     }
 }
 
@@ -76,7 +79,7 @@ async function PUT({ request }) {
 
     if (data.id_profesor == null || data.id_profesor == 0) {
         return new Response(JSON.stringify({
-            message: "Profesor no actualizado."
+            message: "Profesor no actualizado. Falta id de profesor."
         }), { status: 404 });
     }
 

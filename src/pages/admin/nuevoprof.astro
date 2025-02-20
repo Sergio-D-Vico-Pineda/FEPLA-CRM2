@@ -109,6 +109,8 @@ import AdminLoggedIn from "@comp/AdminLoggedIn.astro";
             const json = await response.json();
             alert(json.message);
             window.location.href = "/admin";
+        } else {
+            alert((await response.json()).message);
         }
     }
 
