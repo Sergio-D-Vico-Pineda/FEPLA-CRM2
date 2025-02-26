@@ -27,7 +27,7 @@ async function POST({ request }) {
             }
         })
 
-        const log = await createRegistro(prisma, { id_entidad: newProf.id_profesor, id_profesor: data.id_active_user }, "Profesor", "creación de profesor");
+        const log = await createRegistro(prisma, { id_entidad: newProf.id_profesor, id_profesor: 0 }, "Profesor", "creación de profesor");
 
         newProf.message = "Profesor creado exitosamente.";
 
