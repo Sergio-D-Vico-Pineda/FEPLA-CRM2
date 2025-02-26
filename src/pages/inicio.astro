@@ -112,19 +112,31 @@ const alumnosSinNuss = await prisma.alumno.count({
             </p>
             <hr class="border-black border-solid my-4" />
             <div class="flex gap-2">
-                <Counter num={empresas} texto="empresa" />
-                <Counter num={contactos} texto="contacto" />
-                <Counter num={institutos} texto="instituto" />
-                <Counter
-                    num={empresasConAlumnos}
-                    texto="empresa con alumnos"
-                    textos="empresas con alumnos"
-                />
-                <Counter
-                    num={alumnosConPracticas}
-                    texto="alumno con práctica"
-                    textos="alumnos con prácticas"
-                />
+                {empresas != 0 && <Counter num={empresas} texto="empresa" />}
+                {contactos != 0 && <Counter num={contactos} texto="contacto" />}
+                {
+                    institutos != 0 && (
+                        <Counter num={institutos} texto="instituto" />
+                    )
+                }
+                {
+                    empresasConAlumnos != 0 && (
+                        <Counter
+                            num={empresasConAlumnos}
+                            texto="empresa con alumnos"
+                            textos="empresas con alumnos"
+                        />
+                    )
+                }
+                {
+                    alumnosConPracticas != 0 && (
+                        <Counter
+                            num={alumnosConPracticas}
+                            texto="alumno con práctica"
+                            textos="alumnos con prácticas"
+                        />
+                    )
+                }
             </div>
         </div>
         <div
@@ -132,21 +144,33 @@ const alumnosSinNuss = await prisma.alumno.count({
         >
             <h2 class="text-3xl font-semibold mb-2">Avisos</h2>
             <ul class="text-gray-700 flex flex-col gap-1 text-lg">
-                <Counter
-                    num={alumnosSinEmail}
-                    texto="alumno sin mail"
-                    textos="alumnos sin email"
-                />
-                <Counter
-                    num={alumnosSinNia}
-                    texto="alumno sin NIA"
-                    textos="alumnos sin NIA"
-                />
-                <Counter
-                    num={alumnosSinNuss}
-                    texto="alumno sin NUSS"
-                    textos="alumnos sin NUSS"
-                />
+                {
+                    alumnosSinEmail != 0 && (
+                        <Counter
+                            num={alumnosSinEmail}
+                            texto="alumno sin mail"
+                            textos="alumnos sin email"
+                        />
+                    )
+                }
+                {
+                    alumnosSinNia != 0 && (
+                        <Counter
+                            num={alumnosSinNia}
+                            texto="alumno sin NIA"
+                            textos="alumnos sin NIA"
+                        />
+                    )
+                }
+                {
+                    alumnosSinNuss != 0 && (
+                        <Counter
+                            num={alumnosSinNuss}
+                            texto="alumno sin NUSS"
+                            textos="alumnos sin NUSS"
+                        />
+                    )
+                }
             </ul>
         </div>
     </main>
