@@ -6,13 +6,16 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
 
 ### Requisitos
 
+- Windows, Linux o macOS
+- Cualquier navegador basado en Chromium (Chrome, Opera, Edge, etc.)
+- [Git](https://git-scm.com/)
 - Ejecutador de JavaScript ([Node.js](https://nodejs.org/es))
 - Administrador de paquetes (npm o [pnpm](https://pnpm.io/))
 - Base datos SQLite _online_ (Turso) o _local_ (archivo .db)
 
 ### Instrucciones
 
-0. Abrir una terminal o consola (cmd o powershell).
+0. Abrir una terminal o consola (cmd, powershell, terminal o bash).
 
 1. Clonar el repositorio (recomendado) o descargar el repositorio, y acceder a la carpeta.
 
@@ -30,7 +33,7 @@ Hecho por Sergio D. Vico Pineda, Rafael Sánchez Martínez y Rubén Alemañ Arna
     pnpm install
     ```
 
-3. Crear o modificar el archivo `.env`. Si la opción es `Turso`, se debe completar con: (opcional, necesario si la opción es **online**)
+3. Crear o modificar el archivo `.env` en la raíz del proyecto. Si la opción es `Turso`, se debe completar con: (opcional, necesario si la opción es **online**)
 
     TURSO_DATABASE_URL=_libsql://example.turso.io_  
     TURSO_AUTH_TOKEN=_...InR5cCI6I..._
