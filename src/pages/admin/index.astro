@@ -85,16 +85,24 @@ const profesoresSinNIP = await prisma.profesor.count({
             <h2 class="text-3xl font-semibold text-center">Avisos</h2>
             <hr class="border-black border-solid border-2 m-4" />
             <ul class="text-gray-700 flex flex-col gap-1">
-                <Counter
-                    num={profesoresSinTelefono}
-                    texto="profesor sin teléfono"
-                    textos="profesores sin teléfono"
-                />
-                <Counter
-                    num={profesoresSinNIP}
-                    texto="profesor sin NIP"
-                    textos="profesores sin NIP"
-                />
+                {
+                    profesoresSinTelefono > 0 && (
+                        <Counter
+                            num={profesoresSinTelefono}
+                            texto="profesor sin teléfono"
+                            textos="profesores sin teléfono"
+                        />
+                    )
+                }
+                {
+                    profesoresSinNIP > 0 && (
+                        <Counter
+                            num={profesoresSinNIP}
+                            texto="profesor sin NIP"
+                            textos="profesores sin NIP"
+                        />
+                    )
+                }
             </ul>
         </div>
     </main>
